@@ -1,0 +1,16 @@
+## Interface: 110100,110105
+## Title: BFCraftsman
+## Version: r1
+## Author: enderneko (BigFootTeam)
+## Dependencies: AbstractFramework
+## SavedVariables: BFC_DB
+
+Locales\LoadLocales.xml
+
+Init.lua
+Comm.lua
+Professions.lua
+
+MainFrame.lua
+BrowseFrame.lua
+PublishFrame.lua
