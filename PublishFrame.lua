@@ -29,7 +29,7 @@ local OpenTradeSkill = C_TradeSkillUI.OpenTradeSkill
 local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
-local publishFrame, charList
+local publishFrame, taglineEditBox, charList
 local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
@@ -87,11 +87,12 @@ local function CreatePublishFrame()
     AF.SetPoint(taglinePane, "TOPLEFT", publishFrame)
     AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame)
 
-    local taglineEditBox = AF.CreateScrollEditBox(taglinePane)
+    taglineEditBox = AF.CreateScrollEditBox(taglinePane)
     taglineEditBox:SetMaxBytes(256)
     AF.SetPoint(taglineEditBox, "TOPLEFT", taglinePane, 0, -25)
     AF.SetPoint(taglineEditBox, "BOTTOMRIGHT", taglinePane)
     taglineEditBox:SetConfirmButton(function(text)
+        BFC_DB.tagline = text
     end)
 
     -- characters and professions
@@ -140,14 +141,14 @@ end
 
 local function Pane_UpdateButton(button, t)
     button.t = t
-    if t.id == 0 or not validSkillLine[t.id] then
+    if t.id == 0 then
         button:SetText(TRADE_SKILLS_UNLEARNED_TAB)
         button:HideTexture()
         button:SetEnabled(false)
     else
         button:SetText(GetTradeSkillDisplayName(t.id))
         button:SetTexture(AF.GetProfessionIcon(t.id), {14, 14}, {"LEFT", 5, 0})
-        button:SetEnabled(true)
+        button:SetEnabled(validSkillLine[t.id])
     end
 end
 
@@ -296,6 +297,7 @@ AF.RegisterCallback("BFC_ShowFrame", function(which)
     if which == "Publish" then
         if not publishFrame then
             CreatePublishFrame()
+            taglineEditBox:SetText(BFC_DB.tagline)
             LoadCharacters()
         end
         publishFrame:Show()

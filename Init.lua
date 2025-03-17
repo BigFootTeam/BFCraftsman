@@ -16,6 +16,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         BFC:UnregisterEvent("ADDON_LOADED")
         if type(BFC_DB) ~= "table" then
             BFC_DB = {
+                tagline = "",
                 characters = {},
                 received = {},
             }
