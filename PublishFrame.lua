@@ -4,9 +4,6 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
-local GetProfessions = GetProfessions
-local GetProfessionInfo = GetProfessionInfo
-
 local validSkillLine = {
     [171] = true, -- Alchemy
     [164] = true, -- Blacksmithing
@@ -20,53 +17,58 @@ local validSkillLine = {
     [197] = true, -- Tailoring
 }
 
+local GetProfessions = GetProfessions
 local GetProfessionInfo = GetProfessionInfo
+local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
 local GetBaseProfessionInfo = C_TradeSkillUI.GetBaseProfessionInfo
+local GetChildProfessionInfo = C_TradeSkillUI.GetChildProfessionInfo
+local GetProfessionInfoByRecipeID = C_TradeSkillUI.GetProfessionInfoByRecipeID
 local GetAllRecipeIDs = C_TradeSkillUI.GetAllRecipeIDs
 local GetRecipeInfo = C_TradeSkillUI.GetRecipeInfo
 local OpenTradeSkill = C_TradeSkillUI.OpenTradeSkill
 local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
-local publishFrame, charList, prof1, prof2
+local publishFrame, charList
+local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
 -- recipes
 ---------------------------------------------------------------------
-local function CacheRecipes()
+local function GetRecipes()
     local professionInfo = GetBaseProfessionInfo()
     if not professionInfo then return end
 
-    local childInfo = C_TradeSkillUI.GetChildProfessionInfo()
+    local childInfo = GetChildProfessionInfo()
 
-    local skillLineID = professionInfo.professionID
-    BFC_DB.professions[skillLineID] = BFC_DB.professions[skillLineID] or {}
-
+    local ret = {}
     local recipeIDs = GetAllRecipeIDs()
     if recipeIDs then
-        wipe(BFC_DB.professions[skillLineID])
         for _, recipeID in ipairs(recipeIDs) do
-            local professionID = C_TradeSkillUI.GetProfessionInfoByRecipeID(recipeID).professionID
+            local professionID = GetProfessionInfoByRecipeID(recipeID).professionID
             if childInfo.professionID == professionID then
                 local recipeInfo = GetRecipeInfo(recipeID)
-                if recipeInfo and not recipeInfo.learned then
-                    tinsert(BFC_DB.professions[skillLineID], recipeID)
+                if recipeInfo and recipeInfo.learned then
+                    tinsert(ret, recipeID)
                 end
             end
         end
-
     end
     CloseTradeSkill()
+    return ret
 end
 
 ---------------------------------------------------------------------
 -- cache
 ---------------------------------------------------------------------
 local function CacheProfessions(prof)
-    if prof then
-        local name, _, _, _, _, _, skillLine = GetProfessionInfo(prof)
-        OpenTradeSkill(skillLine)
-        C_Timer.After(1, CacheRecipes)
+    if prof.id ~= 0 then
+        OpenTradeSkill(prof.id)
+        C_Timer.After(1, function()
+            prof.recipes = GetRecipes()
+            prof.lastScaned = time()
+            AF.HideMask(charList)
+        end)
     end
 end
 
@@ -107,35 +109,108 @@ end
 ---------------------------------------------------------------------
 local panes = {}
 
+local function Pane_ShowCacheInfo(button)
+    local lastScaned = button.t.lastScaned
+    if lastScaned == 0 then
+        lastScaned = L["never"]
+    else
+        lastScaned = AF.FormatRelativeTime(lastScaned)
+    end
+    lastScaned = AF.WrapTextInColor(lastScaned, "yellow")
+
+    AF.ShowTooltips(button, "BOTTOMLEFT", 0, -1, {
+        L["Scan Recipes"],
+        L["Click to scan recipes"],
+        L["Scan only available for current character"],
+        L["Learned recipes: %s"]:format(AF.WrapTextInColor(#button.t.recipes, "yellow")),
+        L["Last scanned: %s"]:format(lastScaned),
+    })
+end
+
+local function Pane_HideCacheInfo(button)
+    AF.HideTooltips()
+end
+
+local function Pane_Scan(button)
+    if not button.parent.isCurrentCharacter then return end
+
+    AF.ShowMask(charList, L["Scanning..."])
+    CacheProfessions(button.t)
+end
+
+local function Pane_UpdateButton(button, t)
+    button.t = t
+    if t.id == 0 or not validSkillLine[t.id] then
+        button:SetText(TRADE_SKILLS_UNLEARNED_TAB)
+        button:HideTexture()
+        button:SetEnabled(false)
+    else
+        button:SetText(GetTradeSkillDisplayName(t.id))
+        button:SetTexture(AF.GetProfessionIcon(t.id), {14, 14}, {"LEFT", 5, 0})
+        button:SetEnabled(true)
+    end
+end
+
+local function Pane_Load(pane, i, t, isCurrentCharacter)
+    pane.index = i
+    pane.t = t
+    pane.isCurrentCharacter = isCurrentCharacter
+
+    pane.nameText:SetText(t.name)
+    pane.nameText:SetTextColor(AF.GetClassColor(t.class))
+
+    Pane_UpdateButton(pane.prof1Button, t.prof1)
+    Pane_UpdateButton(pane.prof2Button, t.prof2)
+end
+
 local function CreateCharacterPane()
     local pane = AF.CreateBorderedFrame(charList.slotFrame)
 
     -- name
     local nameText = AF.CreateFontString(pane, "name", "white")
+    pane.nameText = nameText
     AF.SetPoint(nameText, "LEFT", pane, "TOPLEFT", 5, -10)
     AF.SetPoint(nameText, "RIGHT", pane, "TOPRIGHT", -5, -10)
     nameText:SetJustifyH("LEFT")
 
     -- prof1
     local prof1Button = AF.CreateButton(pane, "prof1", "accent_hover", nil, 20)
+    prof1Button.parent = pane
+    pane.prof1Button = prof1Button
     AF.SetPoint(prof1Button, "BOTTOMLEFT")
     AF.SetPoint(prof1Button, "BOTTOMRIGHT", pane, "BOTTOM")
     prof1Button:SetJustifyH("LEFT")
     prof1Button:SetTextPadding(5)
+    prof1Button:HookOnEnter(Pane_ShowCacheInfo)
+    prof1Button:HookOnLeave(Pane_HideCacheInfo)
+    prof1Button:SetOnClick(Pane_Scan)
 
     -- prof2
     local prof2Button = AF.CreateButton(pane, "prof2", "accent_hover", nil, 20)
+    prof2Button.parent = pane
+    pane.prof2Button = prof2Button
     AF.SetPoint(prof2Button, "BOTTOMLEFT", prof1Button, "BOTTOMRIGHT", -1, 0)
     AF.SetPoint(prof2Button, "BOTTOMRIGHT")
     prof2Button:SetJustifyH("LEFT")
     prof2Button:SetTextPadding(5)
+    prof2Button:HookOnEnter(Pane_ShowCacheInfo)
+    prof2Button:HookOnLeave(Pane_HideCacheInfo)
+    prof2Button:SetOnClick(Pane_Scan)
+
+    -- delete
+    local delButton = AF.CreateButton(pane, nil, "red_hover", 21, 21)
+    delButton:SetTexture(AF.GetIcon("Close"), {16, 16}, {"CENTER", 0, 0})
+    AF.SetPoint(delButton, "TOPRIGHT", pane)
+    AF.SetTooltips(delButton, "TOPRIGHT", 0, 1, L["Delete Character"], L["Alt-Click to delete"])
+    delButton:SetOnClick(function()
+        if IsAltKeyDown() then
+            tremove(BFC_DB.characters, pane.index)
+            LoadCharacters()
+        end
+    end)
 
     -- load
-    function pane:Load(t)
-        nameText:SetText(t.name)
-        prof1Button:SetText(t.prof1 ~= 0 and GetProfessionInfo(t.prof1) or TRADE_SKILLS_UNLEARNED_TAB)
-        prof2Button:SetText(t.prof2 ~= 0 and GetProfessionInfo(t.prof2) or TRADE_SKILLS_UNLEARNED_TAB)
-    end
+    pane.Load = Pane_Load
 
     return pane
 end
@@ -143,20 +218,32 @@ end
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local LoadCharacters, CreateAddButton
-
 local addButton
 CreateAddButton = function()
     addButton = AF.CreateButton(charList.slotFrame, L["Add Current Character"], "accent_hover")
 
     addButton:SetOnClick(function()
         local prof1, prof2 = GetProfessions()
+        if prof1 then
+            prof1 = select(7, GetProfessionInfo(prof1))
+        end
+        if prof2 then
+            prof2 = select(7, GetProfessionInfo(prof2))
+        end
+
         local t = {
             name = AF.player.fullName,
-            prof1 = prof1 or 0,
-            prof2 = prof2 or 0,
-            prof1Recipes = {},
-            prof2Recipes = {},
+            class = AF.player.class,
+            prof1 = {
+                id = prof1 or 0,
+                lastScaned = 0,
+                recipes = {},
+            },
+            prof2 = {
+                id = prof2 or 0,
+                lastScaned = 0,
+                recipes = {},
+            },
         }
         tinsert(BFC_DB.characters, t)
         LoadCharacters()
@@ -177,11 +264,11 @@ LoadCharacters = function()
             currentCharacterFound = true
             -- current player always first
             tinsert(widgets, 1, panes[i])
+            panes[i]:Load(i, t, true)
         else
             tinsert(widgets, panes[i])
+            panes[i]:Load(i, t, false)
         end
-
-        panes[i]:Load(t)
     end
 
     -- current player not found
@@ -196,10 +283,10 @@ LoadCharacters = function()
     charList:SetWidgets(widgets)
 
     -- hide unused
-    for i = #widgets + 1, #panes do
-        print("hide", i)
-        panes[i]:Hide()
-    end
+    -- for i = #widgets + 1, #panes do
+    --     print("hide", i)
+    --     panes[i]:Hide()
+    -- end
 end
 
 ---------------------------------------------------------------------
