@@ -3,6 +3,8 @@ local BFC = select(2, ...)
 BFC.name = "BFCraftsman"
 BFC.channelName = "BFCraftsman"
 
+_G.BFC = BFC
+
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -22,6 +24,11 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
             }
         end
     end
+end)
+
+BFC:RegisterEvent("PLAYER_LOGIN", function()
+    BFC.UpdateLearnedProfessions()
+    BFC.UpdateLearnedRecipes()
 end)
 
 local function PLAYER_ENTERING_WORLD()

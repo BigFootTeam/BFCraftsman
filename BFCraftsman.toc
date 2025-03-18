@@ -10,6 +10,7 @@ Locales\LoadLocales.xml
 Init.lua
 Comm.lua
 Professions.lua
+Recipes.lua
 
 MainFrame.lua
 BrowseFrame.lua

@@ -4,19 +4,6 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
-local validSkillLine = {
-    [171] = true, -- Alchemy
-    [164] = true, -- Blacksmithing
-    [333] = true, -- Enchanting
-    [202] = true, -- Engineering
-    -- [182] = true, -- Herbalism
-    [755] = true, -- Jewelcrafting
-    [165] = true, -- Leatherworking
-    -- [186] = true, -- Mining
-    -- [393] = true, -- Skinning
-    [197] = true, -- Tailoring
-}
-
 local GetProfessions = GetProfessions
 local GetProfessionInfo = GetProfessionInfo
 local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
@@ -29,7 +16,7 @@ local OpenTradeSkill = C_TradeSkillUI.OpenTradeSkill
 local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
-local publishFrame, taglineEditBox, charList
+local publishFrame, taglineEditBox, charList, progressBar
 local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
@@ -66,8 +53,16 @@ local function CacheProfessions(prof)
         OpenTradeSkill(prof.id)
         C_Timer.After(1, function()
             prof.recipes = GetRecipes()
+            AF.ShowMask(charList, L["Saving..."])
             prof.lastScaned = time()
-            AF.HideMask(charList)
+            BFC.UpdateLearnedRecipesWithCallback(function(remaining, total)
+                progressBar:SetSmoothedValue((total - remaining) / total * 100)
+                if remaining == 0 then
+                    C_Timer.After(0.5, function()
+                        AF.HideMask(charList)
+                    end)
+                end
+            end)
         end)
     end
 end
@@ -136,6 +131,11 @@ local function Pane_Scan(button)
     if not button.parent.isCurrentCharacter then return end
 
     AF.ShowMask(charList, L["Scanning..."])
+    if not progressBar then
+        progressBar = AF.CreateBlizzardStatusBar(charList.mask, 0, 100, 70, 5, "accent")
+        AF.SetPoint(progressBar, "TOP", charList.mask.text, "BOTTOM", 0, -5)
+    end
+    progressBar:ResetSmoothedValue(0)
     CacheProfessions(button.t)
 end
 
@@ -148,7 +148,7 @@ local function Pane_UpdateButton(button, t)
     else
         button:SetText(GetTradeSkillDisplayName(t.id))
         button:SetTexture(AF.GetProfessionIcon(t.id), {14, 14}, {"LEFT", 5, 0})
-        button:SetEnabled(validSkillLine[t.id])
+        button:SetEnabled(BFC.validSkillLine[t.id])
     end
 end
 
@@ -207,6 +207,7 @@ local function CreateCharacterPane()
         if IsAltKeyDown() then
             tremove(BFC_DB.characters, pane.index)
             LoadCharacters()
+            BFC.UpdateLearnedProfessions()
         end
     end)
 
@@ -248,6 +249,7 @@ CreateAddButton = function()
         }
         tinsert(BFC_DB.characters, t)
         LoadCharacters()
+        BFC.UpdateLearnedProfessions()
     end)
 end
 
@@ -297,9 +299,9 @@ AF.RegisterCallback("BFC_ShowFrame", function(which)
     if which == "Publish" then
         if not publishFrame then
             CreatePublishFrame()
-            taglineEditBox:SetText(BFC_DB.tagline)
             LoadCharacters()
         end
+        taglineEditBox:SetText(BFC_DB.tagline)
         publishFrame:Show()
     else
         if publishFrame then
