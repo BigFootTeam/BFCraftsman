@@ -19,7 +19,7 @@ end
 
 function BFC.UpdateLearnedRecipes()
     wipe(BFC.learnedRecipes)
-    for _, t in pairs(BFC_DB.characters) do
+    for _, t in pairs(BFC_DB.publish.characters) do
         ProcessRecipes(t.prof1.recipes)
         ProcessRecipes(t.prof2.recipes)
     end
@@ -41,7 +41,7 @@ function BFC.UpdateLearnedRecipesWithCallback(callback)
         end)
     end
 
-    for _, t in pairs(BFC_DB.characters) do
+    for _, t in pairs(BFC_DB.publish.characters) do
         for _, recipeID in pairs(t.prof1.recipes) do
             executor:AddTask(recipeID)
         end

@@ -2,8 +2,9 @@
 local BFC = select(2, ...)
 BFC.name = "BFCraftsman"
 BFC.channelName = "BFCraftsman"
+BFC.channelID = 0
 
-_G.BFC = BFC
+_G.BFCraftsman = BFC
 
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
@@ -18,19 +19,33 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         BFC:UnregisterEvent("ADDON_LOADED")
         if type(BFC_DB) ~= "table" then
             BFC_DB = {
-                tagline = "",
-                characters = {},
-                received = {},
+                publish = {
+                    enabled = false,
+                    tagline = "",
+                    characters = {},
+                },
+                list = {},
+                favorite = {},
             }
         end
     end
 end)
 
+local BNGetInfo = BNGetInfo
 BFC:RegisterEvent("PLAYER_LOGIN", function()
+    local bTag = select(2, BNGetInfo())
+    if bTag then
+        BFC.battleTag = AF.Libs.MD5.sumhexa(bTag)
+    end
+
     BFC.UpdateLearnedProfessions()
     BFC.UpdateLearnedRecipes()
+    BFC.UpdateSendingData()
+    BFC.ScheduleNextSync(true)
 end)
 
+local GetChannelName = GetChannelName
+local JoinPermanentChannel = JoinPermanentChannel
 local function PLAYER_ENTERING_WORLD()
     BFC.channelID = GetChannelName(BFC.channelName)
     if BFC.channelID == 0 then

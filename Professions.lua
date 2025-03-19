@@ -20,7 +20,7 @@ BFC.learnedProfessions = {}
 
 function BFC.UpdateLearnedProfessions()
     wipe(BFC.learnedProfessions)
-    for _, t in pairs(BFC_DB.characters) do
+    for _, t in pairs(BFC_DB.publish.characters) do
         if BFC.validSkillLine[t.prof1.id] then
             BFC.learnedProfessions[t.prof1.id] = true
         end
@@ -28,4 +28,12 @@ function BFC.UpdateLearnedProfessions()
             BFC.learnedProfessions[t.prof2.id] = true
         end
     end
+end
+
+function BFC.GetLearnedProfessionString()
+    local ret = {}
+    for id in pairs(BFC.learnedProfessions) do
+        tinsert(ret, id)
+    end
+    return AF.TableToString(ret, ",")
 end

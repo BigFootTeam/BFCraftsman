@@ -16,7 +16,8 @@ local OpenTradeSkill = C_TradeSkillUI.OpenTradeSkill
 local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
-local publishFrame, taglineEditBox, charList, progressBar
+local publishFrame, progressBar
+local enableCheckBox, taglineEditBox, charList, addButton
 local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
@@ -77,17 +78,34 @@ local function CreatePublishFrame()
     AF.SetPoint(publishFrame, "BOTTOMRIGHT", BFCMainFrame, -10, 10)
     publishFrame:Hide()
 
+    -- enable
+    enableCheckBox = AF.CreateCheckButton(publishFrame, L["Enable Publishing"], function(checked)
+        BFC_DB.publish.enabled = checked
+        if BFC_DB.publish.enabled then
+            AF.HideMask(publishFrame)
+        else
+            AF.ShowMask(publishFrame, L["Publishing is disabled"], 0, -20)
+        end
+        BFC.CancelNextSync()
+        BFC.ScheduleNextSync(true)
+    end)
+    AF.SetPoint(enableCheckBox, "TOPLEFT", publishFrame)
+    AF.SetTooltips(enableCheckBox, "TOPLEFT", 0, 1, L["Enable Publishing"], L["Syncs automatically every few minutes instead of in real time"])
+
     -- tagline
     local taglinePane = AF.CreateTitledPane(publishFrame, L["Tagline"], nil, 90)
-    AF.SetPoint(taglinePane, "TOPLEFT", publishFrame)
-    AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame)
+    AF.SetPoint(taglinePane, "TOPLEFT", publishFrame, 0, -25)
+    AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame, 0, -25)
 
     taglineEditBox = AF.CreateScrollEditBox(taglinePane)
     taglineEditBox:SetMaxBytes(256)
     AF.SetPoint(taglineEditBox, "TOPLEFT", taglinePane, 0, -25)
     AF.SetPoint(taglineEditBox, "BOTTOMRIGHT", taglinePane)
     taglineEditBox:SetConfirmButton(function(text)
-        BFC_DB.tagline = text
+        BFC_DB.publish.tagline = text
+        BFC.CancelNextSync()
+        BFC.UpdateSendingData()
+        BFC.ScheduleNextSync(true)
     end)
 
     -- characters and professions
@@ -98,6 +116,17 @@ local function CreatePublishFrame()
     charList = AF.CreateScrollList(charProfPane, nil, nil, 10, 10, 6, 40, 10)
     AF.SetPoint(charList, "TOPLEFT", charProfPane, 0, -25)
     AF.SetPoint(charList, "TOPRIGHT", charProfPane, 0, -25)
+end
+
+local function LoadConfigs()
+    enableCheckBox:SetChecked(BFC_DB.publish.enabled)
+    taglineEditBox:SetText(BFC_DB.publish.tagline)
+
+    if BFC_DB.publish.enabled then
+        AF.HideMask(publishFrame)
+    else
+        AF.ShowMask(publishFrame, L["Publishing is disabled"], 0, -20)
+    end
 end
 
 ---------------------------------------------------------------------
@@ -205,9 +234,13 @@ local function CreateCharacterPane()
     AF.SetTooltips(delButton, "TOPRIGHT", 0, 1, L["Delete Character"], L["Alt-Click to delete"])
     delButton:SetOnClick(function()
         if IsAltKeyDown() then
-            tremove(BFC_DB.characters, pane.index)
+            tremove(BFC_DB.publish.characters, pane.index)
             LoadCharacters()
+
             BFC.UpdateLearnedProfessions()
+            BFC.CancelNextSync()
+            BFC.UpdateSendingData()
+            BFC.ScheduleNextSync(true)
         end
     end)
 
@@ -220,7 +253,6 @@ end
 ---------------------------------------------------------------------
 -- load
 ---------------------------------------------------------------------
-local addButton
 CreateAddButton = function()
     addButton = AF.CreateButton(charList.slotFrame, L["Add Current Character"], "accent_hover")
 
@@ -247,9 +279,14 @@ CreateAddButton = function()
                 recipes = {},
             },
         }
-        tinsert(BFC_DB.characters, t)
+        tinsert(BFC_DB.publish.characters, t)
+
         LoadCharacters()
+
         BFC.UpdateLearnedProfessions()
+        BFC.CancelNextSync()
+        BFC.UpdateSendingData()
+        BFC.ScheduleNextSync(true)
     end)
 end
 
@@ -258,7 +295,7 @@ LoadCharacters = function()
     local widgets = {}
     local currentCharacterFound = false
 
-    for i, t in pairs(BFC_DB.characters) do
+    for i, t in pairs(BFC_DB.publish.characters) do
         if not panes[i] then
             panes[i] = CreateCharacterPane()
         end
@@ -299,9 +336,9 @@ AF.RegisterCallback("BFC_ShowFrame", function(which)
     if which == "Publish" then
         if not publishFrame then
             CreatePublishFrame()
+            LoadConfigs()
             LoadCharacters()
         end
-        taglineEditBox:SetText(BFC_DB.tagline)
         publishFrame:Show()
     else
         if publishFrame then

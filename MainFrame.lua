@@ -8,6 +8,19 @@ local BFCMainFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCMainFrame", "BFCraf
 BFCMainFrame:SetPoint("LEFT", AF.UIParent, "CENTER", 200, 0)
 
 ---------------------------------------------------------------------
+-- BN events
+---------------------------------------------------------------------
+BFCMainFrame:RegisterEvent("BN_CONNECTED")
+BFCMainFrame:RegisterEvent("BN_DISCONNECTED")
+BFCMainFrame:SetScript("OnEvent", function()
+    if BNConnected() then
+        AF.HideMask(BFCMainFrame)
+    else
+        AF.ShowMask(BFCMainFrame, BN_CHAT_DISCONNECTED)
+    end
+end)
+
+---------------------------------------------------------------------
 -- init widgets
 ---------------------------------------------------------------------
 local switch
