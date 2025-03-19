@@ -26,6 +26,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 },
                 list = {},
                 favorite = {},
+                blacklist = {},
             }
         end
     end

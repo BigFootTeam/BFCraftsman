@@ -4,6 +4,8 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
+local TAGLINE_MAX_BYTES = 150
+
 local GetProfessions = GetProfessions
 local GetProfessionInfo = GetProfessionInfo
 local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
@@ -90,7 +92,10 @@ local function CreatePublishFrame()
         BFC.ScheduleNextSync(true)
     end)
     AF.SetPoint(enableCheckBox, "TOPLEFT", publishFrame)
-    AF.SetTooltips(enableCheckBox, "TOPLEFT", 0, 1, L["Enable Publishing"], L["Syncs automatically every few minutes instead of in real time"])
+    AF.SetTooltips(enableCheckBox, "TOPLEFT", 0, 1,
+        L["Enable Publishing"],
+        L["Syncs automatically every few minutes instead of in real time"]
+    )
 
     -- tagline
     local taglinePane = AF.CreateTitledPane(publishFrame, L["Tagline"], nil, 90)
@@ -98,9 +103,10 @@ local function CreatePublishFrame()
     AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame, 0, -25)
 
     taglineEditBox = AF.CreateScrollEditBox(taglinePane)
-    taglineEditBox:SetMaxBytes(256)
+    taglineEditBox:SetMaxBytes(TAGLINE_MAX_BYTES + 1)
     AF.SetPoint(taglineEditBox, "TOPLEFT", taglinePane, 0, -25)
     AF.SetPoint(taglineEditBox, "BOTTOMRIGHT", taglinePane)
+
     taglineEditBox:SetConfirmButton(function(text)
         BFC_DB.publish.tagline = text
         BFC.CancelNextSync()
@@ -108,12 +114,18 @@ local function CreatePublishFrame()
         BFC.ScheduleNextSync(true)
     end)
 
+    local bytesText = AF.CreateFontString(taglinePane, TAGLINE_MAX_BYTES, "gray", "AF_FONT_SMALL")
+    AF.SetPoint(bytesText, "BOTTOMRIGHT", taglinePane.line, "BOTTOMRIGHT", 0, 2)
+    taglineEditBox:SetOnTextChanged(function(text)
+        bytesText:SetFormattedText("%d / %d", #text, TAGLINE_MAX_BYTES)
+    end)
+
     -- characters and professions
     local charProfPane = AF.CreateTitledPane(publishFrame, L["Characters and Professions"])
     AF.SetPoint(charProfPane, "TOPLEFT", taglinePane, "BOTTOMLEFT", 0, -20)
     AF.SetPoint(charProfPane, "BOTTOMRIGHT")
 
-    charList = AF.CreateScrollList(charProfPane, nil, nil, 10, 10, 6, 40, 10)
+    charList = AF.CreateScrollList(charProfPane, nil, nil, 10, 10, 7, 40, 10)
     AF.SetPoint(charList, "TOPLEFT", charProfPane, 0, -25)
     AF.SetPoint(charList, "TOPRIGHT", charProfPane, 0, -25)
 end
@@ -339,6 +351,7 @@ AF.RegisterCallback("BFC_ShowFrame", function(which)
             LoadConfigs()
             LoadCharacters()
         end
+        -- AF.SetHeight(BFCMainFrame, 575)
         publishFrame:Show()
     else
         if publishFrame then

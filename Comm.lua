@@ -3,9 +3,9 @@ local BFC = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local MIN_SYNC_INTERVAL = 7 * 60
-local MAX_SYNC_INTERVAL = 13 * 60
-local BFC_PUBLISH_DELAY = 60
+local MIN_SYNC_INTERVAL = 5 * 60
+local MAX_SYNC_INTERVAL = 10 * 60
+local BFC_PUBLISH_DELAY = 30
 local BFC_PUBLISH_PREFIX = "BFC_PUB"
 local BFC_UNPUBLISH_PREFIX = "BFC_UNPUB"
 
@@ -42,14 +42,20 @@ end
 -- receiving
 ---------------------------------------------------------------------
 local function BFCPublishReceived(data, _, channel)
-    if channel ~= BFC.channelName then return end
-    print(data)
+    BFC_DB.list[data[1]] = {
+        name = data[2],
+        class = data[3],
+        tagline = data[4],
+        profession = AF.TransposeTable(AF.StringToTable(data[5], ",", true), true),
+        lastUpdate = time(),
+    }
+    BFC.UpdateList()
 end
 AF.RegisterComm(BFC_PUBLISH_PREFIX, BFCPublishReceived)
 
 local function PFCUnpublishReceived(id, _, channel)
-    if channel ~= BFC.channelName then return end
-    print(id)
+    BFC_DB.list[id] = nil
+    BFC.UpdateList()
 end
 AF.RegisterComm(BFC_UNPUBLISH_PREFIX, PFCUnpublishReceived)
 
@@ -59,17 +65,17 @@ AF.RegisterComm(BFC_UNPUBLISH_PREFIX, PFCUnpublishReceived)
 local data = {}
 function BFC.UpdateSendingData()
     data = {
-        id = BFC.battleTag,
-        name = AF.player.fullName,
-        class = AF.player.class,
-        tagline = BFC_DB.publish.tagline,
-        prof = BFC.GetLearnedProfessionString(),
+        BFC.battleTag,
+        AF.player.fullName,
+        AF.player.class,
+        BFC_DB.publish.tagline,
+        BFC.GetLearnedProfessionString(),
     }
 end
 
 function BFC.Publish()
     if BFC.channelID == 0 then return end
-    if AF.IsBlank(data.prof) or AF.IsBlank(data.id) then return end
+    if AF.IsBlank(data[1]) then return end
     AF.SendCommMessage_Channel(BFC_PUBLISH_PREFIX, data, BFC.channelName)
 end
 

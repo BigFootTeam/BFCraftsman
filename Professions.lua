@@ -10,6 +10,7 @@ BFC.validSkillLine = {
     [197] = true, -- Tailoring
     [202] = true, -- Engineering
     [333] = true, -- Enchanting
+    [773] = true, -- Inscription
     [755] = true, -- Jewelcrafting
     -- [182] = true, -- Herbalism
     -- [186] = true, -- Mining

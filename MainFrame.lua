@@ -4,7 +4,7 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
-local BFCMainFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCMainFrame", "BFCraftsman", 300, 510)
+local BFCMainFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCMainFrame", "BFCraftsman", 350, 575)
 BFCMainFrame:SetPoint("LEFT", AF.UIParent, "CENTER", 200, 0)
 
 ---------------------------------------------------------------------
@@ -25,7 +25,7 @@ end)
 ---------------------------------------------------------------------
 local switch
 local function InitFrameWidgets()
-    switch = AF.CreateSwitch(BFCMainFrame, 280, 20)
+    switch = AF.CreateSwitch(BFCMainFrame, 330, 20)
     AF.SetPoint(switch, "TOPLEFT", BFCMainFrame, "TOPLEFT", 10, -10)
     switch:SetLabels({
         {
