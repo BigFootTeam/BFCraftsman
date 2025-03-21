@@ -9,16 +9,18 @@ _G.BFCraftsman = BFC
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+AF.RegisterAddon(BFC.name, "BFC")
+
 ---------------------------------------------------------------------
 -- events
 ---------------------------------------------------------------------
 AF.AddEventHandler(BFC)
-
 BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
     if addon == BFC.name then
         BFC:UnregisterEvent("ADDON_LOADED")
         if type(BFC_DB) ~= "table" then
             BFC_DB = {
+                scale = 1,
                 publish = {
                     enabled = false,
                     tagline = "",
@@ -31,6 +33,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 showBlacklisted = false,
             }
         end
+        BFCMainFrame:SetScale(BFC_DB.scale)
     end
 end)
 
