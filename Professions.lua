@@ -3,6 +3,8 @@ local BFC = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
+local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
+
 BFC.validSkillLine = {
     [164] = true, -- Blacksmithing
     [165] = true, -- Leatherworking
@@ -16,6 +18,18 @@ BFC.validSkillLine = {
     -- [186] = true, -- Mining
     -- [393] = true, -- Skinning
 }
+
+function BFC.GetProfessionList()
+    local ret = {}
+    for id in pairs(BFC.validSkillLine) do
+        local name = GetTradeSkillDisplayName(id)
+        tinsert(ret, {id, name})
+    end
+    sort(ret, function(a, b)
+        return a[2] < b[2]
+    end)
+    return ret
+end
 
 BFC.learnedProfessions = {}
 

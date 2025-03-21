@@ -206,7 +206,7 @@ local function Pane_Load(pane, i, t, isCurrentCharacter)
 end
 
 local function CreateCharacterPane()
-    local pane = AF.CreateBorderedFrame(charList.slotFrame)
+    local pane = AF.CreateBorderedFrame(charList.slotFrame, nil, nil, nil, "widget")
 
     -- name
     local nameText = AF.CreateFontString(pane, "name", "white")

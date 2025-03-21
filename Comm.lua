@@ -42,6 +42,7 @@ end
 -- receiving
 ---------------------------------------------------------------------
 local function BFCPublishReceived(data, _, channel)
+    if BFC_DB.blacklist[data[1]] then return end
     BFC_DB.list[data[1]] = {
         name = data[2],
         class = data[3],
@@ -54,6 +55,7 @@ end
 AF.RegisterComm(BFC_PUBLISH_PREFIX, BFCPublishReceived)
 
 local function PFCUnpublishReceived(id, _, channel)
+    if BFC_DB.blacklist[id] then return end
     BFC_DB.list[id] = nil
     BFC.UpdateList()
 end
