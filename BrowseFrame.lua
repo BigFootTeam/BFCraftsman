@@ -221,21 +221,29 @@ local function Comparator(a, b)
     return a.id < b.id
 end
 
+local function ShouldShow(id, t)
+    local recentlyUpdated = time() - t.lastUpdate < 1800
+    local previousNames = AF.TableToString(t.previousNames, ",", true)
+
+    if BFC.battleTag == id then
+        -- always show self
+        return true
+    end
+
+    return (BFC_DB.showStale or recentlyUpdated or BFC_DB.favorite[id] or BFC_DB.blacklist[id]) -- stale
+        and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
+        and not AF.IsEmpty(t.professions) -- has professions
+        and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean") -- match selected profession
+        and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(previousNames, keywords))) -- match keyword
+end
+
 LoadList = function()
     updateRequired = false
 
     local widgets = {}
     local i = 1
     for id, t in pairs(BFC_DB.list) do
-        local recentlyUpdated = time() - t.lastUpdate < 1800
-        local previousNames = AF.TableToString(t.previousNames, ",", true)
-
-        if (BFC_DB.showStale or recentlyUpdated or BFC_DB.blacklist[id]) -- stale
-        and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
-        and not AF.IsEmpty(t.professions) -- has professions
-        and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean") -- match selected profession
-        and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(previousNames, keywords))) then -- match keyword
-
+        if ShouldShow(id, t) then
             if not panes[i] then
                 panes[i] = CreatePane()
             end
