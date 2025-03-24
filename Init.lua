@@ -24,7 +24,19 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 publish = {
                     enabled = false,
                     tagline = "",
-                    characters = {},
+                    characters = {
+                        -- {
+                        --     name = (string),
+                        --     class = (string),
+                        --     prof1 = {
+                        --         id = (number),
+                        --         lastScanned = (number),
+                        --         recipes = {},
+                        --         allRecipesLearned = false,
+                        --     },
+                        --     prof2 = {...},
+                        -- },
+                    },
                 },
                 list = {},
                 favorite = {},

@@ -41,13 +41,21 @@ end
 ---------------------------------------------------------------------
 -- receiving
 ---------------------------------------------------------------------
+local function ProfessionProcessor(_, id)
+    if id:find("!$") then
+        return tonumber(id:sub(1, -2)), true
+    else
+        return tonumber(id), false
+    end
+end
+
 local function BFCPublishReceived(data, _, channel)
     if BFC_DB.blacklist[data[1]] then return end
     BFC_DB.list[data[1]] = {
         name = data[2],
         class = data[3],
         tagline = data[4],
-        profession = AF.TransposeTable(AF.StringToTable(data[5], ",", true), true),
+        professions = AF.ConvertTable(AF.StringToTable(data[5], ","), ProfessionProcessor),
         lastUpdate = time(),
     }
     BFC.UpdateList()

@@ -25,27 +25,33 @@ local LoadCharacters, CreateAddButton
 ---------------------------------------------------------------------
 -- recipes
 ---------------------------------------------------------------------
-local function GetRecipes()
+local function CacheRecipes(prof)
     local professionInfo = GetBaseProfessionInfo()
     if not professionInfo then return end
 
     local childInfo = GetChildProfessionInfo()
 
-    local ret = {}
+    wipe(prof.recipes)
     local recipeIDs = GetAllRecipeIDs()
+    local all, learned = 0, 0
+
     if recipeIDs then
         for _, recipeID in ipairs(recipeIDs) do
             local professionID = GetProfessionInfoByRecipeID(recipeID).professionID
             if childInfo.professionID == professionID then
+                all = all + 1
                 local recipeInfo = GetRecipeInfo(recipeID)
                 if recipeInfo and recipeInfo.learned then
-                    tinsert(ret, recipeID)
+                    learned = learned + 1
+                    tinsert(prof.recipes, recipeID)
                 end
             end
         end
+
+        prof.allRecipesLearned = all == learned
     end
+    BFC.UpdateLearnedProfessions()
     CloseTradeSkill()
-    return ret
 end
 
 ---------------------------------------------------------------------
@@ -55,9 +61,9 @@ local function CacheProfessions(prof)
     if prof.id ~= 0 then
         OpenTradeSkill(prof.id)
         C_Timer.After(1, function()
-            prof.recipes = GetRecipes()
+            CacheRecipes(prof)
             AF.ShowMask(charList, L["Saving..."])
-            prof.lastScaned = time()
+            prof.lastScanned = time()
             BFC.UpdateLearnedRecipesWithCallback(function(remaining, total)
                 progressBar:SetSmoothedValue((total - remaining) / total * 100)
                 if remaining == 0 then
@@ -147,20 +153,20 @@ end
 local panes = {}
 
 local function Pane_ShowCacheInfo(button)
-    local lastScaned = button.t.lastScaned
-    if lastScaned == 0 then
-        lastScaned = L["never"]
+    local lastScanned = button.t.lastScanned
+    if lastScanned == 0 then
+        lastScanned = L["never"]
     else
-        lastScaned = AF.FormatRelativeTime(lastScaned)
+        lastScanned = AF.FormatRelativeTime(lastScanned)
     end
-    lastScaned = AF.WrapTextInColor(lastScaned, "yellow")
+    lastScanned = AF.WrapTextInColor(lastScanned, "yellow")
 
     AF.ShowTooltips(button, "BOTTOMLEFT", 0, -1, {
         L["Scan Recipes"],
         L["Click to scan recipes"],
         L["Scan only available for current character"],
         L["Learned recipes: %s"]:format(AF.WrapTextInColor(#button.t.recipes, "yellow")),
-        L["Last scanned: %s"]:format(lastScaned),
+        L["Last scanned: %s"]:format(lastScanned),
     })
 end
 
@@ -282,12 +288,12 @@ CreateAddButton = function()
             class = AF.player.class,
             prof1 = {
                 id = prof1 or 0,
-                lastScaned = 0,
+                lastScanned = 0,
                 recipes = {},
             },
             prof2 = {
                 id = prof2 or 0,
-                lastScaned = 0,
+                lastScanned = 0,
                 recipes = {},
             },
         }

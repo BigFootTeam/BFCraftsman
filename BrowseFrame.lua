@@ -93,7 +93,7 @@ local function Pane_Load(pane, id, t)
     --     pane.professionText:SetText(AF.WrapTextInColor(L["Stale"], "darkgray"))
     else
         local text = ""
-        for id in pairs(t.profession) do
+        for id in pairs(t.professions) do
             local icon = AF.GetProfessionIcon(id)
             text = text .. AF.EscapeIcon(icon, 12)
         end
@@ -211,8 +211,8 @@ LoadList = function()
     local i = 1
     for id, t in pairs(BFC_DB.list) do
         local recentlyUpdated = time() - t.lastUpdate < 1800
-        if not AF.IsEmpty(t.profession)
-        and (selectedProfession == 0 or t.profession[selectedProfession])
+        if not AF.IsEmpty(t.professions)
+        and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean")
         and (BFC_DB.showStale or recentlyUpdated or BFC_DB.blacklist[id]) and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) then
             if not panes[i] then
                 panes[i] = CreatePane()
