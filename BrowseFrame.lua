@@ -5,7 +5,7 @@ local AF = _G.AbstractFramework
 local L = BFC.L
 
 local browseFrame, list, showStaleCB, showBlacklistedCB
-local selectedProfession, keyword = 0, ""
+local selectedProfession, keywords = 0, ""
 local LoadList
 local updateRequired
 
@@ -49,6 +49,15 @@ local function CreateBrowseFrame()
     }, 1)
 
     professionDropdown:SetSelectedValue(0)
+
+    -- search
+    local searchBox = AF.CreateEditBox(browseFrame, _G.SEARCH, nil, 20)
+    AF.SetPoint(searchBox, "TOPLEFT", professionDropdown, "TOPRIGHT", 10, 0)
+    AF.SetPoint(searchBox, "RIGHT", browseFrame)
+    searchBox:SetOnTextChanged(function(text)
+        keywords = strlower(strtrim(text))
+        LoadList()
+    end)
 
     -- list
     list = AF.CreateScrollList(browseFrame, nil, nil, 5, 5, 22, 20, 1)
@@ -211,9 +220,14 @@ LoadList = function()
     local i = 1
     for id, t in pairs(BFC_DB.list) do
         local recentlyUpdated = time() - t.lastUpdate < 1800
-        if not AF.IsEmpty(t.professions)
-        and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean")
-        and (BFC_DB.showStale or recentlyUpdated or BFC_DB.blacklist[id]) and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) then
+        local previousNames = AF.TableToString(t.previousNames, ",", true)
+
+        if (BFC_DB.showStale or recentlyUpdated or BFC_DB.blacklist[id]) -- stale
+        and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
+        and not AF.IsEmpty(t.professions) -- has professions
+        and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean") -- match selected profession
+        and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(previousNames, keywords))) then -- match keyword
+
             if not panes[i] then
                 panes[i] = CreatePane()
             end

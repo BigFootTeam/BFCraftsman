@@ -51,13 +51,20 @@ end
 
 local function BFCPublishReceived(data, _, channel)
     if BFC_DB.blacklist[data[1]] then return end
-    BFC_DB.list[data[1]] = {
-        name = data[2],
-        class = data[3],
-        tagline = data[4],
-        professions = AF.ConvertTable(AF.StringToTable(data[5], ","), ProfessionProcessor),
-        lastUpdate = time(),
-    }
+
+    if not BFC_DB.list[data[1]] then
+        BFC_DB.list[data[1]] = {
+            previousNames = {}
+        }
+    end
+
+    BFC_DB.list[data[1]].name = data[2]
+    BFC_DB.list[data[1]].class = data[3]
+    BFC_DB.list[data[1]].tagline = data[4]
+    BFC_DB.list[data[1]].professions = AF.ConvertTable(AF.StringToTable(data[5], ","), ProfessionProcessor)
+    BFC_DB.list[data[1]].lastUpdate = time()
+    BFC_DB.list[data[1]].previousNames[strlower(AF.ToShortName(data[2]))] = true
+
     BFC.UpdateList()
 end
 AF.RegisterComm(BFC_PUBLISH_PREFIX, BFCPublishReceived)

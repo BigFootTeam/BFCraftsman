@@ -51,6 +51,7 @@ local function CacheRecipes(prof)
         prof.allRecipesLearned = all == learned
     end
     BFC.UpdateLearnedProfessions()
+    BFC.UpdateSendingData()
     CloseTradeSkill()
 end
 
@@ -61,8 +62,8 @@ local function CacheProfessions(prof)
     if prof.id ~= 0 then
         OpenTradeSkill(prof.id)
         C_Timer.After(1, function()
-            CacheRecipes(prof)
             AF.ShowMask(charList, L["Saving..."])
+            CacheRecipes(prof)
             prof.lastScanned = time()
             BFC.UpdateLearnedRecipesWithCallback(function(remaining, total)
                 progressBar:SetSmoothedValue((total - remaining) / total * 100)
@@ -290,11 +291,13 @@ CreateAddButton = function()
                 id = prof1 or 0,
                 lastScanned = 0,
                 recipes = {},
+                allRecipesLearned = false,
             },
             prof2 = {
                 id = prof2 or 0,
                 lastScanned = 0,
                 recipes = {},
+                allRecipesLearned = false,
             },
         }
         tinsert(BFC_DB.publish.characters, t)
