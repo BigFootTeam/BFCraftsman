@@ -80,6 +80,42 @@ BFC:RegisterEvent("PLAYER_ENTERING_WORLD", PLAYER_ENTERING_WORLD)
 -- slash
 ---------------------------------------------------------------------
 SLASH_BFCRAFTSMAN1 = "/bfc"
-SlashCmdList["BFCRAFTSMAN"] = function()
-    BFC.ShowMainFrame()
+SlashCmdList["BFCRAFTSMAN"] = function(msg)
+    if msg == "reset" then
+        BFC_DB = nil
+        ReloadUI()
+    elseif msg == "clear list" then
+        wipe(BFC_DB.list)
+        BFC.UpdateList()
+    elseif msg == "clear favorite" then
+        wipe(BFC_DB.favorite)
+        BFC.UpdateList()
+    elseif msg == "clear blacklist" then
+        wipe(BFC_DB.blacklist)
+        BFC.UpdateList()
+
+    --@debug@
+    elseif msg == "test" then
+        local validSkillLine = {164, 165, 171, 197, 202, 333, 773, 755}
+        for i = 1, 30 do
+            BFC_DB.list["player" .. i] = {
+               name = "Player" .. i,
+               class = AF.GetClassFile(random(1, 13)),
+               tagline = "This is a tagline " .. i,
+               lastUpdate = time() - random(1, 10000),
+               previousNames = {
+                  ["Player" .. i] = true,
+               },
+               professions = {},
+            }
+            for j = 1, random(1, 3) do
+                BFC_DB.list["player" .. i]["professions"][validSkillLine[random(1, 8)]] = true
+            end
+        end
+        BFC.UpdateList()
+    --@end-debug@
+
+    else
+        BFC.ShowMainFrame()
+    end
 end
