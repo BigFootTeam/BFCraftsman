@@ -15,3 +15,4 @@ Recipes.lua
 MainFrame.lua
 BrowseFrame.lua
 PublishFrame.lua
+DetailFrame.lua

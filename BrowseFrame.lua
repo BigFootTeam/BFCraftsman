@@ -146,6 +146,9 @@ local function CreatePane()
     nameButton:SetTextPadding(5)
     nameButton:HookOnEnter(function() Pane_OnEnter(pane) end)
     nameButton:HookOnLeave(function() Pane_OnLeave(pane) end)
+    nameButton:SetOnClick(function()
+        BFC.ShowDetailFrame(pane)
+    end)
 
     -- professions
     local professionText = AF.CreateFontString(pane)
