@@ -161,10 +161,15 @@ local function CreatePane()
     blockButton:SetTexture(AF.GetIcon("Unavailable"), {15, 15})
     blockButton:SetTextureColor("darkgray")
     blockButton:SetOnClick(function()
-        if BFC_DB.blacklist[pane.id] then
-            BFC_DB.blacklist[pane.id] = nil
-        else
+        if IsAltKeyDown() then
             BFC_DB.blacklist[pane.id] = true
+            BFC_DB.list[pane.id] = nil
+        else
+            if BFC_DB.blacklist[pane.id] then
+                BFC_DB.blacklist[pane.id] = nil
+            else
+                BFC_DB.blacklist[pane.id] = true
+            end
         end
         LoadList()
     end)
