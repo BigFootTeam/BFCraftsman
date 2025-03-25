@@ -11,12 +11,12 @@ local checkTimer
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
-    detailFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCOrderFormListDetailFrame", L["Details"], 150, 80)
+    detailFrame = AF.CreateHeaderedFrame(BFCOrderFormListFrame, "BFCOrderFormListDetailFrame", L["Details"], 150, 80)
     AF.SetPoint(detailFrame, "TOPLEFT", BFCOrderFormListFrame, "TOPRIGHT", 5, 0)
     detailFrame:SetMovable(false)
     detailFrame:SetTitleJustify("LEFT")
 
-    BFCOrderFormListFrame:SetOnHide(function()
+    detailFrame:SetOnHide(function()
         detailFrame:Hide()
     end)
 
