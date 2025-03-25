@@ -13,13 +13,30 @@ local AF = _G.AbstractFramework
 
 AF.RegisterAddon(BFC.name, "BFC")
 
+
+---------------------------------------------------------------------
+-- functions
+---------------------------------------------------------------------
+function BFC.IsStale(lastUpdate)
+    return time() - lastUpdate > 1800 -- 30 minutes
+end
+
+function BFC.GetProfessionString(profs, size)
+    local text = ""
+    for id in pairs(profs) do
+        local icon = AF.GetProfessionIcon(id)
+        text = text .. AF.EscapeIcon(icon, size)
+    end
+    return text
+end
+
 ---------------------------------------------------------------------
 -- events
 ---------------------------------------------------------------------
 AF.AddEventHandler(BFC)
 BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
     if addon == BFC.name then
-        BFC:UnregisterEvent("ADDON_LOADED")
+        -- BFC:UnregisterEvent("ADDON_LOADED")
         if type(BFC_DB) ~= "table" then
             BFC_DB = {
                 scale = 1,
@@ -48,6 +65,29 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
             }
         end
         BFCMainFrame:SetScale(BFC_DB.scale)
+
+    elseif addon == "Blizzard_ProfessionsCustomerOrders" then
+        BFC:UnregisterEvent("ADDON_LOADED")
+
+        -- order form button
+        local button = AF.CreateButton(ProfessionsCustomerOrdersFrame.Form, L["Find Craftsmen"], "accent", 120, 20)
+        AF.SetPoint(button, "BOTTOMRIGHT", ProfessionsCustomerOrdersFrame.Form, "TOPRIGHT", -2, 7)
+        button:SetOnClick(BFC.ShowListFrame)
+        button:SetOnHide(BFC.HideListFrame)
+
+        -- hooksecurefunc(Professions, "CreateNewOrderInfo", function(...)
+        --     print(...)
+        -- end)
+
+        -- hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, "Init", function(_, order)
+        --     -- texplore(order)
+        --     local recipeID = order.spellID
+        --     -- texplore(C_TradeSkillUI.GetRecipeInfo(recipeID))
+        --     texplore(C_TradeSkillUI.GetProfessionInfoByRecipeID(recipeID))
+        -- end)
+
+        -- prepare order info
+        hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, "InitSchematic", BFC.PrepareListData)
     end
 end)
 

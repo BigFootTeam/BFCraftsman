@@ -16,7 +16,7 @@ local updateRequired
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
-    detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, 235, nil, "accent")
+    detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, 250, nil, "accent")
     AF.SetFrameLevel(detailFrame, 50)
     detailFrame:Hide()
 
@@ -38,9 +38,13 @@ local function CreateDetailFrame()
     AF.SetPoint(closeButton, "TOPRIGHT")
     closeButton:SetBorderColor("accent")
 
+    -- professions
+    local professionText = AF.CreateFontString(detailFrame)
+    AF.SetPoint(professionText, "TOPLEFT", 10, -10)
+
     -- name
     local nameEditBox = AF.CreateEditBox(detailFrame, nil, nil, 20)
-    AF.SetPoint(nameEditBox, "TOPLEFT", 10, -30)
+    AF.SetPoint(nameEditBox, "TOPLEFT", 10, -45)
     AF.SetPoint(nameEditBox, "RIGHT", -60)
     nameEditBox:SetNotUserChangable(true)
 
@@ -129,6 +133,7 @@ local function CreateDetailFrame()
     -- load
     function detailFrame:Load(pane)
         detailFrame.pane = pane
+        professionText:SetText(BFC.GetProfessionString(pane.t.professions, 14))
         nameEditBox:SetText(pane.t.name)
         nameEditBox:SetTextColor(AF.GetClassColor(pane.t.class))
         taglineEditBox:SetText(pane.t.tagline)

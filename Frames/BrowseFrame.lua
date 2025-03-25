@@ -89,24 +89,18 @@ local function Pane_Load(pane, id, t)
     pane.t = t
     pane.isSelf = BFC.battleTag == id
 
-    local recentlyUpdated = time() - t.lastUpdate < 1800
-
     -- name
     pane.nameButton:SetText(AF.ToShortName(t.name))
-    pane.nameButton:SetTextColor((BFC_DB.blacklist[pane.id] or not recentlyUpdated) and "darkgray" or t.class)
+    -- pane.nameButton:SetTextColor((BFC_DB.blacklist[pane.id] or BFC.IsStale(t.lastUpdate)) and "darkgray" or t.class)
+    pane.nameButton:SetTextColor(BFC_DB.blacklist[pane.id] and "darkgray" or t.class)
 
     -- professions
     if BFC_DB.blacklist[pane.id] then
         pane.professionText:SetText(AF.WrapTextInColor(L["Blacklisted"], "red"))
-    -- elseif not recentlyUpdated then
-    --     pane.professionText:SetText(AF.WrapTextInColor(L["Stale"], "darkgray"))
+    elseif BFC.IsStale(t.lastUpdate) then
+        pane.professionText:SetText(AF.WrapTextInColor(L["Stale"], "darkgray"))
     else
-        local text = ""
-        for id in pairs(t.professions) do
-            local icon = AF.GetProfessionIcon(id)
-            text = text .. AF.EscapeIcon(icon, 12)
-        end
-        pane.professionText:SetText(text)
+        pane.professionText:SetText(BFC.GetProfessionString(t.professions, 12))
     end
 
     -- favorite
@@ -142,7 +136,7 @@ local function CreatePane()
     local nameButton = AF.CreateButton(pane, "name", "gray_hover", 165, 20, nil, nil, "", nil, "AF_FONT_CHAT")
     pane.nameButton = nameButton
     AF.SetPoint(nameButton, "TOPLEFT", pane)
-    nameButton:SetJustifyH("LEFT")
+    nameButton:SetTextJustifyH("LEFT")
     nameButton:SetTextPadding(5)
     nameButton:HookOnEnter(function() Pane_OnEnter(pane) end)
     nameButton:HookOnLeave(function() Pane_OnLeave(pane) end)
@@ -222,7 +216,6 @@ local function Comparator(a, b)
 end
 
 local function ShouldShow(id, t)
-    local recentlyUpdated = time() - t.lastUpdate < 1800
     local previousNames = AF.TableToString(t.previousNames, ",", true)
 
     if BFC.battleTag == id then
@@ -230,7 +223,7 @@ local function ShouldShow(id, t)
         return true
     end
 
-    return (BFC_DB.showStale or recentlyUpdated or BFC_DB.favorite[id] or BFC_DB.blacklist[id]) -- stale
+    return (BFC_DB.showStale or not BFC.IsStale(t.lastUpdate) or BFC_DB.favorite[id] or BFC_DB.blacklist[id]) -- stale
         and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
         and not AF.IsEmpty(t.professions) -- has professions
         and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean") -- match selected profession
