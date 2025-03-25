@@ -4,9 +4,17 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
+local ChatEdit_ActivateChat = ChatEdit_ActivateChat
+local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat
+local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
+
+
 local detailFrame
 local updateRequired
 
+---------------------------------------------------------------------
+-- create
+---------------------------------------------------------------------
 local function CreateDetailFrame()
     detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, 235, nil, "accent")
     AF.SetFrameLevel(detailFrame, 50)
@@ -108,6 +116,16 @@ local function CreateDetailFrame()
     AF.SetPoint(lastUpdateText, "TOPLEFT", idEditBox, "BOTTOMLEFT", 0, -15)
     lastUpdateText:SetColor("darkgray")
 
+    -- chat button
+    local chatButton = AF.CreateButton(detailFrame, L["Send Whisper"], "accent", 120, 20)
+    AF.SetPoint(chatButton, "TOPRIGHT", idEditBox, "BOTTOMRIGHT", 0, -12)
+    chatButton:SetOnClick(function()
+        local editBox = ChatEdit_ChooseBoxForSend()
+        ChatEdit_DeactivateChat(editBox)
+        ChatEdit_ActivateChat(editBox)
+        editBox:SetText("/w " .. detailFrame.pane.t.name .. " ")
+    end)
+
     -- load
     function detailFrame:Load(pane)
         detailFrame.pane = pane
@@ -124,6 +142,9 @@ local function CreateDetailFrame()
     end
 end
 
+---------------------------------------------------------------------
+-- show
+---------------------------------------------------------------------
 function BFC.ShowDetailFrame(pane)
     if not detailFrame then
         CreateDetailFrame()
