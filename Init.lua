@@ -6,6 +6,8 @@ BFC.channelID = 0
 
 _G.BFCraftsman = BFC
 
+local L = BFC.L
+
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
@@ -50,7 +52,16 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
 end)
 
 local BNGetInfo = BNGetInfo
+local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
 BFC:RegisterEvent("PLAYER_LOGIN", function()
+    -- disable channel message
+    for i = 1, 10 do
+        if _G["ChatFrame" .. i] then
+            ChatFrame_RemoveChannel(_G["ChatFrame" .. i], BFC.channelName)
+        end
+    end
+
+    -- prepare
     local bTag = select(2, BNGetInfo())
     if bTag then
         BFC.battleTag = AF.Libs.MD5.sumhexa(bTag)
@@ -75,6 +86,23 @@ local function PLAYER_ENTERING_WORLD()
     end
 end
 BFC:RegisterEvent("PLAYER_ENTERING_WORLD", PLAYER_ENTERING_WORLD)
+
+---------------------------------------------------------------------
+-- disable ChatConfigFrame interaction
+---------------------------------------------------------------------
+hooksecurefunc("ChatConfig_CreateCheckboxes", function(frame, checkBoxTable, checkBoxTemplate, title)
+    local name = frame:GetName()
+    if name == "ChatConfigChannelSettingsLeft" then
+        for i = 1, #checkBoxTable do
+            local checkBox = _G[name .. "Checkbox" .. i]
+            if checkBoxTable[i].channelName == BFC.channelName then
+                AF.ShowMask(checkBox, L["Disabled by BFCraftsman"])
+            else
+                AF.HideMask(checkBox)
+            end
+        end
+    end
+end)
 
 ---------------------------------------------------------------------
 -- slash
