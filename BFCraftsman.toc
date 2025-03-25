@@ -12,7 +12,7 @@ Comm.lua
 Professions.lua
 Recipes.lua
 
-MainFrame.lua
-BrowseFrame.lua
-PublishFrame.lua
-DetailFrame.lua
+Frames\MainFrame.lua
+Frames\BrowseFrame.lua
+Frames\PublishFrame.lua
+Frames\DetailFrame.lua
