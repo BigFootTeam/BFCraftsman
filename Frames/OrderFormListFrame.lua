@@ -10,10 +10,11 @@ local listFrame
 -- create frame
 ---------------------------------------------------------------------
 local function CreateListFrame()
-    listFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCOrderFormListFrame", L["Craftsmen List"], 150, 420)
+    listFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCOrderFormListFrame", L["Craftsmen List"], 150)
     AF.SetPoint(listFrame, "TOPLEFT", ProfessionsCustomerOrdersFrame, "TOPRIGHT", 5, -20)
     listFrame:SetMovable(false)
     listFrame:SetTitleJustify("LEFT")
+    AF.SetListHeight(listFrame, 20, 20, 1, 4)
 
     local list = AF.CreateScrollList(listFrame, nil, nil, 2, 2, 20, 20, 1, "none", "none")
     listFrame.list = list
