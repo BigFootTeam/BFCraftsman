@@ -10,10 +10,11 @@ local GetRecipeInfo = C_TradeSkillUI.GetRecipeInfo
 local function ProcessRecipes(recipes)
     if not recipes then return end
     for _, recipeID in pairs(recipes) do
-        local info = GetRecipeInfo(recipeID)
-        if info then
-            BFC.learnedRecipes[info.name] = true
-        end
+        -- local info = GetRecipeInfo(recipeID)
+        -- if info then
+        --     BFC.learnedRecipes[info.name] = true
+        -- end
+        BFC.learnedRecipes[recipeID] = true
     end
 end
 
@@ -33,10 +34,11 @@ function BFC.UpdateLearnedRecipesWithCallback(callback)
 
     if not executor then
         executor = AF.BuildOnUpdateExecutor(function(_, recipeID, remaining, total)
-            local info = GetRecipeInfo(recipeID)
-            if info then
-                BFC.learnedRecipes[info.name] = true
-            end
+            -- local info = GetRecipeInfo(recipeID)
+            -- if info then
+            --     BFC.learnedRecipes[info.name] = true
+            -- end
+            BFC.learnedRecipes[recipeID] = true
             callback(remaining, total)
         end)
     end

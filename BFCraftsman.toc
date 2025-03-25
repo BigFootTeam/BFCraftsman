@@ -17,3 +17,4 @@ Frames\BrowseFrame.lua
 Frames\PublishFrame.lua
 Frames\DetailFrame.lua
 Frames\OrderFormListFrame.lua
+Frames\OrderFormDetailFrame.lua

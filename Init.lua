@@ -30,6 +30,17 @@ function BFC.GetProfessionString(profs, size)
     return text
 end
 
+local ChatEdit_ActivateChat = ChatEdit_ActivateChat
+local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat
+local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
+
+function BFC.SendWhisper(name)
+    local editBox = ChatEdit_ChooseBoxForSend()
+    ChatEdit_DeactivateChat(editBox)
+    ChatEdit_ActivateChat(editBox)
+    editBox:SetText("/w " .. name .. " ")
+end
+
 ---------------------------------------------------------------------
 -- events
 ---------------------------------------------------------------------
@@ -87,7 +98,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         -- end)
 
         -- prepare order info
-        hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, "InitSchematic", BFC.PrepareListData)
+        hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, "InitSchematic", BFC.HandleOrderData)
     end
 end)
 
@@ -174,6 +185,7 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
                previousNames = {
                   ["Player" .. i] = true,
                },
+               learnedRecipes = {},
                professions = {},
             }
             for j = 1, random(1, 3) do

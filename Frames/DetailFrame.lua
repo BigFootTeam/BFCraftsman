@@ -4,11 +4,6 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
-local ChatEdit_ActivateChat = ChatEdit_ActivateChat
-local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat
-local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
-
-
 local detailFrame
 local updateRequired
 
@@ -124,10 +119,7 @@ local function CreateDetailFrame()
     local chatButton = AF.CreateButton(detailFrame, L["Send Whisper"], "accent", 120, 20)
     AF.SetPoint(chatButton, "TOPRIGHT", idEditBox, "BOTTOMRIGHT", 0, -12)
     chatButton:SetOnClick(function()
-        local editBox = ChatEdit_ChooseBoxForSend()
-        ChatEdit_DeactivateChat(editBox)
-        ChatEdit_ActivateChat(editBox)
-        editBox:SetText("/w " .. detailFrame.pane.t.name .. " ")
+        BFC.SendWhisper(detailFrame.pane.t.name)
     end)
 
     -- load

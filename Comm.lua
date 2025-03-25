@@ -8,9 +8,11 @@ local MAX_SYNC_INTERVAL = 10 * 60
 local BFC_PUBLISH_DELAY = 30
 local BFC_PUBLISH_PREFIX = "BFC_PUB"
 local BFC_UNPUBLISH_PREFIX = "BFC_UNPUB"
+local BFC_CHK_CRAFT_PREFIX = "BFC_CHK_CRAFT"
+local BFC_CAN_CRAFT_PREFIX = "BFC_CAN_CRAFT"
 
 ---------------------------------------------------------------------
--- timer
+-- publish timer
 ---------------------------------------------------------------------
 local timer
 function BFC.ScheduleNextSync(useDelay)
@@ -39,7 +41,7 @@ function BFC.CancelNextSync()
 end
 
 ---------------------------------------------------------------------
--- receiving
+-- receiving publish
 ---------------------------------------------------------------------
 local function ProfessionProcessor(_, id)
     if id:find("!$") then
@@ -49,12 +51,13 @@ local function ProfessionProcessor(_, id)
     end
 end
 
-local function BFCPublishReceived(data, _, channel)
+local function PublishReceived(data, _, channel)
     if BFC_DB.blacklist[data[1]] then return end
 
     if not BFC_DB.list[data[1]] then
         BFC_DB.list[data[1]] = {
-            previousNames = {}
+            previousNames = {},
+            learnedRecipes = {},
         }
     end
 
@@ -67,17 +70,17 @@ local function BFCPublishReceived(data, _, channel)
 
     BFC.UpdateList()
 end
-AF.RegisterComm(BFC_PUBLISH_PREFIX, BFCPublishReceived)
+AF.RegisterComm(BFC_PUBLISH_PREFIX, PublishReceived)
 
-local function PFCUnpublishReceived(id, _, channel)
+local function UnpublishReceived(id, _, channel)
     if BFC_DB.blacklist[id] then return end
     BFC_DB.list[id] = nil
     BFC.UpdateList()
 end
-AF.RegisterComm(BFC_UNPUBLISH_PREFIX, PFCUnpublishReceived)
+AF.RegisterComm(BFC_UNPUBLISH_PREFIX, UnpublishReceived)
 
 ---------------------------------------------------------------------
--- sending
+-- sending publish
 ---------------------------------------------------------------------
 local data = {}
 function BFC.UpdateSendingData()
@@ -101,3 +104,27 @@ function BFC.NotifyUnpublish()
     if AF.IsBlank(BFC.battleTag) then return end
     AF.SendCommMessage_Channel(BFC_UNPUBLISH_PREFIX, BFC.battleTag, BFC.channelName)
 end
+
+---------------------------------------------------------------------
+-- can craft
+---------------------------------------------------------------------
+function BFC.CheckCanCraft(id, recipeID)
+    if BFC.channelID == 0 then return end
+    AF.SendCommMessage_Channel(BFC_CHK_CRAFT_PREFIX, {id, recipeID}, BFC.channelName)
+end
+
+local function CheckCanCraftReceived(data, _, channel)
+    if data[1] == BFC.battleTag then
+        AF.SendCommMessage_Channel(BFC_CAN_CRAFT_PREFIX, {BFC.battleTag, data[2], BFC.learnedRecipes[data[2]]}, BFC.channelName)
+    end
+end
+AF.RegisterComm(BFC_CHK_CRAFT_PREFIX, CheckCanCraftReceived)
+
+local function CanCraftReceived(data, _, channel)
+    local id, recipeID, canCraft = AF.Unpack3(data)
+    if not BFC_DB.blacklist[id] and BFC_DB.list[id] then
+        BFC_DB.list[id].learnedRecipes[recipeID] = canCraft
+        BFC.NotifyCanCraft(id, recipeID, canCraft)
+    end
+end
+AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)

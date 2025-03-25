@@ -30,22 +30,30 @@ local function CreateButton()
     b:SetTextJustifyH("LEFT")
     b:SetTexture(AF.GetIcon("Star_Filled"), {15, 15}, {"RIGHT", -2, 0}, nil, nil, "RIGHT")
     b:SetTextureColor("gold")
+    b:SetOnClick(function()
+        BFC.ShowOrderFormDetailFrame(b.id)
+    end)
     return b
 end
 local pool = AF.CreateObjectPool(CreateButton)
 
 ---------------------------------------------------------------------
--- prepare
+-- current order
 ---------------------------------------------------------------------
 local GetProfessionInfoByRecipeID = C_TradeSkillUI.GetProfessionInfoByRecipeID
 
-local currentProfessionID
-function BFC.PrepareListData(form)
-    local recipeID = form.order.spellID
-    local info = GetProfessionInfoByRecipeID(recipeID)
+local currentRecipeID, currentProfessionID
+
+function BFC.HandleOrderData(form)
+    currentRecipeID = form.order.spellID
+    local info = GetProfessionInfoByRecipeID(currentRecipeID)
     if info then
         currentProfessionID = info.parentProfessionID
     end
+end
+
+function BFC.GetOrderRecipeID()
+    return currentRecipeID
 end
 
 ---------------------------------------------------------------------
@@ -110,4 +118,6 @@ function BFC.HideListFrame()
     if listFrame then
         listFrame:Hide()
     end
+    currentRecipeID = nil
+    currentProfessionID = nil
 end
