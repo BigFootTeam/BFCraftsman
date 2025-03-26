@@ -189,7 +189,7 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
                professions = {},
             }
             for j = 1, random(1, 3) do
-                BFC_DB.list["player" .. i]["professions"][validSkillLine[random(1, 8)]] = true
+                BFC_DB.list["player" .. i]["professions"][validSkillLine[random(1, 8)]] = (random() >= 0.5) and true or false
             end
         end
         BFC.UpdateList()

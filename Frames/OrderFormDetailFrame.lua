@@ -8,6 +8,24 @@ local detailFrame
 local checkTimer
 
 ---------------------------------------------------------------------
+-- CHAT_MSG_SYSTEM
+---------------------------------------------------------------------
+-- local ERR_CHAT_PLAYER_NOT_FOUND_S = ERR_CHAT_PLAYER_NOT_FOUND_S
+-- local PLAYER_OFFLINE = PLAYER_OFFLINE
+
+-- local function CHAT_MSG_SYSTEM(_, _, msg)
+--     if not BFC_DB.list[detailFrame.id] then return end
+--     local name = BFC_DB.list[detailFrame.id].name
+--     local msg1 = ERR_CHAT_PLAYER_NOT_FOUND_S:format(name)
+--     local msg2 = ERR_CHAT_PLAYER_NOT_FOUND_S:format(AF.ToShortName(name))
+--     if msg == msg1 or msg == msg2 then
+--         if checkTimer then checkTimer:Cancel() end
+--         detailFrame.whisperButton:SetText(PLAYER_OFFLINE)
+--         detailFrame.whisperButton:SetColor("red")
+--     end
+-- end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
@@ -18,6 +36,7 @@ local function CreateDetailFrame()
 
     detailFrame:SetOnHide(function()
         detailFrame:Hide()
+        -- detailFrame:UnregisterEvent("CHAT_MSG_SYSTEM")
     end)
 
     -- name editbox
@@ -92,6 +111,8 @@ local function CreateDetailFrame()
             checkButton:SetColor("yellow")
             whisperButton:SetEnabled(false)
         end
+
+        -- detailFrame:RegisterEvent("CHAT_MSG_SYSTEM")
     end
 end
 
