@@ -1,5 +1,8 @@
 # BFCraftsman
 
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/BigFootTeam/BFCraftsman)](https://github.com/BigFootTeam/BFCraftsman/commits/master)
+[![last commit](https://img.shields.io/github/last-commit/BigFootTeam/BFCraftsman)](https://github.com/BigFootTeam/BFCraftsman/commits/master)
+
 **BFCraftsman** is an addon that streamlines the connection between craftsmen and clients, providing an in-game platform for crafting services without relying on external websites.
 
 **Key Features:**
@@ -7,6 +10,14 @@
 - Craftsmen can easily publish and manage their crafting services
 - Players can quickly find and contact available craftsmen
 - Real-time communication through addon messaging without external websites
+
+**Slash Commands:**
+
+- `/bfc` - Show/hide BFCraftsman main frame
+- `/bfc clear list` - Clear craftsmen list cache
+- `/bfc clear favorite` - Remove all favorite craftsmen
+- `/bfc clear blacklist` - Clear your blacklist
+- `/bfc reset` - Reset all settings to default
 
 **Screenshots:**
 
@@ -23,14 +34,25 @@
 
 </br>
 </br>
-</br>
 
 # 大脚工匠（BFCraftsman）
 
 BFCraftsman是一个简化工匠与客户之间连接的插件，提供游戏内制作服务平台，无需依赖外部网站。
+
+本插件由 <font color="orange"> 大脚BIGFOOT https://bigfoot.178.com</font> 开发。
+
+问题反馈与建议：前往 **<font color="orange">KOOK 大脚官方社区 https://kook.top/P7D1R1</font>** 内的 **<font color="orange">大脚工匠</font>** 频道。
 
 **主要特点：**
 
 - 工匠可以轻松发布和管理其代工服务
 - 玩家可以快速找到并联系可用的工匠
 - 通过插件消息实现近乎实时的通信，无需外部网站
+
+**斜杠命令：**
+
+- `/bfc` - 显示/隐藏大脚工匠主界面
+- `/bfc clear list` - 清空当前可用工匠列表缓存
+- `/bfc clear favorite` - 删除所有收藏的工匠
+- `/bfc clear blacklist` - 清空黑名单
+- `/bfc reset` - 重置所有设置并恢复默认
