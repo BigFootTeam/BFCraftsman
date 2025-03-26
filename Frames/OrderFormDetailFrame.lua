@@ -43,6 +43,7 @@ local function CreateDetailFrame()
     local nameEditBox = AF.CreateEditBox(detailFrame, nil, nil, 20)
     AF.SetPoint(nameEditBox, "TOPLEFT", detailFrame, 5, -5)
     AF.SetPoint(nameEditBox, "TOPRIGHT", detailFrame, -5, -5)
+    nameEditBox:SetNotUserChangable(true)
 
     -- check button
     local checkButton = AF.CreateButton(detailFrame, L["Can Craft?"], "yellow", nil, 20)

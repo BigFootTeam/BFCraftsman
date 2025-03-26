@@ -41,12 +41,14 @@ local function InitFrameWidgets()
     AF.SetPoint(switch, "TOPLEFT", BFCMainFrame, "TOPLEFT", 10, -10)
     switch:SetLabels({
         {
-            ["text"] = L["Browse"],
-            ["onClick"] = AF.GetFireFunc("BFC_ShowFrame", "Browse")
+            text = L["Browse"],
+            value = "Browse",
+            onClick = AF.GetFireFunc("BFC_ShowFrame", "Browse")
         },
         {
-            ["text"] = L["Publish"],
-            ["onClick"] = AF.GetFireFunc("BFC_ShowFrame", "Publish")
+            text = L["Publish"],
+            value = "Publish",
+            onClick = AF.GetFireFunc("BFC_ShowFrame", "Publish")
         }
     })
     switch:SetSelectedValue("Browse")

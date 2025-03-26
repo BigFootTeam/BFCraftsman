@@ -61,7 +61,7 @@ local function CreateDetailFrame()
     AF.SetPoint(idEditBox, "RIGHT", -10)
     idEditBox:SetNotUserChangable(true)
 
-    local idText = AF.CreateFontString(detailFrame, L["ID"] .. AF.WrapTextInColor(" (" .. L["for reporting inappropriate user content"] .. ")", "darkgray"))
+    local idText = AF.CreateFontString(detailFrame, "ID" .. AF.WrapTextInColor(" (" .. L["for reporting inappropriate user content"] .. ")", "darkgray"))
     AF.SetPoint(idText, "BOTTOMLEFT", idEditBox, "TOPLEFT", 2, 2)
 
     -- favorite
