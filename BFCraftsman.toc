@@ -8,6 +8,9 @@
 ## AddonCompartmentFunc: BFC_OnAddonCompartmentClick
 ## IconTexture: Interface\AddOns\BFCraftsman\BFC
 
+## X-Curse-Project-ID: 1229177
+## X-Wago-ID: x61z0QK1
+
 Locales\LoadLocales.xml
 
 Init.lua
