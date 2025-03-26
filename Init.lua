@@ -73,9 +73,13 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 blacklist = {},
                 showStale = false,
                 showBlacklisted = false,
+                minimap = {},
             }
         end
         BFCMainFrame:SetScale(BFC_DB.scale)
+
+        -- minimap button
+        AF.NewMinimapButton(BFC.name, "Interface\\AddOns\\BFCraftsman\\BFC", BFC_DB.minimap, BFC.ShowMainFrame, L["BFCraftsman"])
 
     elseif addon == "Blizzard_ProfessionsCustomerOrders" then
         BFC:UnregisterEvent("ADDON_LOADED")
@@ -198,4 +202,11 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
     else
         BFC.ShowMainFrame()
     end
+end
+
+---------------------------------------------------------------------
+-- addon button
+---------------------------------------------------------------------
+function BFC_OnAddonCompartmentClick()
+    BFC.ShowMainFrame()
 end

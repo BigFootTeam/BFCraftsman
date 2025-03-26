@@ -5,7 +5,8 @@
 ## Author: enderneko (BigFootTeam)
 ## Dependencies: AbstractFramework
 ## SavedVariables: BFC_DB
-## IconTexture: Interface\AddOns\BFCraftsman\icon
+## AddonCompartmentFunc: BFC_OnAddonCompartmentClick
+## IconTexture: Interface\AddOns\BFCraftsman\BFC
 
 Locales\LoadLocales.xml
 

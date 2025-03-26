@@ -4,7 +4,7 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
-local BFCMainFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCMainFrame", "BFCraftsman", 350, 575, nil, 100)
+local BFCMainFrame = AF.CreateHeaderedFrame(AF.UIParent, "BFCMainFrame", L["BFCraftsman"], 350, 575, nil, 100)
 BFCMainFrame:SetPoint("LEFT", AF.UIParent, "CENTER", 200, 0)
 
 ---------------------------------------------------------------------
