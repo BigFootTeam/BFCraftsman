@@ -1,0 +1,9 @@
+package-as: BFCraftsman
+enable-nolib-creation: no
+
+ignore:
+  - generate_changelog.sh
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
