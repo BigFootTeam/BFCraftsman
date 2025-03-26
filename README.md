@@ -37,7 +37,7 @@
 
 # 大脚工匠（BFCraftsman）
 
-BFCraftsman是一个简化工匠与客户之间连接的插件，提供游戏内制作服务平台，无需依赖外部网站。
+BFCraftsman 是一个简化工匠与客户之间连接的插件，提供游戏内制作服务平台，无需依赖外部网站。
 
 本插件由 <font color="orange"> 大脚BIGFOOT https://bigfoot.178.com</font> 开发。
 

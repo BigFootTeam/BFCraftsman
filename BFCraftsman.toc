@@ -1,9 +1,11 @@
 ## Interface: 110100,110105
 ## Title: BFCraftsman
+## Title-zhCN: 大脚工匠
 ## Version: r1
 ## Author: enderneko (BigFootTeam)
 ## Dependencies: AbstractFramework
 ## SavedVariables: BFC_DB
+## IconTexture: Interface\AddOns\BFCraftsman\icon
 
 Locales\LoadLocales.xml
 
