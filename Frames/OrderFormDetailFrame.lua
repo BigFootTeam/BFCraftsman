@@ -68,6 +68,10 @@ local function CreateDetailFrame()
         detailFrame.id = id
         detailFrame.recipeID = BFC.GetOrderRecipeID()
         detailFrame.canCraft = BFC_DB.list[id].learnedRecipes[detailFrame.recipeID]
+        if BFC_DB.list[id].professions[BFC.GetOrderProfessionID()] == true then
+            -- NOTE: learned all recipes
+            detailFrame.canCraft = true
+        end
 
         nameEditBox:SetText(BFC_DB.list[id].name)
         nameEditBox:SetTextColor(AF.GetClassColor(BFC_DB.list[id].class))

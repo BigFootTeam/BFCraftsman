@@ -60,6 +60,10 @@ function BFC.GetOrderRecipeID()
     return currentRecipeID
 end
 
+function BFC.GetOrderProfessionID()
+    return currentProfessionID
+end
+
 ---------------------------------------------------------------------
 -- sort
 ---------------------------------------------------------------------
@@ -86,7 +90,7 @@ function BFC.ShowListFrame()
 
     pool:ReleaseAll()
 
-    if currentProfessionID then
+    if currentRecipeID and currentProfessionID then
         for id, t in pairs(BFC_DB.list) do
             if not BFC_DB.blacklist[id] and type(t.professions[currentProfessionID]) == "boolean" then
                 local b = pool:Acquire()
