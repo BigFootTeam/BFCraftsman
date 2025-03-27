@@ -36,6 +36,12 @@ local function InitFrameWidgets()
         AF.UpdatePixelsForAddon()
     end)
 
+    -- about
+    local aboutButton = AF.CreateButton(BFCMainFrame.header, nil, "accent_hover", 20, 20)
+    AF.SetPoint(aboutButton, "BOTTOMRIGHT", BFCMainFrame.header.closeBtn, "BOTTOMLEFT", 1, 0)
+    aboutButton:SetTexture(AF.GetIcon("Question1"), {14, 14})
+    aboutButton:SetOnClick(BFC.ToggleAboutFrame)
+
     -- switch
     switch = AF.CreateSwitch(BFCMainFrame, 330, 20)
     AF.SetPoint(switch, "TOPLEFT", BFCMainFrame, "TOPLEFT", 10, -10)
@@ -58,11 +64,11 @@ end
 -- show
 ---------------------------------------------------------------------
 local init
-function BFC.ShowMainFrame()
+function BFC.ToggleMainFrame()
     if not init then
         BFCMainFrame:UpdatePixels()
         InitFrameWidgets()
         init = true
     end
-    BFCMainFrame:SetShown(not BFCMainFrame:IsShown())
+    BFCMainFrame:Toggle()
 end

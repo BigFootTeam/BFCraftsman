@@ -79,7 +79,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         BFCMainFrame:SetScale(BFC_DB.scale)
 
         -- minimap button
-        AF.NewMinimapButton(BFC.name, "Interface\\AddOns\\BFCraftsman\\BFC", BFC_DB.minimap, BFC.ShowMainFrame, L["BFCraftsman"])
+        AF.NewMinimapButton(BFC.name, "Interface\\AddOns\\BFCraftsman\\BFC", BFC_DB.minimap, BFC.ToggleMainFrame, L["BFCraftsman"])
 
     elseif addon == "Blizzard_ProfessionsCustomerOrders" then
         BFC:UnregisterEvent("ADDON_LOADED")
@@ -200,7 +200,7 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
     --@end-debug@
 
     else
-        BFC.ShowMainFrame()
+        BFC.ToggleMainFrame()
     end
 end
 
@@ -208,5 +208,5 @@ end
 -- addon button
 ---------------------------------------------------------------------
 function BFC_OnAddonCompartmentClick()
-    BFC.ShowMainFrame()
+    BFC.ToggleMainFrame()
 end

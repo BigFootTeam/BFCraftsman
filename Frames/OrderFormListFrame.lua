@@ -32,7 +32,7 @@ end
 local function CreateButton()
     local b = AF.CreateButton(listFrame.list.slotFrame, "", "gray_hover", nil, nil, nil, nil, "")
     b:SetTextJustifyH("LEFT")
-    b:SetTexture(AF.GetIcon("Star_Filled"), {15, 15}, {"RIGHT", -2, 0}, nil, nil, "RIGHT")
+    b:SetTexture(AF.GetIcon("Star2"), {15, 15}, {"RIGHT", -2, 0}, nil, nil, "RIGHT")
     b:SetTextureColor("gold")
     b:SetOnClick(function()
         BFC.ShowOrderFormDetailFrame(b.id)
