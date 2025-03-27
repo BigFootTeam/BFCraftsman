@@ -1,7 +1,13 @@
 # BFCraftsman
 
+[![version](https://img.shields.io/github/v/release/BigFootTeam/BFCraftsman)](https://github.com/BigFootTeam/BFCraftsman/releases)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/BigFootTeam/BFCraftsman)](https://github.com/BigFootTeam/BFCraftsman/commits/master)
 [![last commit](https://img.shields.io/github/last-commit/BigFootTeam/BFCraftsman)](https://github.com/BigFootTeam/BFCraftsman/commits/master)
+
+[![Discord](https://img.shields.io/discord/1122747237546610760?label=Discord&color=5865F2)](https://discord.gg/9PSe3fKQGJ)
+[![KOOK](https://img.shields.io/badge/KOOK-87eb00)](https://kook.top/P7D1R1)
+[![Curseforge](https://img.shields.io/curseforge/dt/1229177?label=CurseForge&color=F16436)](https://www.curseforge.com/wow/addons/bfcraftsman)
+[![Wago](https://img.shields.io/badge/Wago-AbstractFramework-ad1319)](https://addons.wago.io/addons/bfcraftsman)
 
 **BFCraftsman** is an addon that streamlines the connection between craftsmen and clients, providing an in-game platform for crafting services without relying on external websites.
 
