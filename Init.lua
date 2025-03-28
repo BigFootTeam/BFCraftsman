@@ -126,6 +126,19 @@ BFC:RegisterEvent("PLAYER_LOGIN", function()
     BFC.UpdateLearnedRecipes()
     BFC.UpdateSendingData()
     BFC.ScheduleNextSync(true)
+
+    -- check BigFootCommonweal
+    if C_AddOns.IsAddOnLoaded("BigFootCommonweal") then
+        local dialog = AF.ShowDialog(AF.UIParent,
+            L["BFCraftsman is not compatible with %s.\nDisable it?"]:format(AF.WrapTextInColor(LOCALE_zhCN and "大脚公益助手" or "BigFootCommonweal", "accent")),
+            250)
+        AF.SetDialogPoint("CENTER")
+        AF.ShowNormalGlow(dialog, 2, nil, true)
+        AF.SetDialogOnConfirm(function()
+            C_AddOns.DisableAddOn("BigFootCommonweal")
+            ReloadUI()
+        end)
+    end
 end)
 
 local GetChannelName = GetChannelName
