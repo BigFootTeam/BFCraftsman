@@ -47,7 +47,6 @@ end
 AF.AddEventHandler(BFC)
 BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
     if addon == BFC.name then
-        -- BFC:UnregisterEvent("ADDON_LOADED")
         if type(BFC_DB) ~= "table" then
             BFC_DB = {
                 scale = 1,
@@ -82,13 +81,42 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         AF.NewMinimapButton(BFC.name, "Interface\\AddOns\\BFCraftsman\\BFC", BFC_DB.minimap, BFC.ToggleMainFrame, L["BFCraftsman"])
 
     elseif addon == "Blizzard_ProfessionsCustomerOrders" then
-        BFC:UnregisterEvent("ADDON_LOADED")
+        -- title container button
+        local button1 = AF.CreateButton(ProfessionsCustomerOrdersFrame.TitleContainer, nil, "accent_hover", 20, 20)
+        AF.SetPoint(button1, "RIGHT", ProfessionsCustomerOrdersFrameCloseButton, "LEFT", -1, 0)
+        AF.SetTooltips(button1, "TOP", 0, 5, L["BFCraftsman"])
+        button1:SetTexture("Interface\\AddOns\\BFCraftsman\\BFC")
+        button1:SetOnClick(BFC.ToggleMainFrame)
+
+        if not BFC_DB.orderFrameHelpViewed then
+            AF.ShowHelpTip({
+                widget = button1,
+                position = "TOP",
+                text = L["Click this button to open BFCraftsman"],
+                glow = true,
+                callback = function()
+                    BFC_DB.orderFrameHelpViewed = true
+                end,
+            })
+        end
 
         -- order form button
-        local button = AF.CreateButton(ProfessionsCustomerOrdersFrame.Form, L["Find Craftsmen"], "accent", 120, 20)
-        AF.SetPoint(button, "BOTTOMRIGHT", ProfessionsCustomerOrdersFrame.Form, "TOPRIGHT", -2, 7)
-        button:SetOnClick(BFC.ShowListFrame)
-        button:SetOnHide(BFC.HideListFrame)
+        local button2 = AF.CreateButton(ProfessionsCustomerOrdersFrame.Form, L["Find Craftsmen"], "accent", 120, 20)
+        AF.SetPoint(button2, "BOTTOMRIGHT", ProfessionsCustomerOrdersFrame.Form, "TOPRIGHT", -2, 7)
+        button2:SetOnClick(BFC.ShowListFrame)
+        button2:SetOnHide(BFC.HideListFrame)
+
+        if not BFC_DB.formFrameHelpViewed then
+            AF.ShowHelpTip({
+                widget = button2,
+                position = "RIGHT",
+                text = L["Click this button to show craftsmen list"],
+                glow = true,
+                callback = function()
+                    BFC_DB.formFrameHelpViewed = true
+                end,
+            })
+        end
 
         -- hooksecurefunc(Professions, "CreateNewOrderInfo", function(...)
         --     print(...)
@@ -103,6 +131,26 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
 
         -- prepare order info
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, "InitSchematic", BFC.HandleOrderData)
+
+    elseif addon == "Blizzard_Professions" then
+        -- title container button
+        local button = AF.CreateButton(ProfessionsFrame.TitleContainer, nil, "accent_hover", 20, 20)
+        AF.SetPoint(button, "RIGHT", ProfessionsFrame.MaximizeMinimize, "LEFT", -1, 0)
+        AF.SetTooltips(button, "TOP", 0, 5, L["BFCraftsman"])
+        button:SetTexture("Interface\\AddOns\\BFCraftsman\\BFC")
+        button:SetOnClick(BFC.ToggleMainFrame)
+
+        if not BFC_DB.professionsFrameHelpViewed then
+            AF.ShowHelpTip({
+                widget = button,
+                position = "TOP",
+                text = L["Click this button to open BFCraftsman"],
+                glow = true,
+                callback = function()
+                    BFC_DB.professionsFrameHelpViewed = true
+                end,
+            })
+        end
     end
 end)
 

@@ -5,6 +5,8 @@ L["BFCraftsman"] = "大脚工匠"
 L["Browse"] = "浏览"
 L["Publish"] = "发布"
 L["BFCraftsman is not compatible with %s.\nDisable it?"] = "大脚工匠与%s不兼容。\n是否禁用它？"
+L["Click this button to open BFCraftsman"] = "点击此按钮打开大脚工匠"
+L["Click this button to show craftsmen list"] = "点击此按钮显示工匠列表"
 
 -- publish
 L["Enable Publishing"] = "启用发布"
