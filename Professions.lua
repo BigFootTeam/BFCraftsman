@@ -33,22 +33,19 @@ end
 
 BFC.learnedProfessions = {}
 
-function BFC.UpdateLearnedProfessions()
-    wipe(BFC.learnedProfessions)
-    for _, t in pairs(BFC_DB.publish.characters) do
-        if BFC.validSkillLine[t.prof1.id] then
-            BFC.learnedProfessions[t.prof1.id] = t.prof1.allRecipesLearned
+local function Update(id, name, class)
+    if BFC.validSkillLine[id] then
+        if not BFC.learnedProfessions[id] then
+            BFC.learnedProfessions[id] = {}
         end
-        if BFC.validSkillLine[t.prof2.id] then
-            BFC.learnedProfessions[t.prof2.id] = t.prof1.allRecipesLearned
-        end
+        tinsert(BFC.learnedProfessions[id], AF.WrapTextInColor(name, class))
     end
 end
 
-function BFC.GetLearnedProfessionString()
-    local ret = {}
-    for id, allRecipesLearned in pairs(BFC.learnedProfessions) do
-        tinsert(ret, allRecipesLearned and id .. "!" or id)
+function BFC.UpdateLearnedProfessions()
+    wipe(BFC.learnedProfessions)
+    for _, t in pairs(BFC_DB.publish.characters) do
+        Update(t.prof1.id, t.name, t.class)
+        Update(t.prof2.id, t.name, t.class)
     end
-    return AF.TableToString(ret, ",")
 end
