@@ -3,8 +3,9 @@ local BFC = select(2, ...)
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-local MIN_SYNC_INTERVAL = 5 * 60
-local MAX_SYNC_INTERVAL = 10 * 60
+local SYNC_INTERVAL = 5 * 60 -- 5 minutes
+-- local MIN_SYNC_INTERVAL = 5 * 60
+-- local MAX_SYNC_INTERVAL = 10 * 60
 local BFC_PUBLISH_DELAY = 30
 local BFC_PUBLISH_PREFIX = "BFC_PUB"
 local BFC_UNPUBLISH_PREFIX = "BFC_UNPUB"
@@ -26,7 +27,7 @@ function BFC.ScheduleNextSync(useDelay)
             end
         end)
     else
-        timer = C_Timer.NewTimer(random(MIN_SYNC_INTERVAL, MAX_SYNC_INTERVAL), function()
+        timer = C_Timer.NewTimer(SYNC_INTERVAL, function()
             BFC.Publish()
             BFC.ScheduleNextSync()
         end)
