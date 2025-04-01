@@ -4,7 +4,7 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
-local TAGLINE_MAX_BYTES = 150
+local TAGLINE_MAX_BYTES = 200
 
 local GetProfessions = GetProfessions
 local GetProfessionInfo = GetProfessionInfo
