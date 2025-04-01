@@ -7,22 +7,25 @@ BFC.learnedRecipes = {}
 
 local GetRecipeInfo = C_TradeSkillUI.GetRecipeInfo
 
-local function ProcessRecipes(recipes)
+local function Process(recipeID, name, class)
+    if not BFC.learnedRecipes[recipeID] then
+        BFC.learnedRecipes[recipeID] = {}
+    end
+    tinsert(BFC.learnedRecipes[recipeID], AF.WrapTextInColor(name, class))
+end
+
+local function ProcessRecipes(recipes, name, class)
     if not recipes then return end
     for _, recipeID in pairs(recipes) do
-        -- local info = GetRecipeInfo(recipeID)
-        -- if info then
-        --     BFC.learnedRecipes[info.name] = true
-        -- end
-        BFC.learnedRecipes[recipeID] = true
+        Process(recipeID, name, class)
     end
 end
 
 function BFC.UpdateLearnedRecipes()
     wipe(BFC.learnedRecipes)
     for _, t in pairs(BFC_DB.publish.characters) do
-        ProcessRecipes(t.prof1.recipes)
-        ProcessRecipes(t.prof2.recipes)
+        ProcessRecipes(t.prof1.recipes, t.name, t.class)
+        ProcessRecipes(t.prof2.recipes, t.name, t.class)
     end
 end
 
@@ -33,22 +36,20 @@ function BFC.UpdateLearnedRecipesWithCallback(callback)
     wipe(BFC.learnedRecipes)
 
     if not executor then
-        executor = AF.BuildOnUpdateExecutor(function(_, recipeID, remaining, total)
-            -- local info = GetRecipeInfo(recipeID)
-            -- if info then
-            --     BFC.learnedRecipes[info.name] = true
-            -- end
-            BFC.learnedRecipes[recipeID] = true
+        executor = AF.BuildOnUpdateExecutor(function(_, data, remaining, total)
+            Process(AF.Unpack3(data))
             callback(remaining, total)
+        end, function()
+            collectgarbage("collect")
         end)
     end
 
     for _, t in pairs(BFC_DB.publish.characters) do
         for _, recipeID in pairs(t.prof1.recipes) do
-            executor:AddTask(recipeID)
+            executor:AddTask({recipeID, t.name, t.class})
         end
         for _, recipeID in pairs(t.prof2.recipes) do
-            executor:AddTask(recipeID)
+            executor:AddTask({recipeID, t.name, t.class})
         end
     end
 
