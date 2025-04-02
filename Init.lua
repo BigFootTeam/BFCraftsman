@@ -11,7 +11,7 @@ local L = BFC.L
 ---@type AbstractFramework
 local AF = _G.AbstractFramework
 
-AF.RegisterAddon(BFC.name, "BFC")
+AF.RegisterAddon(BFC.name, L["BFCraftsman"])
 
 
 ---------------------------------------------------------------------
@@ -47,6 +47,9 @@ end
 AF.AddEventHandler(BFC)
 BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
     if addon == BFC.name then
+        BFC.version = AF.GetAddOnMetadata("Version")
+        BFC.versionNum = tonumber(BFC.version:match("%d+"))
+
         if type(BFC_DB) ~= "table" then
             BFC_DB = {
                 scale = 1,
@@ -157,6 +160,9 @@ end)
 local BNGetInfo = BNGetInfo
 local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
 BFC:RegisterEvent("PLAYER_LOGIN", function()
+    -- broadcast version
+    BFC.BroadcastVersion()
+
     -- disable channel message
     for i = 1, 10 do
         if _G["ChatFrame" .. i] then
