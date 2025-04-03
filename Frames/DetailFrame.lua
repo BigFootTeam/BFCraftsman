@@ -127,7 +127,7 @@ local function CreateDetailFrame()
     -- tagline
     local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 65)
     AF.SetPoint(taglineEditBox, "TOPLEFT", charList, "BOTTOMLEFT", 0, -35)
-    AF.SetPoint(taglineEditBox, "RIGHT", -10)
+    AF.SetPoint(taglineEditBox, "RIGHT", -10, 0)
     taglineEditBox:SetNotUserChangable(true)
 
     local taglineText = AF.CreateFontString(detailFrame, L["Tagline"])

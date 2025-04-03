@@ -6,6 +6,7 @@ local AF = _G.AbstractFramework
 
 local detailFrame
 local checkTimer
+local FRAME_HEIGHT = 210
 
 ---------------------------------------------------------------------
 -- send chat msg -- TODO: cross faction
@@ -105,7 +106,7 @@ local function ShowCrafters(crafters)
     end
 
     local widgets = crafterPanePool:GetAllActives()
-    AF.AnimatedResize(detailFrame, nil, 110 + #widgets * 25, nil, nil, nil, function()
+    AF.AnimatedResize(detailFrame, nil, FRAME_HEIGHT + 5 + #widgets * 25, nil, nil, nil, function()
         detailFrame.separator:Show()
         for i, f in pairs(widgets) do
             AF.ClearPoints(f)
@@ -124,14 +125,14 @@ end
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
-    detailFrame = AF.CreateHeaderedFrame(BFCOrderFormListFrame, "BFCOrderFormListDetailFrame", L["Details"], 170, 105)
+    detailFrame = AF.CreateHeaderedFrame(BFCOrderFormListFrame, "BFCOrderFormListDetailFrame", L["Details"], 170, FRAME_HEIGHT)
     AF.SetPoint(detailFrame, "TOPLEFT", BFCOrderFormListFrame, "TOPRIGHT", 5, 0)
     detailFrame:SetMovable(false)
     detailFrame:SetTitleJustify("LEFT")
 
     detailFrame:SetOnHide(function()
         detailFrame:Hide()
-        AF.SetHeight(detailFrame, 105)
+        AF.SetHeight(detailFrame, FRAME_HEIGHT)
         -- detailFrame:UnregisterEvent("CHAT_MSG_SYSTEM")
     end)
 
@@ -141,11 +142,17 @@ local function CreateDetailFrame()
     AF.SetPoint(nameEditBox, "TOPRIGHT", detailFrame, -5, -5)
     nameEditBox:SetNotUserChangable(true)
 
+    -- tagline
+    local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 100)
+    AF.SetPoint(taglineEditBox, "TOPLEFT", nameEditBox, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(taglineEditBox, "TOPRIGHT", nameEditBox, "BOTTOMRIGHT", 0, -5)
+    taglineEditBox:SetNotUserChangable(true)
+
     -- send whisper button
     local sendWhisperButton = AF.CreateButton(detailFrame, L["Send Whisper"], {"static", "sheet_cell_highlight"}, nil, 20)
     detailFrame.sendWhisperButton = sendWhisperButton
-    AF.SetPoint(sendWhisperButton, "TOPLEFT", nameEditBox, "BOTTOMLEFT", 0, -5)
-    AF.SetPoint(sendWhisperButton, "TOPRIGHT", nameEditBox, "BOTTOMRIGHT", 0, -5)
+    AF.SetPoint(sendWhisperButton, "TOPLEFT", taglineEditBox, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(sendWhisperButton, "TOPRIGHT", taglineEditBox, "BOTTOMRIGHT", 0, -5)
     sendWhisperButton:SetOnClick(function()
         if BFC_DB.list[detailFrame.id] then
             BFC.SendWhisper(BFC_DB.list[detailFrame.id].name)
@@ -225,7 +232,7 @@ local function CreateDetailFrame()
 
         separator:Hide()
         crafterPanePool:ReleaseAll()
-        AF.SetHeight(detailFrame, 105)
+        AF.SetHeight(detailFrame, FRAME_HEIGHT)
 
         detailFrame.id = id
         detailFrame.recipeID = BFC.GetOrderRecipeID()
@@ -241,6 +248,8 @@ local function CreateDetailFrame()
         nameEditBox:SetText(BFC_DB.list[id].name)
         nameEditBox:SetTextColor(AF.GetClassColor(BFC_DB.list[id].class))
         nameEditBox:SetCursorPosition(0)
+
+        taglineEditBox:SetText(BFC_DB.list[id].tagline or "")
 
         if detailFrame.canCraft == true then
             checkButton:SetText(L["Can Craft"])
