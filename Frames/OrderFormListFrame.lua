@@ -10,7 +10,7 @@ local listFrame
 -- create frame
 ---------------------------------------------------------------------
 local function CreateListFrame()
-    listFrame = AF.CreateHeaderedFrame(ProfessionsCustomerOrdersFrame, "BFCOrderFormListFrame", L["Craftsmen List"], 150)
+    listFrame = AF.CreateHeaderedFrame(ProfessionsCustomerOrdersFrame, "BFCOrderFormListFrame", L["Craftsmen List"], 170)
     AF.SetPoint(listFrame, "TOPLEFT", ProfessionsCustomerOrdersFrame, "TOPRIGHT", 5, -20)
     listFrame:SetMovable(false)
     listFrame:SetTitleJustify("LEFT")
@@ -20,7 +20,7 @@ local function CreateListFrame()
         listFrame:Hide()
     end)
 
-    local list = AF.CreateScrollList(listFrame, nil, nil, 2, 2, 20, 20, 1, "none", "none")
+    local list = AF.CreateScrollList(listFrame, nil, 2, 2, 20, 20, 1, "none", "none")
     listFrame.list = list
     AF.SetPoint(list, "TOPLEFT", listFrame)
     AF.SetPoint(list, "TOPRIGHT", listFrame)
@@ -32,11 +32,21 @@ end
 local function CreateButton()
     local b = AF.CreateButton(listFrame.list.slotFrame, "", "gray_hover", nil, nil, nil, nil, "")
     b:SetTextJustifyH("LEFT")
-    b:SetTexture(AF.GetIcon("Star2"), {15, 15}, {"RIGHT", -2, 0}, nil, nil, "RIGHT")
+
+    -- favorite icon
+    b:SetTexture(AF.GetIcon("Star2"), {15, 15}, {"LEFT", 2, 0})
     b:SetTextureColor("gold")
+
+    -- crafting fee
+    b.craftingFeeText = AF.CreateFontString(b, nil, "gold")
+    b.craftingFeeText:SetJustifyH("RIGHT")
+    AF.SetPoint(b.craftingFeeText, "RIGHT", -5, 0)
+
+    -- click
     b:SetOnClick(function()
         BFC.ShowOrderFormDetailFrame(b.id)
     end)
+
     return b
 end
 local pool = AF.CreateObjectPool(CreateButton)
@@ -92,7 +102,7 @@ function BFC.ShowListFrame()
 
     if currentRecipeID and currentProfessionID then
         for id, t in pairs(BFC_DB.list) do
-            if not BFC_DB.blacklist[id] and type(t.professions[currentProfessionID]) == "boolean" then
+            if not BFC_DB.blacklist[id] and type(t.professions[currentProfessionID]) then
                 local b = pool:Acquire()
                 b.id = id
                 b.isFavorite = BFC_DB.favorite[id]
@@ -101,6 +111,7 @@ function BFC.ShowListFrame()
 
                 b:SetText(AF.ToShortName(t.name))
                 b:SetTextColor(b.isStale and "darkgray" or t.class)
+                b.craftingFeeText:SetText(t.craftingFee and BFC.FormatFee(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
 
                 if b.isFavorite then
                     b:ShowTexture()

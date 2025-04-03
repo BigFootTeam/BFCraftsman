@@ -5,6 +5,11 @@ local AF = _G.AbstractFramework
 local L = BFC.L
 
 BFC.UNKNOWN_CRAFTING_FEE = AF.WrapTextInColor("??", "darkgray")
+if AF.isAsian then
+    BFC.FormatFee = AF.FormatNumber_Asian
+else
+    BFC.FormatFee = AF.FormatNumber
+end
 
 local browseFrame, list, showStaleCB, showBlacklistedCB
 local selectedProfession, keywords = 0, ""
@@ -97,11 +102,7 @@ local function Pane_Load(pane, id, t)
     pane.nameButton:SetTextColor(BFC_DB.blacklist[pane.id] and "darkgray" or t.class)
 
     -- fee
-    if AF.isAsian then
-        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber_Asian(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
-    else
-        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
-    end
+    pane.craftingFeeText:SetText(t.craftingFee and BFC.FormatFee(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
 
     -- professions
     if BFC_DB.blacklist[pane.id] then
