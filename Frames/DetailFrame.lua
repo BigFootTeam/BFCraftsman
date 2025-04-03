@@ -11,7 +11,7 @@ local updateRequired
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
-    detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, 250, nil, "accent")
+    detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, 340, nil, "accent")
     AF.SetFrameLevel(detailFrame, 50)
     detailFrame:Hide()
 
@@ -33,40 +33,32 @@ local function CreateDetailFrame()
     AF.SetPoint(closeButton, "TOPRIGHT")
     closeButton:SetBorderColor("accent")
 
-    -- professions
-    local professionText = AF.CreateFontString(detailFrame)
-    AF.SetPoint(professionText, "TOPLEFT", 10, -10)
-
-    -- name
-    local nameEditBox = AF.CreateEditBox(detailFrame, nil, nil, 20)
-    AF.SetPoint(nameEditBox, "TOPLEFT", 10, -45)
-    AF.SetPoint(nameEditBox, "RIGHT", -60)
-    nameEditBox:SetNotUserChangable(true)
-
-    local nameText = AF.CreateFontString(detailFrame, L["Name"])
-    AF.SetPoint(nameText, "BOTTOMLEFT", nameEditBox, "TOPLEFT", 2, 2)
-
-    -- tagline
-    local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 65)
-    AF.SetPoint(taglineEditBox, "TOPLEFT", nameEditBox, "BOTTOMLEFT", 0, -30)
-    AF.SetPoint(taglineEditBox, "RIGHT", -10)
-    taglineEditBox:SetNotUserChangable(true)
-
-    local taglineText = AF.CreateFontString(detailFrame, L["Tagline"])
-    AF.SetPoint(taglineText, "BOTTOMLEFT", taglineEditBox, "TOPLEFT", 2, 2)
+    -- crafting fee
+    local craftingFeeText = AF.CreateFontString(detailFrame)
+    AF.SetPoint(craftingFeeText, "TOPLEFT", detailFrame, 10, -10)
 
     -- id
     local idEditBox = AF.CreateEditBox(detailFrame, nil, nil, 20)
-    AF.SetPoint(idEditBox, "TOPLEFT", taglineEditBox, "BOTTOMLEFT", 0, -30)
-    AF.SetPoint(idEditBox, "RIGHT", -10)
+    AF.SetPoint(idEditBox, "TOPLEFT", 10, -55)
+    AF.SetPoint(idEditBox, "RIGHT", -60)
     idEditBox:SetNotUserChangable(true)
+    idEditBox:SetTextColor(AF.GetColorRGB("gray"))
 
     local idText = AF.CreateFontString(detailFrame, "ID" .. AF.WrapTextInColor(" (" .. L["for reporting inappropriate user content"] .. ")", "darkgray"))
     AF.SetPoint(idText, "BOTTOMLEFT", idEditBox, "TOPLEFT", 2, 2)
 
+    -- name
+    -- local nameEditBox = AF.CreateEditBox(detailFrame, nil, nil, 20)
+    -- AF.SetPoint(nameEditBox, "TOPLEFT", 10, -45)
+    -- AF.SetPoint(nameEditBox, "RIGHT", -60)
+    -- nameEditBox:SetNotUserChangable(true)
+
+    -- local nameText = AF.CreateFontString(detailFrame, L["Name"])
+    -- AF.SetPoint(nameText, "BOTTOMLEFT", nameEditBox, "TOPLEFT", 2, 2)
+
     -- favorite
     local favoriteButton = AF.CreateButton(detailFrame, nil, {"static", "sheet_cell_highlight"}, 20, 20)
-    AF.SetPoint(favoriteButton, "TOPLEFT", nameEditBox, "TOPRIGHT", 5, 0)
+    AF.SetPoint(favoriteButton, "TOPLEFT", idEditBox, "TOPRIGHT", 5, 0)
     favoriteButton:SetTexture(AF.GetIcon("Star1"), {16, 16})
     favoriteButton:SetOnClick(function()
         if BFC_DB.favorite[detailFrame.pane.id] then
@@ -110,14 +102,42 @@ local function CreateDetailFrame()
         {"Alt + " .. AF.L["Left Click"], L["also remove from list"]}
     )
 
+    -- character list
+    local charList = AF.CreateScrollList(detailFrame, nil, 2, 2, 4, 20, 1)
+    AF.SetPoint(charList, "TOPLEFT", idEditBox, "BOTTOMLEFT", 0, -35)
+    AF.SetPoint(charList, "RIGHT", -10)
+
+    local characterListText = AF.CreateFontString(charList, L["Characters"])
+    AF.SetPoint(characterListText, "BOTTOMLEFT", charList, "TOPLEFT", 2, 2)
+
+    local charBtnPool = AF.CreateObjectPool(function()
+        local eb = AF.CreateEditBox(charList.slotFrame, nil, nil, 20)
+        eb:SetNotUserChangable(true)
+
+        -- profession icons
+        eb.prof = AF.CreateFontString(eb)
+        AF.SetPoint(eb.prof, "RIGHT", -5, 0)
+
+        return eb
+    end)
+
+    -- tagline
+    local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 65)
+    AF.SetPoint(taglineEditBox, "TOPLEFT", charList, "BOTTOMLEFT", 0, -35)
+    AF.SetPoint(taglineEditBox, "RIGHT", -10)
+    taglineEditBox:SetNotUserChangable(true)
+
+    local taglineText = AF.CreateFontString(detailFrame, L["Tagline"])
+    AF.SetPoint(taglineText, "BOTTOMLEFT", taglineEditBox, "TOPLEFT", 2, 2)
+
     -- last update
     local lastUpdateText = AF.CreateFontString(detailFrame)
-    AF.SetPoint(lastUpdateText, "TOPLEFT", idEditBox, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(lastUpdateText, "TOPLEFT", taglineEditBox, "BOTTOMLEFT", 0, -18)
     lastUpdateText:SetColor("darkgray")
 
     -- chat button
     local chatButton = AF.CreateButton(detailFrame, L["Send Whisper"], "accent", 120, 20)
-    AF.SetPoint(chatButton, "TOPRIGHT", idEditBox, "BOTTOMRIGHT", 0, -12)
+    AF.SetPoint(chatButton, "TOPRIGHT", taglineEditBox, "BOTTOMRIGHT", 0, -15)
     chatButton:SetOnClick(function()
         BFC.SendWhisper(detailFrame.pane.t.name)
     end)
@@ -125,11 +145,43 @@ local function CreateDetailFrame()
     -- load
     function detailFrame:Load(pane)
         detailFrame.pane = pane
-        professionText:SetText(BFC.GetProfessionString(pane.t.professions, 14))
-        nameEditBox:SetText(pane.t.name)
-        nameEditBox:SetTextColor(AF.GetClassColor(pane.t.class))
-        taglineEditBox:SetText(pane.t.tagline)
+        craftingFeeText:SetText(L["Crafting Fee: %s"]:format(pane.t.craftingFee or "???") .. AF.EscapeAtlas("Coin-Gold"))
         idEditBox:SetText(pane.id)
+        idEditBox:SetCursorPosition(0)
+
+        texplore(pane.t)
+
+        charBtnPool:ReleaseAll()
+
+        -- prepare characters
+        local chars = {}
+        for pid, pt in pairs(pane.t.professions) do
+            for _, ct in pairs(pt) do
+                local name = AF.WrapTextInColor(ct[1], ct[2])
+                if not chars[name] then
+                    chars[name] = {}
+                end
+                chars[name][pid] = true
+            end
+        end
+
+        -- prepare widgets
+        for name, profs in pairs(chars) do
+            local w = charBtnPool:Acquire()
+            w:SetText(name)
+            w.prof:SetText(BFC.GetProfessionString(profs, 12))
+            w.sortKey1 = name:find(pane.t.name:gsub("%-", "%%-")) and 0 or 1 -- current character first
+            w.sortKey2 = w.prof:GetText() -- then sort by profession
+        end
+
+        -- sort and set
+        local widgets = charBtnPool:GetAllActives()
+        AF.Sort(widgets, "sortKey1", "ascending", "sortKey2", "ascending")
+        charList:SetWidgets(widgets)
+
+        -- nameEditBox:SetText(pane.t.name)
+        -- nameEditBox:SetTextColor(AF.GetClassColor(pane.t.class))
+        taglineEditBox:SetText(pane.t.tagline)
         lastUpdateText:SetText(AF.FormatTime(pane.t.lastUpdate))
 
         favoriteButton:SetTexture(BFC_DB.favorite[pane.id] and AF.GetIcon("Star2") or AF.GetIcon("Star1"))
