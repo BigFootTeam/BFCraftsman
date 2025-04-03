@@ -60,7 +60,7 @@ local function CreateBrowseFrame()
     end)
 
     -- list
-    list = AF.CreateScrollList(browseFrame, nil, nil, 5, 5, 22, 20, 1)
+    list = AF.CreateScrollList(browseFrame, nil, 5, 5, 22, 20, 1)
     AF.SetPoint(list, "TOPLEFT", browseFrame, 0, -30)
     AF.SetPoint(list, "TOPRIGHT", browseFrame, 0, -30)
 
@@ -94,6 +94,13 @@ local function Pane_Load(pane, id, t)
     -- pane.nameButton:SetTextColor((BFC_DB.blacklist[pane.id] or BFC.IsStale(t.lastUpdate)) and "darkgray" or t.class)
     pane.nameButton:SetTextColor(BFC_DB.blacklist[pane.id] and "darkgray" or t.class)
 
+    -- fee
+    if AF.isAsian then
+        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber_Asian(t.craftingFee) or "???")
+    else
+        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber(t.craftingFee) or "???")
+    end
+
     -- professions
     if BFC_DB.blacklist[pane.id] then
         pane.professionText:SetText(AF.WrapTextInColor(L["Blacklisted"], "red"))
@@ -109,6 +116,13 @@ local function Pane_Load(pane, id, t)
 
     -- block
     pane.blockButton:SetTextureColor(BFC_DB.blacklist[pane.id] and "red" or "darkgray")
+
+    --@debug@
+    if id == BFC.battleTag then
+        pane.nameButton:SetText("Abcdefghjkmn")
+        pane.professionText:SetText(BFC.GetProfessionString(BFC.validSkillLine, 12))
+    end
+    --@end-debug@
 end
 
 local function Pane_OnEnter(pane)
@@ -116,6 +130,7 @@ local function Pane_OnEnter(pane)
     if not BFC_DB.blacklist[pane.id] then
         AF.ShowTooltips(pane, "BOTTOMLEFT", 0, -1, {
             AF.WrapTextInColor(pane.t.name, pane.t.class),
+            L["Crafting Fee: %s"]:format(AF.WrapTextInColor(pane.t.craftingFee or "???", "gold")) .. AF.EscapeAtlas("Coin-Gold"),
             L["Last updated: %s"]:format(AF.WrapTextInColor(AF.FormatRelativeTime(pane.t.lastUpdate), "yellow")),
             pane.t.tagline
         })
@@ -133,7 +148,7 @@ local function CreatePane()
     pane:SetOnLeave(Pane_OnLeave)
 
     -- name
-    local nameButton = AF.CreateButton(pane, "name", "gray_hover", 165, 20, nil, nil, "", nil, "AF_FONT_CHAT")
+    local nameButton = AF.CreateButton(pane, "name", "gray_hover", 110, 20, nil, nil, "", nil, "AF_FONT_CHAT")
     pane.nameButton = nameButton
     AF.SetPoint(nameButton, "TOPLEFT", pane)
     nameButton:SetTextJustifyH("LEFT")
@@ -143,6 +158,16 @@ local function CreatePane()
     nameButton:SetOnClick(function()
         BFC.ShowDetailFrame(pane)
     end)
+
+    -- crafting fee
+    local craftingFeeText = AF.CreateFontString(pane, nil, "gold")
+    pane.craftingFeeText = craftingFeeText
+    AF.SetPoint(craftingFeeText, "RIGHT", pane, "LEFT", 160, 0)
+    craftingFeeText:SetJustifyH("RIGHT")
+
+    -- sep
+    local sep = AF.CreateSeparator(pane, 20, 1, "black", true, true)
+    AF.SetPoint(sep, "TOPLEFT", 165)
 
     -- professions
     local professionText = AF.CreateFontString(pane)
@@ -216,7 +241,13 @@ local function Comparator(a, b)
 end
 
 local function ShouldShow(id, t)
-    local previousNames = AF.TableToString(t.previousNames, ",", true)
+    local names = {}
+    for _, prof in pairs(t.professions) do
+        for _, char in pairs(prof) do
+            names[char[1]] = true
+        end
+    end
+    names = AF.TableToString(names, " ", true)
 
     if BFC.battleTag == id then
         -- always show self
@@ -227,7 +258,7 @@ local function ShouldShow(id, t)
         and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
         and not AF.IsEmpty(t.professions) -- has professions
         and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean") -- match selected profession
-        and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(previousNames, keywords))) -- match keyword
+        and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(names, keywords))) -- match keyword
 end
 
 LoadList = function()
