@@ -67,12 +67,13 @@ local function ShowCrafters(crafters)
     end
 
     local widgets = crafterPanePool:GetAllActives()
-    AF.AnimatedResize(detailFrame, nil, 80 + #widgets * 25, nil, nil, nil, function()
+    AF.AnimatedResize(detailFrame, nil, 85 + #widgets * 25, nil, nil, nil, function()
+        detailFrame.separator:Show()
         for i, f in pairs(widgets) do
             AF.ClearPoints(f)
             AF.SetPoint(f, "RIGHT", -5, 0)
             if i == 1 then
-                AF.SetPoint(f, "TOPLEFT", detailFrame.checkButton, "BOTTOMLEFT", 0, -5)
+                AF.SetPoint(f, "TOPLEFT", detailFrame.separator, "BOTTOMLEFT", 0, -5)
             else
                 AF.SetPoint(f, "TOPLEFT", widgets[i - 1], "BOTTOMLEFT", 0, -5)
             end
@@ -125,6 +126,7 @@ local function CreateDetailFrame()
 
         detailFrame.canCraft = false
         checkButton:SetText(L["Checking..."])
+        checkButton:SetColor("yellow")
         if checkTimer then checkTimer:Cancel() end
 
         checkTimer = C_Timer.NewTimer(5, function()
@@ -134,6 +136,13 @@ local function CreateDetailFrame()
         BFC.CheckCanCraft(detailFrame.id, detailFrame.recipeID)
     end)
 
+    -- separator
+    local separator = AF.CreateSeparator(detailFrame, nil, 1)
+    detailFrame.separator = separator
+    separator:Hide()
+    AF.SetPoint(separator, "TOPLEFT", checkButton, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(separator, "TOPRIGHT", checkButton, "BOTTOMRIGHT", 0, -5)
+
     -- load
     function detailFrame:Load(id)
         if checkTimer then checkTimer:Cancel() end
@@ -142,6 +151,7 @@ local function CreateDetailFrame()
             return
         end
 
+        separator:Hide()
         crafterPanePool:ReleaseAll()
         AF.SetHeight(detailFrame, 80)
 
@@ -190,6 +200,7 @@ function BFC.NotifyCanCraft(id, recipeID, crafters)
         detailFrame.checkButton:SetColor("green")
         -- detailFrame.templateWhisperButton:SetEnabled(true)
 
+        detailFrame.separator:Hide()
         crafterPanePool:ReleaseAll()
         ShowCrafters(crafters)
     else
