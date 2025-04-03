@@ -71,21 +71,22 @@ local function ProfessionProcessor(_, id)
 end
 
 local function PublishReceived(data, _, channel)
-    if BFC_DB.blacklist[data[1]] then return end
+    local version, id, name, class, tagline, craftingFee, professions = AF.Unpack7(data)
+    if version ~= BFC.versionNum then return end -- only accept the same version
+    if BFC_DB.blacklist[id] then return end
 
-    if not BFC_DB.list[data[1]] then
-        BFC_DB.list[data[1]] = {
-            previousNames = {},
+    if not BFC_DB.list[id] then
+        BFC_DB.list[id] = {
             learnedRecipes = {},
         }
     end
 
-    BFC_DB.list[data[1]].name = data[2]
-    BFC_DB.list[data[1]].class = data[3]
-    BFC_DB.list[data[1]].tagline = data[4]
-    BFC_DB.list[data[1]].professions = AF.ConvertTable(AF.StringToTable(data[5], ","), ProfessionProcessor)
-    BFC_DB.list[data[1]].lastUpdate = time()
-    BFC_DB.list[data[1]].previousNames[strlower(AF.ToShortName(data[2]))] = true
+    BFC_DB.list[id].name = name
+    BFC_DB.list[id].class = class
+    BFC_DB.list[id].tagline = tagline
+    BFC_DB.list[id].craftingFee = craftingFee
+    BFC_DB.list[id].professions = professions
+    BFC_DB.list[id].lastUpdate = time()
 
     BFC.UpdateList()
 end
@@ -104,17 +105,19 @@ AF.RegisterComm(BFC_UNPUBLISH_PREFIX, UnpublishReceived)
 local data = {}
 function BFC.UpdateSendingData()
     data = {
+        BFC.versionNum,
         BFC.battleTag,
         AF.player.fullName,
         AF.player.class,
         BFC_DB.publish.tagline,
-        BFC.GetLearnedProfessionString(),
+        BFC_DB.publish.craftingFee,
+        BFC.learnedProfessions,
     }
 end
 
 function BFC.Publish()
     if BFC.channelID == 0 then return end
-    if AF.IsBlank(data[1]) then return end
+    if AF.IsBlank(data[2]) then return end -- battleTag
     AF.SendCommMessage_Channel(BFC_PUBLISH_PREFIX, data, BFC.channelName)
 end
 
@@ -129,21 +132,26 @@ end
 ---------------------------------------------------------------------
 function BFC.CheckCanCraft(id, recipeID)
     if BFC.channelID == 0 then return end
-    AF.SendCommMessage_Channel(BFC_CHK_CRAFT_PREFIX, {id, recipeID}, BFC.channelName)
+    AF.SendCommMessage_Channel(BFC_CHK_CRAFT_PREFIX, {BFC.versionNum, id, recipeID}, BFC.channelName)
 end
 
-local function CheckCanCraftReceived(data, _, channel)
-    if data[1] == BFC.battleTag then
-        AF.SendCommMessage_Channel(BFC_CAN_CRAFT_PREFIX, {BFC.battleTag, data[2], BFC.learnedRecipes[data[2]]}, BFC.channelName)
+local function CheckCanCraftReceived(data)
+    local version, id, recipeID = AF.Unpack3(data)
+    if version ~= BFC.versionNum then return end -- only accept the same version
+
+    if id == BFC.battleTag then
+        AF.SendCommMessage_Channel(BFC_CAN_CRAFT_PREFIX, {BFC.versionNum, BFC.battleTag, recipeID, BFC.learnedRecipes[recipeID]}, BFC.channelName)
     end
 end
 AF.RegisterComm(BFC_CHK_CRAFT_PREFIX, CheckCanCraftReceived)
 
-local function CanCraftReceived(data, _, channel)
-    local id, recipeID, canCraft = AF.Unpack3(data)
+local function CanCraftReceived(data)
+    local version, id, recipeID, chars = AF.Unpack4(data)
+    if version ~= BFC.versionNum then return end -- only accept the same version
+
     if not BFC_DB.blacklist[id] and BFC_DB.list[id] then
-        BFC_DB.list[id].learnedRecipes[recipeID] = canCraft
-        BFC.NotifyCanCraft(id, recipeID, canCraft)
+        BFC_DB.list[id].learnedRecipes[recipeID] = chars
+        BFC.NotifyCanCraft(id, recipeID, chars)
     end
 end
 AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
