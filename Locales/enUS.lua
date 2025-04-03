@@ -5,7 +5,7 @@
 -- key - A key in the table (cannot be nil) (value)
 -- value - New value to set for the key (value)
 select(2, ...).L = setmetatable({
-
+    ["WHISPER_TEMPLATE"] = "Hi! Can you craft [r] with your [p] skills? Will tip [f] for your service. Thanks!"
 }, {
     __index = function(self, key)
         if (key ~= nil) then
