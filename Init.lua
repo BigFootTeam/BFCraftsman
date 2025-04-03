@@ -246,17 +246,20 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
     elseif msg == "test" then
         local validSkillLine = {164, 165, 171, 197, 202, 333, 773, 755}
         for i = 1, 30 do
-            BFC_DB.list["player" .. i] = {
+            local class = AF.GetClassFile(random(1, 13))
+
+            BFC_DB.list["Player" .. i] = {
                name = "Player" .. i,
-               class = AF.GetClassFile(random(1, 13)),
+               class = class,
                tagline = "This is a tagline " .. i,
                craftingFee = random(1000, 10000),
                lastUpdate = time() - random(1, 10000),
                learnedRecipes = {},
                professions = {},
             }
+
             for j = 1, random(1, 2) do
-                BFC_DB.list["player" .. i]["professions"][validSkillLine[random(1, 8)]] = {{"player" .. i, class}}
+                BFC_DB.list["Player" .. i]["professions"][validSkillLine[random(1, 8)]] = {{"Player" .. i, class}}
             end
         end
         BFC.UpdateList()

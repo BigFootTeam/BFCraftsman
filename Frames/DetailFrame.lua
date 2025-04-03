@@ -121,6 +121,9 @@ local function CreateDetailFrame()
         return eb
     end)
 
+    -- current character highlight
+    local currentCharHighlight = AF.CreateGradientTexture(charList, "HORIZONTAL", "none", AF.GetColorTable("green", 0.3))
+
     -- tagline
     local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 65)
     AF.SetPoint(taglineEditBox, "TOPLEFT", charList, "BOTTOMLEFT", 0, -35)
@@ -149,15 +152,14 @@ local function CreateDetailFrame()
         idEditBox:SetText(pane.id)
         idEditBox:SetCursorPosition(0)
 
-        texplore(pane.t)
-
+        -- texplore(pane.t)
         charBtnPool:ReleaseAll()
 
         -- prepare characters
         local chars = {}
         for pid, pt in pairs(pane.t.professions) do
             for _, ct in pairs(pt) do
-                local name = AF.WrapTextInColor(ct[1], ct[2])
+                local name = ct[1] .. ":" .. ct[2]
                 if not chars[name] then
                     chars[name] = {}
                 end
@@ -166,13 +168,26 @@ local function CreateDetailFrame()
         end
 
         -- prepare widgets
-        for name, profs in pairs(chars) do
+        local currentCharFound = false
+        for k, profs in pairs(chars) do
             local w = charBtnPool:Acquire()
-            w:SetText(name)
+            local name, class = strsplit(":", k)
+            w:SetText(AF.WrapTextInColor(name, class))
             w.prof:SetText(BFC.GetProfessionString(profs, 12))
-            w.sortKey1 = name:find(pane.t.name:gsub("%-", "%%-")) and 0 or 1 -- current character first
+
+            if name == pane.t.name then
+                w.sortKey1 = 0 -- current character first
+                currentCharFound = true
+                currentCharHighlight:SetParent(w)
+                AF.ClearPoints(currentCharHighlight)
+                AF.SetPoint(currentCharHighlight, "TOPLEFT", w, "TOP", 0, -1)
+                AF.SetPoint(currentCharHighlight, "BOTTOMRIGHT", w, -1, 1)
+            else
+                w.sortKey1 = 1
+            end
             w.sortKey2 = w.prof:GetText() -- then sort by profession
         end
+        currentCharHighlight:SetShown(currentCharFound)
 
         -- sort and set
         local widgets = charBtnPool:GetAllActives()
@@ -201,11 +216,15 @@ function BFC.ShowDetailFrame(pane)
 
     AF.ClearPoints(detailFrame)
     if pane._slotIndex <= 11 then
-        AF.SetPoint(detailFrame, "TOPLEFT", pane)
-        AF.SetPoint(detailFrame, "TOPRIGHT", pane)
+        -- AF.SetPoint(detailFrame, "TOPLEFT", pane)
+        -- AF.SetPoint(detailFrame, "TOPRIGHT", pane)
+        AF.SetPoint(detailFrame, "TOPLEFT", BFCBrowseFrameList.slotFrame)
+        AF.SetPoint(detailFrame, "TOPRIGHT", BFCBrowseFrameList.slotFrame)
     else
-        AF.SetPoint(detailFrame, "BOTTOMLEFT", pane)
-        AF.SetPoint(detailFrame, "BOTTOMRIGHT", pane)
+        -- AF.SetPoint(detailFrame, "BOTTOMLEFT", pane)
+        -- AF.SetPoint(detailFrame, "BOTTOMRIGHT", pane)
+        AF.SetPoint(detailFrame, "BOTTOMLEFT", BFCBrowseFrameList.slotFrame)
+        AF.SetPoint(detailFrame, "BOTTOMRIGHT", BFCBrowseFrameList.slotFrame)
     end
 
     detailFrame:Load(pane)

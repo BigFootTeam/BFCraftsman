@@ -62,7 +62,7 @@ local function CreateBrowseFrame()
     end)
 
     -- list
-    list = AF.CreateScrollList(browseFrame, nil, 5, 5, 22, 20, 1)
+    list = AF.CreateScrollList(browseFrame, "BFCBrowseFrameList", 5, 5, 22, 20, 1)
     AF.SetPoint(list, "TOPLEFT", browseFrame, 0, -30)
     AF.SetPoint(list, "TOPRIGHT", browseFrame, 0, -30)
 
