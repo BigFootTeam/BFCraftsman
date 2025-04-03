@@ -43,7 +43,7 @@ local function SendTemplateWhisper()
     local msg = BFC_DB.whisperTemplate:gsub("%[(%w)%]", function(s)
         return formatter[s] and formatter[s]() or ""
     end)
-    SendChatMessage(msg, "WHISPER", nil, BFC_DB.list[detailFrame.id].name)
+    SendChatMessage("[" .. L["BFC"] ..  "] " .. msg, "WHISPER", nil, BFC_DB.list[detailFrame.id].name)
 end
 
 ---------------------------------------------------------------------

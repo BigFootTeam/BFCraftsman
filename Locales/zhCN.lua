@@ -2,6 +2,7 @@ if not LOCALE_zhCN then return end
 local L = select( 2, ...).L
 
 L["BFCraftsman"] = "大脚工匠"
+L["BFC"] = "大脚工匠"
 L["New version (%s) available! Please consider updating."] = "发现新版本(%s)，建议您更新。"
 
 L["Browse"] = "浏览"
