@@ -21,6 +21,7 @@ Recipes.lua
 Frames\MainFrame.lua
 Frames\BrowseFrame.lua
 Frames\PublishFrame.lua
+Frames\ConfigFrame.lua
 Frames\DetailFrame.lua
 Frames\OrderFormListFrame.lua
 Frames\OrderFormDetailFrame.lua

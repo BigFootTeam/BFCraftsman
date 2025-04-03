@@ -22,7 +22,7 @@ local ALL = _G.ALL
 -- create
 ---------------------------------------------------------------------
 local function CreateBrowseFrame()
-    browseFrame = AF.CreateFrame(BFCMainFrame, "BFCBrowseFrame", nil, 400)
+    browseFrame = AF.CreateFrame(BFCMainFrame, "BFCBrowseFrame")
     AF.SetPoint(browseFrame, "TOPLEFT", BFCMainFrame, 10, -40)
     AF.SetPoint(browseFrame, "BOTTOMRIGHT", BFCMainFrame, -10, 10)
     browseFrame:SetScript("OnShow", function()

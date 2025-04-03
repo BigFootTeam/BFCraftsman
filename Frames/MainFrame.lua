@@ -55,6 +55,11 @@ local function InitFrameWidgets()
             text = L["Publish"],
             value = "Publish",
             onClick = AF.GetFireFunc("BFC_ShowFrame", "Publish")
+        },
+        {
+            text = L["Config"],
+            value = "Config",
+            onClick = AF.GetFireFunc("BFC_ShowFrame", "Config")
         }
     })
     switch:SetSelectedValue("Browse")

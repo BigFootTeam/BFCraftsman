@@ -66,10 +66,15 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 blacklist = {},
                 showStale = false,
                 showBlacklisted = false,
+                -- whisperTemplate = L["WHISPER_TEMPLATE"],
                 minimap = {},
             }
         end
         BFCMainFrame:SetScale(BFC_DB.scale)
+
+        if type(BFC_DB.whisperTemplate) ~= "string" then
+            BFC_DB.whisperTemplate = L["WHISPER_TEMPLATE"]
+        end
 
         -- validate list
         for id in pairs(BFC_DB.list) do
@@ -136,7 +141,6 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
     elseif addon == "Blizzard_Professions" then
         -- title container button
         local button = AF.CreateButton(ProfessionsFrame.TitleContainer, nil, "accent_hover", 20, 20)
-        AF.SetPoint(button, "RIGHT", ProfessionsFrame.MaximizeMinimize, "LEFT", -1, 0)
         AF.SetTooltips(button, "TOP", 0, 5, L["BFCraftsman"])
         button:SetTexture("Interface\\AddOns\\BFCraftsman\\BFC")
         button:SetOnClick(BFC.ToggleMainFrame)
