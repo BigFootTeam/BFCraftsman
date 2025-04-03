@@ -20,22 +20,79 @@ local checkTimer
 --     local msg2 = ERR_CHAT_PLAYER_NOT_FOUND_S:format(AF.ToShortName(name))
 --     if msg == msg1 or msg == msg2 then
 --         if checkTimer then checkTimer:Cancel() end
---         detailFrame.whisperButton:SetText(PLAYER_OFFLINE)
---         detailFrame.whisperButton:SetColor("red")
+--         detailFrame.sendWhisperButton:SetText(PLAYER_OFFLINE)
+--         detailFrame.sendWhisperButton:SetColor("red")
 --     end
 -- end
+
+---------------------------------------------------------------------
+-- crafter list
+---------------------------------------------------------------------
+local crafterPanePool = AF.CreateObjectPool(function()
+    local f = AF.CreateFrame(detailFrame, nil, nil, 20)
+
+    local b = AF.CreateButton(f, nil, "green", 20, 20)
+    b:SetTexture(AF.GetIcon("ArrowLeft1"))
+    b:SetPoint("TOPLEFT")
+    b:SetClickSound("bell")
+    b:SetOnClick(function()
+        local t = BFC_DB.list[detailFrame.id]
+        if t then
+            ProfessionsCustomerOrdersFrame.Form.OrderRecipientTarget:SetText(f.name)
+            ProfessionsCustomerOrdersFrame.Form.PaymentContainer.TipMoneyInputFrame.GoldBox:SetText(t.craftingFee or 0)
+        end
+    end)
+
+    local eb = AF.CreateEditBox(f, nil, nil, 20)
+    AF.SetPoint(eb, "TOPLEFT", b, "TOPRIGHT", -1, 0)
+    AF.SetPoint(eb, "BOTTOMRIGHT")
+
+    function f:Load(t)
+        f.name = t[1]
+        eb:SetText(AF.WrapTextInColor(t[1], t[2]))
+        eb:SetCursorPosition(0)
+    end
+
+    return f
+end, function(_, f)
+    f:Hide()
+end)
+
+local function ShowCrafters(crafters)
+    if not crafters then return end
+
+    for _, t in pairs(crafters) do
+        local f = crafterPanePool:Acquire()
+        f:Load(t)
+    end
+
+    local widgets = crafterPanePool:GetAllActives()
+    AF.AnimatedResize(detailFrame, nil, 80 + #widgets * 25, nil, nil, nil, function()
+        for i, f in pairs(widgets) do
+            AF.ClearPoints(f)
+            AF.SetPoint(f, "RIGHT", -5, 0)
+            if i == 1 then
+                AF.SetPoint(f, "TOPLEFT", detailFrame.checkButton, "BOTTOMLEFT", 0, -5)
+            else
+                AF.SetPoint(f, "TOPLEFT", widgets[i - 1], "BOTTOMLEFT", 0, -5)
+            end
+            f:Show()
+        end
+    end)
+end
 
 ---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
-    detailFrame = AF.CreateHeaderedFrame(BFCOrderFormListFrame, "BFCOrderFormListDetailFrame", L["Details"], 150, 80)
+    detailFrame = AF.CreateHeaderedFrame(BFCOrderFormListFrame, "BFCOrderFormListDetailFrame", L["Details"], 170, 80)
     AF.SetPoint(detailFrame, "TOPLEFT", BFCOrderFormListFrame, "TOPRIGHT", 5, 0)
     detailFrame:SetMovable(false)
     detailFrame:SetTitleJustify("LEFT")
 
     detailFrame:SetOnHide(function()
         detailFrame:Hide()
+        AF.SetHeight(detailFrame, 80)
         -- detailFrame:UnregisterEvent("CHAT_MSG_SYSTEM")
     end)
 
@@ -45,13 +102,24 @@ local function CreateDetailFrame()
     AF.SetPoint(nameEditBox, "TOPRIGHT", detailFrame, -5, -5)
     nameEditBox:SetNotUserChangable(true)
 
+    -- send whisper button
+    local sendWhisperButton = AF.CreateButton(detailFrame, L["Send Whisper"], {"static", "sheet_cell_highlight"}, nil, 20)
+    detailFrame.sendWhisperButton = sendWhisperButton
+    AF.SetPoint(sendWhisperButton, "TOPLEFT", nameEditBox, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(sendWhisperButton, "TOPRIGHT", nameEditBox, "BOTTOMRIGHT", 0, -5)
+    sendWhisperButton:SetOnClick(function()
+        if BFC_DB.list[detailFrame.id] then
+            BFC.SendWhisper(BFC_DB.list[detailFrame.id].name)
+        end
+    end)
+
     -- check button
     local checkButton = AF.CreateButton(detailFrame, L["Can Craft?"], "yellow", nil, 20)
     detailFrame.checkButton = checkButton
-    AF.SetPoint(checkButton, "TOPLEFT", nameEditBox, "BOTTOMLEFT", 0, -5)
-    AF.SetPoint(checkButton, "TOPRIGHT", nameEditBox, "BOTTOMRIGHT", 0, -5)
+    AF.SetPoint(checkButton, "TOPLEFT", sendWhisperButton, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(checkButton, "TOPRIGHT", sendWhisperButton, "BOTTOMRIGHT", 0, -5)
     checkButton:SetOnClick(function()
-        if type(detailFrame.canCraft) == "boolean" then
+        if not IsAltKeyDown() and type(detailFrame.canCraft) == "boolean" then
             return
         end
 
@@ -66,17 +134,6 @@ local function CreateDetailFrame()
         BFC.CheckCanCraft(detailFrame.id, detailFrame.recipeID)
     end)
 
-    -- send whisper button
-    local whisperButton = AF.CreateButton(detailFrame, L["Send Whisper"], {"static", "sheet_cell_highlight"}, nil, 20)
-    detailFrame.whisperButton = whisperButton
-    AF.SetPoint(whisperButton, "TOPLEFT", checkButton, "BOTTOMLEFT", 0, -5)
-    AF.SetPoint(whisperButton, "TOPRIGHT", checkButton, "BOTTOMRIGHT", 0, -5)
-    whisperButton:SetOnClick(function()
-        if BFC_DB.list[detailFrame.id] then
-            BFC.SendWhisper(BFC_DB.list[detailFrame.id].name)
-        end
-    end)
-
     -- load
     function detailFrame:Load(id)
         if checkTimer then checkTimer:Cancel() end
@@ -85,9 +142,14 @@ local function CreateDetailFrame()
             return
         end
 
+        crafterPanePool:ReleaseAll()
+        AF.SetHeight(detailFrame, 80)
+
         detailFrame.id = id
         detailFrame.recipeID = BFC.GetOrderRecipeID()
-        detailFrame.canCraft = BFC_DB.list[id].learnedRecipes[detailFrame.recipeID]
+        detailFrame.crafters = BFC_DB.list[id].learnedRecipes[detailFrame.recipeID]
+        detailFrame.canCraft = detailFrame.crafters and true
+
         if BFC_DB.list[id].professions[BFC.GetOrderProfessionID()] == true then
             -- NOTE: learned all recipes
             detailFrame.canCraft = true
@@ -97,43 +159,43 @@ local function CreateDetailFrame()
         nameEditBox:SetTextColor(AF.GetClassColor(BFC_DB.list[id].class))
         nameEditBox:SetCursorPosition(0)
 
-        if type(detailFrame.canCraft) == "boolean" then
-            if detailFrame.canCraft then
-                checkButton:SetText(L["Can Craft"])
-                checkButton:SetColor("green")
-                whisperButton:SetEnabled(true)
-            else
-                checkButton:SetText(L["Cannot Craft"])
-                checkButton:SetColor("red")
-                whisperButton:SetEnabled(false)
-            end
+        if detailFrame.canCraft == true then
+            checkButton:SetText(L["Can Craft"])
+            checkButton:SetColor("green")
+            -- templateWhisperButton:SetEnabled(true)
         else
             checkButton:SetText(L["Can Craft?"])
             checkButton:SetColor("yellow")
-            whisperButton:SetEnabled(false)
+            -- templateWhisperButton:SetEnabled(false)
         end
 
         -- detailFrame:RegisterEvent("CHAT_MSG_SYSTEM")
+        C_Timer.After(0.25, function()
+            ShowCrafters(detailFrame.crafters)
+        end)
     end
 end
 
 ---------------------------------------------------------------------
 -- comm
 ---------------------------------------------------------------------
-function BFC.NotifyCanCraft(id, recipeID, canCraft)
+function BFC.NotifyCanCraft(id, recipeID, crafters)
     if not (detailFrame and detailFrame.id == id) then return end
     if checkTimer then checkTimer:Cancel() end
 
-    detailFrame.canCraft = canCraft and true or false
+    detailFrame.canCraft = crafters and true or false
 
-    if canCraft then
+    if detailFrame.canCraft then
         detailFrame.checkButton:SetText(L["Can Craft"])
         detailFrame.checkButton:SetColor("green")
-        detailFrame.whisperButton:SetEnabled(true)
+        -- detailFrame.templateWhisperButton:SetEnabled(true)
+
+        crafterPanePool:ReleaseAll()
+        ShowCrafters(crafters)
     else
         detailFrame.checkButton:SetText(L["Cannot Craft"])
         detailFrame.checkButton:SetColor("red")
-        detailFrame.whisperButton:SetEnabled(false)
+        -- detailFrame.templateWhisperButton:SetEnabled(false)
     end
 end
 
