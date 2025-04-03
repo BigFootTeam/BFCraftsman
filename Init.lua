@@ -21,15 +21,6 @@ function BFC.IsStale(lastUpdate)
     return time() - lastUpdate > 1800 -- 30 minutes
 end
 
-function BFC.GetProfessionString(profs, size)
-    local text = ""
-    for id in pairs(profs) do
-        local icon = AF.GetProfessionIcon(id)
-        text = text .. AF.EscapeIcon(icon, size)
-    end
-    return text
-end
-
 local ChatEdit_ActivateChat = ChatEdit_ActivateChat
 local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat
 local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
@@ -79,6 +70,13 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
             }
         end
         BFCMainFrame:SetScale(BFC_DB.scale)
+
+        -- validate list
+        for id in pairs(BFC_DB.list) do
+            if type(id) ~= "string" or #id ~= 32 then
+                BFC_DB.list[id] = nil
+            end
+        end
 
         -- minimap button
         AF.NewMinimapButton(BFC.name, "Interface\\AddOns\\BFCraftsman\\BFC", BFC_DB.minimap, BFC.ToggleMainFrame, L["BFCraftsman"])
@@ -252,15 +250,13 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
                name = "Player" .. i,
                class = AF.GetClassFile(random(1, 13)),
                tagline = "This is a tagline " .. i,
+               craftingFee = random(1000, 10000),
                lastUpdate = time() - random(1, 10000),
-               previousNames = {
-                  ["Player" .. i] = true,
-               },
                learnedRecipes = {},
                professions = {},
             }
-            for j = 1, random(1, 3) do
-                BFC_DB.list["player" .. i]["professions"][validSkillLine[random(1, 8)]] = (random() >= 0.5) and true or false
+            for j = 1, random(1, 2) do
+                BFC_DB.list["player" .. i]["professions"][validSkillLine[random(1, 8)]] = {{"player" .. i, class}}
             end
         end
         BFC.UpdateList()
