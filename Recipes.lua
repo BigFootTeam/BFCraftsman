@@ -11,7 +11,7 @@ local function Process(recipeID, name, class)
     if not BFC.learnedRecipes[recipeID] then
         BFC.learnedRecipes[recipeID] = {}
     end
-    tinsert(BFC.learnedRecipes[recipeID], AF.WrapTextInColor(name, class))
+    tinsert(BFC.learnedRecipes[recipeID], {name, class})
 end
 
 local function ProcessRecipes(recipes, name, class)
