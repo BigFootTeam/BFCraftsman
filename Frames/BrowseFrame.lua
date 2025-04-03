@@ -287,7 +287,8 @@ LoadList = function()
 end
 
 function BFC.UpdateList()
-    if browseFrame and browseFrame:IsShown() then
+    -- no update while browsing
+    if browseFrame and not browseFrame:IsShown() then
         LoadList()
     else
         updateRequired = true
