@@ -19,7 +19,7 @@ local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
 local publishFrame, progressBar
-local enableCheckBox, taglineEditBox, charList, addButton
+local enableCheckBox, taglineEditBox, craftingFeeEditBox, charList, addButton
 local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
@@ -127,12 +127,32 @@ local function CreatePublishFrame()
         bytesText:SetFormattedText("%d / %d", #text, TAGLINE_MAX_BYTES)
     end)
 
+    -- crafting fee
+    local craftingFeePane = AF.CreateTitledPane(publishFrame, L["Crafting Fee"], nil, 45)
+    AF.SetPoint(craftingFeePane, "TOPLEFT", taglinePane, "BOTTOMLEFT", 0, -12)
+    AF.SetPoint(craftingFeePane, "TOPRIGHT", taglinePane, "BOTTOMRIGHT", 0, -12)
+
+    craftingFeeEditBox = AF.CreateEditBox(craftingFeePane, nil, nil, 20, "number")
+    AF.SetPoint(craftingFeeEditBox, "TOPLEFT", craftingFeePane, 0, -25)
+    AF.SetPoint(craftingFeeEditBox, "RIGHT")
+    craftingFeeEditBox:SetMaxLetters(10)
+    craftingFeeEditBox:SetConfirmButton(function(value)
+        BFC_DB.publish.craftingFee = value
+        BFC.CancelNextSync()
+        BFC.UpdateSendingData()
+        BFC.ScheduleNextSync(true)
+    end)
+
+    local goldIcon = AF.CreateFontString(craftingFeeEditBox)
+    AF.SetPoint(goldIcon, "RIGHT", -5, 0)
+    goldIcon:SetText(AF.EscapeAtlas("Coin-Gold"))
+
     -- characters and professions
     local charProfPane = AF.CreateTitledPane(publishFrame, L["Characters and Professions"])
-    AF.SetPoint(charProfPane, "TOPLEFT", taglinePane, "BOTTOMLEFT", 0, -20)
+    AF.SetPoint(charProfPane, "TOPLEFT", craftingFeePane, "BOTTOMLEFT", 0, -13)
     AF.SetPoint(charProfPane, "BOTTOMRIGHT")
 
-    charList = AF.CreateScrollList(charProfPane, nil, nil, 10, 10, 7, 40, 10)
+    charList = AF.CreateScrollList(charProfPane, nil, 10, 10, 6, 40, 10)
     AF.SetPoint(charList, "TOPLEFT", charProfPane, 0, -25)
     AF.SetPoint(charList, "TOPRIGHT", charProfPane, 0, -25)
 end
@@ -140,6 +160,7 @@ end
 local function LoadConfigs()
     enableCheckBox:SetChecked(BFC_DB.publish.enabled)
     taglineEditBox:SetText(BFC_DB.publish.tagline)
+    craftingFeeEditBox:SetText(BFC_DB.publish.craftingFee or "")
 
     if BFC_DB.publish.enabled then
         AF.HideMask(publishFrame)

@@ -145,7 +145,7 @@ local function CreateDetailFrame()
     -- load
     function detailFrame:Load(pane)
         detailFrame.pane = pane
-        craftingFeeText:SetText(L["Crafting Fee: %s"]:format(pane.t.craftingFee or "???") .. AF.EscapeAtlas("Coin-Gold"))
+        craftingFeeText:SetText(L["Crafting Fee: %s"]:format(pane.t.craftingFee or BFC.UNKNOWN_CRAFTING_FEE) .. AF.EscapeAtlas("Coin-Gold"))
         idEditBox:SetText(pane.id)
         idEditBox:SetCursorPosition(0)
 

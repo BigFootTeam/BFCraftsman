@@ -4,6 +4,8 @@ local BFC = select(2, ...)
 local AF = _G.AbstractFramework
 local L = BFC.L
 
+BFC.UNKNOWN_CRAFTING_FEE = AF.WrapTextInColor("??", "darkgray")
+
 local browseFrame, list, showStaleCB, showBlacklistedCB
 local selectedProfession, keywords = 0, ""
 local LoadList
@@ -96,9 +98,9 @@ local function Pane_Load(pane, id, t)
 
     -- fee
     if AF.isAsian then
-        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber_Asian(t.craftingFee) or "???")
+        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber_Asian(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
     else
-        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber(t.craftingFee) or "???")
+        pane.craftingFeeText:SetText(t.craftingFee and AF.FormatNumber(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
     end
 
     -- professions
@@ -130,7 +132,7 @@ local function Pane_OnEnter(pane)
     if not BFC_DB.blacklist[pane.id] then
         AF.ShowTooltips(pane, "BOTTOMLEFT", 0, -1, {
             AF.WrapTextInColor(pane.t.name, pane.t.class),
-            L["Crafting Fee: %s"]:format(AF.WrapTextInColor(pane.t.craftingFee or "???", "gold")) .. AF.EscapeAtlas("Coin-Gold"),
+            L["Crafting Fee: %s"]:format(AF.WrapTextInColor(pane.t.craftingFee or BFC.UNKNOWN_CRAFTING_FEE, "gold")) .. AF.EscapeAtlas("Coin-Gold"),
             L["Last updated: %s"]:format(AF.WrapTextInColor(AF.FormatRelativeTime(pane.t.lastUpdate), "yellow")),
             pane.t.tagline
         })
