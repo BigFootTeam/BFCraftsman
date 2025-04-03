@@ -141,6 +141,12 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         button:SetTexture("Interface\\AddOns\\BFCraftsman\\BFC")
         button:SetOnClick(BFC.ToggleMainFrame)
 
+        if C_AddOns.IsAddOnLoaded("TradeSkillMaster") then
+            AF.SetPoint(button, "RIGHT", ProfessionsFrame.MaximizeMinimize, "LEFT", -65, 0)
+        else
+            AF.SetPoint(button, "RIGHT", ProfessionsFrame.MaximizeMinimize, "LEFT", -1, 0)
+        end
+
         if not BFC_DB.professionsFrameHelpViewed then
             AF.ShowHelpTip({
                 widget = button,
