@@ -31,6 +31,18 @@ function BFC.GetProfessionList()
     return ret
 end
 
+local professionOrder = {164, 165, 171, 197, 202, 333, 773, 755}
+function BFC.GetProfessionString(profs, size)
+    local text = ""
+    for _, id in pairs(professionOrder) do
+        if profs[id] ~= nil then
+            local icon = AF.GetProfessionIcon(id)
+            text = text .. AF.EscapeIcon(icon, size)
+        end
+    end
+    return text
+end
+
 BFC.learnedProfessions = {}
 
 local function Update(id, name, class)
@@ -38,7 +50,7 @@ local function Update(id, name, class)
         if not BFC.learnedProfessions[id] then
             BFC.learnedProfessions[id] = {}
         end
-        tinsert(BFC.learnedProfessions[id], AF.WrapTextInColor(name, class))
+        tinsert(BFC.learnedProfessions[id], {name, class})
     end
 end
 
