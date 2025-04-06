@@ -77,7 +77,7 @@ local function PublishReceived(data, _, channel)
 
     if not BFC_DB.list[id] then
         BFC_DB.list[id] = {
-            learnedRecipes = {},
+            recipes = {},
         }
     end
 
@@ -150,7 +150,7 @@ local function CanCraftReceived(data)
     if version ~= BFC.versionNum then return end -- only accept the same version
 
     if not BFC_DB.blacklist[id] and BFC_DB.list[id] then
-        BFC_DB.list[id].learnedRecipes[recipeID] = chars
+        BFC_DB.list[id].recipes[recipeID] = chars
         BFC.NotifyCanCraft(id, recipeID, chars)
     end
 end

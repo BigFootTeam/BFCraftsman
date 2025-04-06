@@ -61,7 +61,25 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                         -- },
                     },
                 },
-                list = {},
+                list = {
+                    -- [id] = {
+                    --     name = (string),
+                    --     class = (string),
+                    --     tagline = (string),
+                    --     craftingFee = (number),
+                    --     recipes = {
+                    --         [recipeID] = {
+                    --             {name, class},
+                    --         },
+                    --     },
+                    --     professions = {
+                    --         [skillLineID] = {
+                    --             {name, class},
+                    --         },
+                    --     },
+                    --     lastUpdate = (number),
+                    -- }
+                },
                 favorite = {},
                 blacklist = {},
                 showStale = false,
@@ -77,8 +95,8 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         end
 
         -- validate list
-        for id in pairs(BFC_DB.list) do
-            if type(id) ~= "string" or #id ~= 32 then
+        for id, t in pairs(BFC_DB.list) do
+            if type(id) ~= "string" or #id ~= 32 or type(t.professions) ~= "table" or type(t.recipes) ~= "table" then
                 BFC_DB.list[id] = nil
             end
         end
@@ -264,7 +282,7 @@ SlashCmdList["BFCRAFTSMAN"] = function(msg)
                tagline = "This is a tagline " .. i,
                craftingFee = random(1000, 10000),
                lastUpdate = time() - random(1, 10000),
-               learnedRecipes = {},
+               recipes = {},
                professions = {},
             }
 

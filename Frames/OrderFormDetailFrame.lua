@@ -237,7 +237,7 @@ local function CreateDetailFrame()
         detailFrame.id = id
         detailFrame.recipeID = BFC.GetOrderRecipeID()
         detailFrame.professionID = BFC.GetOrderProfessionID()
-        detailFrame.crafters = BFC_DB.list[id].learnedRecipes[detailFrame.recipeID]
+        detailFrame.crafters = BFC_DB.list[id].recipes[detailFrame.recipeID]
         detailFrame.canCraft = detailFrame.crafters and true
 
         if BFC_DB.list[id].professions[detailFrame.professionID] == true then
