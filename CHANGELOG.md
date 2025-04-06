@@ -1,25 +1,4 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r2...c52a8678194004860704bc583f1b1f2b6f046c90)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r3...8836a6858d24464bafd8d1fdf43b473a6f1ae21e)
 
-- Add [BFC] prefix
-- Add crafters to OrderFormDetailFrame
-- Add crafting fee for BrowseFrame
-- Add crafting fee for DetailFrame
-- Add fee for BFCOrderFormListFrame
-- Add separater
-- Add tagline for OrderFormDetailFrame
-- Add version check
-- Change SYNC_INTERVAL to 5 min
-- Check TSM button
-- Complete crafting fee
-- Implement whisper template
-- Increase TAGLINE_MAX_BYTES to 200
-- No update while browsing
-- Update BFC.learnedProfessions
-- Update BFC.learnedProfessions
-- Update BFC.learnedRecipes
-- Update BFC.learnedRecipes
-- Update BFCraftsman.toc
-- Update Comm
-- Update DetailFrame
-- Update locales
-- Validate list
+- Change learnedRecipes to recipes for list
+- Fix order list filter
