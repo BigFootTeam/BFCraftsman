@@ -102,7 +102,7 @@ function BFC.ShowListFrame()
 
     if currentRecipeID and currentProfessionID then
         for id, t in pairs(BFC_DB.list) do
-            if not BFC_DB.blacklist[id] and type(t.professions[currentProfessionID]) then
+            if not BFC_DB.blacklist[id] and type(t.professions[currentProfessionID]) == "table" then
                 local b = pool:Acquire()
                 b.id = id
                 b.isFavorite = BFC_DB.favorite[id]
