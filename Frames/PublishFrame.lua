@@ -217,6 +217,7 @@ local function Pane_UpdateButton(button, t)
     else
         button:SetText(GetTradeSkillDisplayName(t.id))
         button:SetTexture(AF.GetProfessionIcon(t.id), {14, 14}, {"LEFT", 5, 0})
+        button.checkBox:SetChecked(t.enabled)
         button:SetEnabled(BFC.validSkillLine[t.id])
     end
 end
@@ -255,6 +256,25 @@ local function CreateCharacterPane()
     prof1Button:HookOnLeave(Pane_HideCacheInfo)
     prof1Button:SetOnClick(Pane_Scan)
 
+    local prfo1CheckBox = AF.CreateCheckButton(prof1Button, nil, function(checked)
+        pane.t.prof1.enabled = checked
+        BFC.CancelNextSync()
+        BFC.UpdateLearnedProfessions()
+        BFC.UpdateSendingData()
+        BFC.ScheduleNextSync(true)
+    end)
+    prof1Button.checkBox = prfo1CheckBox
+    AF.SetPoint(prfo1CheckBox, "RIGHT", prof1Button, -3, 0)
+    prfo1CheckBox:HookOnEnter(prof1Button:GetOnEnter())
+    prfo1CheckBox:HookOnLeave(prof1Button:GetOnLeave())
+    prof1Button:HookOnDisable(function()
+        prfo1CheckBox:SetChecked(false)
+        prfo1CheckBox:SetEnabled(false)
+    end)
+    prof1Button:HookOnEnable(function()
+        prfo1CheckBox:SetEnabled(true)
+    end)
+
     -- prof2
     local prof2Button = AF.CreateButton(pane, "prof2", "accent_hover", nil, 20)
     prof2Button.parent = pane
@@ -267,6 +287,25 @@ local function CreateCharacterPane()
     prof2Button:HookOnLeave(Pane_HideCacheInfo)
     prof2Button:SetOnClick(Pane_Scan)
 
+    local prfo2CheckBox = AF.CreateCheckButton(prof2Button, nil, function(checked)
+        pane.t.prof2.enabled = checked
+        BFC.CancelNextSync()
+        BFC.UpdateLearnedProfessions()
+        BFC.UpdateSendingData()
+        BFC.ScheduleNextSync(true)
+    end)
+    prof2Button.checkBox = prfo2CheckBox
+    AF.SetPoint(prfo2CheckBox, "RIGHT", prof2Button, -3, 0)
+    prfo2CheckBox:HookOnEnter(prof2Button:GetOnEnter())
+    prfo2CheckBox:HookOnLeave(prof2Button:GetOnLeave())
+    prof2Button:HookOnDisable(function()
+        prfo2CheckBox:SetChecked(false)
+        prfo2CheckBox:SetEnabled(false)
+    end)
+    prof2Button:HookOnEnable(function()
+        prfo2CheckBox:SetEnabled(true)
+    end)
+
     -- delete
     local delButton = AF.CreateButton(pane, nil, "red_hover", 21, 21)
     delButton:SetTexture(AF.GetIcon("Close1"), {16, 16}, {"CENTER", 0, 0})
@@ -277,8 +316,8 @@ local function CreateCharacterPane()
             tremove(BFC_DB.publish.characters, pane.index)
             LoadCharacters()
 
-            BFC.UpdateLearnedProfessions()
             BFC.CancelNextSync()
+            BFC.UpdateLearnedProfessions()
             BFC.UpdateSendingData()
             BFC.ScheduleNextSync(true)
         end
@@ -309,12 +348,14 @@ CreateAddButton = function()
             name = AF.player.fullName,
             class = AF.player.class,
             prof1 = {
+                enabled = true,
                 id = prof1 or 0,
                 lastScanned = 0,
                 recipes = {},
                 allRecipesLearned = false,
             },
             prof2 = {
+                enabled = true,
                 id = prof2 or 0,
                 lastScanned = 0,
                 recipes = {},

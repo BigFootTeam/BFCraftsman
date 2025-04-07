@@ -45,19 +45,19 @@ end
 
 BFC.learnedProfessions = {}
 
-local function Update(id, name, class)
-    if BFC.validSkillLine[id] then
-        if not BFC.learnedProfessions[id] then
-            BFC.learnedProfessions[id] = {}
+local function Update(prof, name, class)
+    if prof.enabled and BFC.validSkillLine[prof.id] then
+        if not BFC.learnedProfessions[prof.id] then
+            BFC.learnedProfessions[prof.id] = {}
         end
-        tinsert(BFC.learnedProfessions[id], {name, class})
+        tinsert(BFC.learnedProfessions[prof.id], {name, class})
     end
 end
 
 function BFC.UpdateLearnedProfessions()
     wipe(BFC.learnedProfessions)
     for _, t in pairs(BFC_DB.publish.characters) do
-        Update(t.prof1.id, t.name, t.class)
-        Update(t.prof2.id, t.name, t.class)
+        Update(t.prof1, t.name, t.class)
+        Update(t.prof2, t.name, t.class)
     end
 end

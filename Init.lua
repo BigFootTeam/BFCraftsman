@@ -47,11 +47,13 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 publish = {
                     enabled = false,
                     tagline = "",
+                    craftingFee = nil,
                     characters = {
                         -- {
                         --     name = (string),
                         --     class = (string),
                         --     prof1 = {
+                        --         enabled = (boolean),
                         --         id = (number),
                         --         lastScanned = (number),
                         --         recipes = {},
@@ -94,12 +96,19 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
             BFC_DB.whisperTemplate = L["WHISPER_TEMPLATE"]
         end
 
+        ---------------------------------------------------------------------
         -- validate list
         for id, t in pairs(BFC_DB.list) do
             if type(id) ~= "string" or #id ~= 32 or type(t.professions) ~= "table" or type(t.recipes) ~= "table" then
                 BFC_DB.list[id] = nil
             end
         end
+        -- validate publish
+        for _, t in pairs(BFC_DB.publish.characters) do
+            if type(t.prof1.enabled) ~= "boolean" then t.prof1.enabled = true end
+            if type(t.prof2.enabled) ~= "boolean" then t.prof2.enabled = true end
+        end
+        ---------------------------------------------------------------------
 
         -- minimap button
         AF.NewMinimapButton(BFC.name, "Interface\\AddOns\\BFCraftsman\\BFC", BFC_DB.minimap, BFC.ToggleMainFrame, L["BFCraftsman"])
