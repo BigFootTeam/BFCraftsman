@@ -12,6 +12,7 @@ local BFC_PUBLISH_PREFIX = "BFC_PUB"
 local BFC_UNPUBLISH_PREFIX = "BFC_UNPUB"
 local BFC_CHK_CRAFT_PREFIX = "BFC_CHK_CRAFT"
 local BFC_CAN_CRAFT_PREFIX = "BFC_CAN_CRAFT"
+local BFC_INSTANCE_PREFIX = "BFC_INSTANCE"
 local BFC_VER = "BFC_VER"
 
 ---------------------------------------------------------------------
@@ -155,3 +156,24 @@ local function CanCraftReceived(data)
     end
 end
 AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
+
+---------------------------------------------------------------------
+-- in instance
+---------------------------------------------------------------------
+local IsInInstance = IsInInstance
+function BFC.UpdateInstanceStatus()
+    if BFC.channelID == 0 then return end
+    local inInstance = IsInInstance()
+    AF.SendCommMessage_Channel(BFC_INSTANCE_PREFIX, {BFC.versionNum, BFC.battleTag, inInstance}, BFC.channelName)
+end
+
+local function InstanceStatusReceived(data)
+    local version, id, inInstance = AF.Unpack3(data)
+    if version ~= BFC.versionNum then return end -- only accept the same version
+
+    if not BFC_DB.blacklist[id] and BFC_DB.list[id] then
+        BFC_DB.list[id].inInstance = inInstance
+        BFC.UpdateList()
+    end
+end
+AF.RegisterComm(BFC_INSTANCE_PREFIX, InstanceStatusReceived)

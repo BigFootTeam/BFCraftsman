@@ -114,6 +114,8 @@ local function Pane_Load(pane, id, t)
         pane.professionText:SetText(AF.WrapTextInColor(L["Blacklisted"], "red"))
     elseif BFC.IsStale(t.lastUpdate) then
         pane.professionText:SetText(AF.WrapTextInColor(L["Stale"], "darkgray"))
+    -- elseif t.inInstance then
+    --     pane.professionText:SetText(AF.WrapTextInColor(L["In Instance"], "firebrick"))
     else
         pane.professionText:SetText(BFC.GetProfessionString(t.professions, 12))
     end
@@ -124,6 +126,9 @@ local function Pane_Load(pane, id, t)
 
     -- block
     pane.blockButton:SetTextureColor(BFC_DB.blacklist[pane.id] and "red" or "darkgray")
+
+    -- busy
+    pane.busyTexture:SetShown(t.inInstance)
 
     --@debug@
     -- if id == BFC.battleTag then
@@ -138,6 +143,7 @@ local function Pane_OnEnter(pane)
     if not BFC_DB.blacklist[pane.id] then
         AF.ShowTooltips(pane, "BOTTOMLEFT", 0, -1, {
             AF.WrapTextInColor(pane.t.name, pane.t.class),
+            pane.t.inInstance and AF.WrapTextInColor(L["In Instance..."], "firebrick"),
             L["Crafting Fee: %s"]:format(AF.WrapTextInColor(pane.t.craftingFee or BFC.UNKNOWN_CRAFTING_FEE, "gold")) .. AF.EscapeAtlas("Coin-Gold"),
             L["Last updated: %s"]:format(AF.WrapTextInColor(AF.FormatRelativeTime(pane.t.lastUpdate), "yellow")),
             pane.t.tagline
@@ -166,6 +172,12 @@ local function CreatePane()
     nameButton:SetOnClick(function()
         BFC.ShowDetailFrame(pane)
     end)
+
+    -- busy
+    local busyTexture = AF.CreateGradientTexture(nameButton, "HORIZONTAL", AF.GetColorTable("firebrick", 0.3), "none", nil, "BACKGROUND")
+    pane.busyTexture = busyTexture
+    AF.SetOnePixelInside(busyTexture)
+    busyTexture:Hide()
 
     -- crafting fee
     local craftingFeeText = AF.CreateFontString(pane, nil, "gold")

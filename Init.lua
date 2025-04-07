@@ -101,6 +101,8 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         for id, t in pairs(BFC_DB.list) do
             if type(id) ~= "string" or #id ~= 32 or type(t.professions) ~= "table" or type(t.recipes) ~= "table" then
                 BFC_DB.list[id] = nil
+            else
+                t.inInstance = nil -- reset in instance status
             end
         end
         -- validate publish
@@ -241,6 +243,7 @@ local function PLAYER_ENTERING_WORLD()
             PLAYER_ENTERING_WORLD()
         end)
     end
+    BFC.UpdateInstanceStatus()
 end
 BFC:RegisterEvent("PLAYER_ENTERING_WORLD", PLAYER_ENTERING_WORLD)
 

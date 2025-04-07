@@ -47,6 +47,11 @@ local function CreateButton()
         BFC.ShowOrderFormDetailFrame(b.id)
     end)
 
+    -- busy
+    b.busyTexture = AF.CreateGradientTexture(b, "HORIZONTAL", AF.GetColorTable("firebrick", 0.3), "none", nil, "BACKGROUND")
+    AF.SetOnePixelInside(b.busyTexture)
+    b.busyTexture:Hide()
+
     return b
 end
 local pool = AF.CreateObjectPool(CreateButton)
@@ -118,6 +123,8 @@ function BFC.ShowListFrame()
                 else
                     b:HideTexture()
                 end
+
+                b.busyTexture:SetShown(t.inInstance)
             end
         end
     end
