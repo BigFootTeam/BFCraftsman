@@ -77,6 +77,14 @@ local crafterPanePool = AF.CreateObjectPool(function()
     b:SetOnClick(function()
         local t = BFC_DB.list[detailFrame.id]
         if t then
+            -- for k, v in ProfessionsCustomerOrdersFrame.Form.OrderRecipientDropdown:GetMenuDescription():EnumerateElementDescriptions() do
+            --     if k == 3 then
+            --         ProfessionsCustomerOrdersFrame.Form.OrderRecipientDropdown:Pick(v, 0)
+            --         break
+            --     end
+            -- end
+            ProfessionsCustomerOrdersFrame.Form.OrderRecipientDropdown:Increment()
+            ProfessionsCustomerOrdersFrame.Form.OrderRecipientDropdown:Increment()
             ProfessionsCustomerOrdersFrame.Form.OrderRecipientTarget:SetText(f.name)
             ProfessionsCustomerOrdersFrame.Form.PaymentContainer.TipMoneyInputFrame.GoldBox:SetText(t.craftingFee or 0)
         end
