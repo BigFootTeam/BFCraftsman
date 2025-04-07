@@ -121,10 +121,10 @@ local function Pane_Load(pane, id, t)
     pane.blockButton:SetTextureColor(BFC_DB.blacklist[pane.id] and "red" or "darkgray")
 
     --@debug@
-    if id == BFC.battleTag then
-        pane.nameButton:SetText("Abcdefghjkmn")
-        pane.professionText:SetText(BFC.GetProfessionString(BFC.validSkillLine, 12))
-    end
+    -- if id == BFC.battleTag then
+    --     pane.nameButton:SetText("Abcdefghjkmn")
+    --     pane.professionText:SetText(BFC.GetProfessionString(BFC.validSkillLine, 12))
+    -- end
     --@end-debug@
 end
 
