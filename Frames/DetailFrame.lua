@@ -11,9 +11,10 @@ local updateRequired
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
-    detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, 340, nil, "accent")
+    detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, nil, nil, "accent")
     AF.SetFrameLevel(detailFrame, 50)
     detailFrame:Hide()
+    AF.SetInside(detailFrame, BFCBrowseFrameList, 5)
 
     detailFrame:SetOnShow(function()
         AF.ShowMask(BFCBrowseFrame, nil, 0, 0, 0, 0)
@@ -29,7 +30,7 @@ local function CreateDetailFrame()
     end)
 
     -- close
-    local closeButton = AF.CreateCloseButton(detailFrame)
+    local closeButton = AF.CreateCloseButton(detailFrame, nil, 20, 20)
     AF.SetPoint(closeButton, "TOPRIGHT")
     closeButton:SetBorderColor("accent")
 
@@ -103,7 +104,7 @@ local function CreateDetailFrame()
     )
 
     -- character list
-    local charList = AF.CreateScrollList(detailFrame, nil, 2, 2, 4, 20, 1)
+    local charList = AF.CreateScrollList(detailFrame, nil, 2, 2, 7, 20, 1)
     AF.SetPoint(charList, "TOPLEFT", idEditBox, "BOTTOMLEFT", 0, -35)
     AF.SetPoint(charList, "RIGHT", -10)
 
@@ -125,7 +126,7 @@ local function CreateDetailFrame()
     local currentCharHighlight = AF.CreateGradientTexture(charList, "HORIZONTAL", "none", AF.GetColorTable("green", 0.3))
 
     -- tagline
-    local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 65)
+    local taglineEditBox = AF.CreateScrollEditBox(detailFrame, nil, nil, nil, 120)
     AF.SetPoint(taglineEditBox, "TOPLEFT", charList, "BOTTOMLEFT", 0, -35)
     AF.SetPoint(taglineEditBox, "RIGHT", -10, 0)
     taglineEditBox:SetNotUserChangable(true)
@@ -214,18 +215,14 @@ function BFC.ShowDetailFrame(pane)
         CreateDetailFrame()
     end
 
-    AF.ClearPoints(detailFrame)
-    if pane._slotIndex <= 11 then
-        -- AF.SetPoint(detailFrame, "TOPLEFT", pane)
-        -- AF.SetPoint(detailFrame, "TOPRIGHT", pane)
-        AF.SetPoint(detailFrame, "TOPLEFT", BFCBrowseFrameList.slotFrame)
-        AF.SetPoint(detailFrame, "TOPRIGHT", BFCBrowseFrameList.slotFrame)
-    else
-        -- AF.SetPoint(detailFrame, "BOTTOMLEFT", pane)
-        -- AF.SetPoint(detailFrame, "BOTTOMRIGHT", pane)
-        AF.SetPoint(detailFrame, "BOTTOMLEFT", BFCBrowseFrameList.slotFrame)
-        AF.SetPoint(detailFrame, "BOTTOMRIGHT", BFCBrowseFrameList.slotFrame)
-    end
+    -- AF.ClearPoints(detailFrame)
+    -- if pane._slotIndex <= 11 then
+    --     AF.SetPoint(detailFrame, "TOPLEFT", BFCBrowseFrameList.slotFrame)
+    --     AF.SetPoint(detailFrame, "TOPRIGHT", BFCBrowseFrameList.slotFrame)
+    -- else
+    --     AF.SetPoint(detailFrame, "BOTTOMLEFT", BFCBrowseFrameList.slotFrame)
+    --     AF.SetPoint(detailFrame, "BOTTOMRIGHT", BFCBrowseFrameList.slotFrame)
+    -- end
 
     detailFrame:Load(pane)
     detailFrame:Show()
