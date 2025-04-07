@@ -22,6 +22,7 @@ local function CreateDetailFrame()
 
     detailFrame:SetOnHide(function()
         detailFrame:Hide()
+        detailFrame.pane = nil
         AF.HideMask(BFCBrowseFrame)
         if updateRequired then
             updateRequired = false

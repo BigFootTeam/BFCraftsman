@@ -66,6 +66,11 @@ local function CreateBrowseFrame()
         LoadList()
     end)
 
+    -- refresh
+    -- refreshButton = AF.CreateButton(searchBox, L["Refresh List"], "accent")
+    -- refreshButton:SetAllPoints()
+    -- AF.ShowCalloutGlow(refreshButton, true)
+
     -- list
     list = AF.CreateScrollList(browseFrame, "BFCBrowseFrameList", 5, 5, 22, 20, 1)
     AF.SetPoint(list, "TOPLEFT", browseFrame, 0, -30)
@@ -287,9 +292,10 @@ LoadList = function()
 end
 
 function BFC.UpdateList()
-    -- no update while browsing
-    if browseFrame and not browseFrame:IsShown() then
+    if browseFrame and browseFrame:IsShown() then
+        local scroll = list:GetScroll()
         LoadList()
+        list:SetScroll(scroll) -- restore scroll position
     else
         updateRequired = true
     end
