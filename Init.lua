@@ -236,6 +236,7 @@ local GetChannelName = GetChannelName
 local JoinPermanentChannel = JoinPermanentChannel
 local function PLAYER_ENTERING_WORLD()
     BFC.channelID = GetChannelName(BFC.channelName)
+    -- print("BFC channelID: " .. tostring(BFC.channelID))
     if BFC.channelID == 0 then
         JoinPermanentChannel(BFC.channelName)
         C_Timer.After(5, function()
@@ -245,7 +246,7 @@ local function PLAYER_ENTERING_WORLD()
     end
     BFC.UpdateInstanceStatus()
 end
-BFC:RegisterEvent("PLAYER_ENTERING_WORLD", PLAYER_ENTERING_WORLD)
+BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(5, PLAYER_ENTERING_WORLD))
 
 ---------------------------------------------------------------------
 -- disable ChatConfigFrame interaction
