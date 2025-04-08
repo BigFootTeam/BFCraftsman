@@ -161,10 +161,14 @@ AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
 -- in instance
 ---------------------------------------------------------------------
 local IsInInstance = IsInInstance
+local wasInInstance
 function BFC.UpdateInstanceStatus()
-    if BFC.channelID == 0 then return end
+    if BFC.channelID == 0 or not BFC_DB.publish.enabled then return end
     local inInstance = IsInInstance()
-    AF.SendCommMessage_Channel(BFC_INSTANCE_PREFIX, {BFC.versionNum, BFC.battleTag, inInstance}, BFC.channelName)
+    if inInstance ~= wasInInstance then
+        wasInInstance = inInstance
+        AF.SendCommMessage_Channel(BFC_INSTANCE_PREFIX, {BFC.versionNum, BFC.battleTag, inInstance}, BFC.channelName)
+    end
 end
 
 local function InstanceStatusReceived(data)
