@@ -260,7 +260,22 @@ local function Comparator(a, b)
     return a.id < b.id
 end
 
+local function CanCraftOnMyServer(t)
+    for _, pt in pairs(t.professions) do
+        for _, crafter in pairs(pt) do
+            if AF.IsConnectedRealm(crafter[1]) then
+                return true
+            end
+        end
+    end
+end
+
 local function ShouldShow(id, t)
+    if BFC.battleTag == id then
+        -- always show self
+        return true
+    end
+
     local names = {}
     for _, prof in pairs(t.professions) do
         for _, char in pairs(prof) do
@@ -269,15 +284,11 @@ local function ShouldShow(id, t)
     end
     names = AF.TableToString(names, " ", true)
 
-    if BFC.battleTag == id then
-        -- always show self
-        return true
-    end
-
     return (BFC_DB.showStale or not BFC.IsStale(t.lastUpdate) or BFC_DB.favorite[id] or BFC_DB.blacklist[id]) -- stale
         and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
         and not AF.IsEmpty(t.professions) -- has professions
-        and (selectedProfession == 0 or type(t.professions[selectedProfession]) == "boolean") -- match selected profession
+        and (selectedProfession == 0 or t.professions[selectedProfession]) -- match selected profession
+        and CanCraftOnMyServer(t) -- can craft on my server
         and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(names, keywords))) -- match keyword
 end
 
