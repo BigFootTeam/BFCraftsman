@@ -198,9 +198,6 @@ end)
 local BNGetInfo = BNGetInfo
 local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
 BFC:RegisterEvent("PLAYER_LOGIN", function()
-    -- broadcast version
-    BFC.BroadcastVersion()
-
     -- disable channel message
     for i = 1, 10 do
         if _G["ChatFrame" .. i] then
@@ -240,10 +237,8 @@ local function PLAYER_ENTERING_WORLD()
     -- print("BFC channelID: " .. tostring(BFC.channelID))
     if BFC.channelID == 0 then
         JoinTemporaryChannel(BFC.channelName)
-        C_Timer.After(5, function()
-            -- check again
-            PLAYER_ENTERING_WORLD()
-        end)
+        BFC.BroadcastVersion()
+        C_Timer.After(5, PLAYER_ENTERING_WORLD)
     end
     BFC.UpdateInstanceStatus()
 end
