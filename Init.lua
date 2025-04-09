@@ -232,15 +232,20 @@ end)
 
 local GetChannelName = GetChannelName
 local JoinTemporaryChannel = JoinTemporaryChannel
+local versionBroadcasted
 local function PLAYER_ENTERING_WORLD()
     BFC.channelID = GetChannelName(BFC.channelName)
     -- print("BFC channelID: " .. tostring(BFC.channelID))
     if BFC.channelID == 0 then
         JoinTemporaryChannel(BFC.channelName)
-        BFC.BroadcastVersion()
         C_Timer.After(5, PLAYER_ENTERING_WORLD)
+    else
+        if not versionBroadcasted then
+            BFC.BroadcastVersion()
+            versionBroadcasted = true
+        end
+        BFC.UpdateInstanceStatus()
     end
-    BFC.UpdateInstanceStatus()
 end
 BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(10, PLAYER_ENTERING_WORLD))
 
