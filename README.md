@@ -25,6 +25,12 @@
 - `/bfc clear blacklist` - Clear your blacklist
 - `/bfc reset` - Reset all settings to default
 
+**Translations:**
+
+- Want to help translate BFCraftsman to your language? Simply submit a Pull Request!
+- All translation contributors will be credited in the addon.
+- Currently supported languages: enUS, zhCN.
+
 **Screenshots:**
 
 <table>
@@ -62,3 +68,9 @@ BFCraftsman 是一个简化工匠与客户之间连接的插件，提供游戏�
 - `/bfc clear favorite` - 删除所有收藏的工匠
 - `/bfc clear blacklist` - 清空黑名单
 - `/bfc reset` - 重置所有设置并恢复默认
+
+**本地化翻译：**
+
+- 想要帮助将大脚工匠翻译成你的语言？提交 Pull Request 就可以啦!
+- 所有翻译贡献者将在插件中获得署名鸣谢。
+- 目前支持的语言：英文、简体中文。
