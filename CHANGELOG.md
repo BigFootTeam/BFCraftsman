@@ -1,8 +1,7 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r4...1bc32f419e23d93abc6073ea42086d80df79ce53)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r5...f97349b79b28dc7ef0c7473099052a4a1e58aa3a)
 
-- Add InInstance status
-- Fix missing translation
-- List now refresh immediately when visible
-- Make professions toggleable
-- Set orderType to personal when auto fill
-- Update size of DetailFrame
+- Add delay for PLAYER_ENTERING_WORLD()
+- Cache both DF and TWW recipes
+- Only show same/connected realms
+- Reduce frequency of BFC.UpdateInstanceStatus
+- Update README
