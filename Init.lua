@@ -3,6 +3,7 @@ local BFC = select(2, ...)
 BFC.name = "BFCraftsman"
 BFC.channelName = "BFCraftsman"
 BFC.channelID = 0
+BFC.minVersion = 5
 
 _G.BFCraftsman = BFC
 
