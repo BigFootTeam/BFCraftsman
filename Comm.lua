@@ -19,7 +19,7 @@ local BFC_VER = "BFC_VER"
 -- version check
 ---------------------------------------------------------------------
 local function VersionCheckReceived(version)
-    if version > BFC.versionNum and (not BFC_DB.lastVersionCheck or time() - BFC_DB.lastVersionCheck >= 600) then
+    if version > BFC.versionNum and (not BFC_DB.lastVersionCheck or time() - BFC_DB.lastVersionCheck >= 3600) then
         BFC_DB.lastVersionCheck = time()
         AF.Print(L["New version (%s) available! Please consider updating."]:format("r" .. version))
     end
@@ -73,7 +73,7 @@ end
 
 local function PublishReceived(data, _, channel)
     local version, id, name, class, tagline, craftingFee, professions = AF.Unpack7(data)
-    if type(version) ~= "number" or version < BFC.minVersion then return end -- only accept the same version
+    if type(version) ~= "number" or version < BFC.minVersion then return end
     if BFC_DB.blacklist[id] then return end
 
     if not BFC_DB.list[id] then
@@ -138,7 +138,7 @@ end
 
 local function CheckCanCraftReceived(data)
     local version, id, recipeID = AF.Unpack3(data)
-    if type(version) ~= "number" or version < BFC.minVersion then return end -- only accept the same version
+    if type(version) ~= "number" or version < BFC.minVersion then return end
 
     if id == BFC.battleTag then
         AF.SendCommMessage_Channel(BFC_CAN_CRAFT_PREFIX, {BFC.versionNum, BFC.battleTag, recipeID, BFC.learnedRecipes[recipeID]}, BFC.channelName)
@@ -148,7 +148,7 @@ AF.RegisterComm(BFC_CHK_CRAFT_PREFIX, CheckCanCraftReceived)
 
 local function CanCraftReceived(data)
     local version, id, recipeID, chars = AF.Unpack4(data)
-    if type(version) ~= "number" or version < BFC.minVersion then return end -- only accept the same version
+    if type(version) ~= "number" or version < BFC.minVersion then return end
 
     if not BFC_DB.blacklist[id] and BFC_DB.list[id] then
         BFC_DB.list[id].recipes[recipeID] = chars
@@ -173,7 +173,7 @@ end
 
 local function InstanceStatusReceived(data)
     local version, id, inInstance = AF.Unpack3(data)
-    if type(version) ~= "number" or version < BFC.minVersion then return end -- only accept the same version
+    if type(version) ~= "number" or version < BFC.minVersion then return end
 
     if not BFC_DB.blacklist[id] and BFC_DB.list[id] then
         BFC_DB.list[id].inInstance = inInstance
