@@ -161,7 +161,7 @@ AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
 -- in instance
 ---------------------------------------------------------------------
 local IsInInstance = IsInInstance
-local wasInInstance
+local wasInInstance = false
 function BFC.UpdateInstanceStatus()
     if BFC.channelID == 0 or not BFC_DB.publish.enabled then return end
     local inInstance = IsInInstance()
