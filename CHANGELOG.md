@@ -1,9 +1,3 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r5...5003ec70eab5f90bab88bab68f1315ed2defcb4b)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r6...ad694b82105dd39155c539a2a88a6edf3d6396f2)
 
-- Add delay for PLAYER_ENTERING_WORLD()
-- Add minVersion check
-- Cache both DF and TWW recipes
-- JoinPermanentChannel -> JoinTemporaryChannel
-- Only show same/connected realms
-- Reduce frequency of BFC.UpdateInstanceStatus
-- Update README
+- Remove support for old versions
