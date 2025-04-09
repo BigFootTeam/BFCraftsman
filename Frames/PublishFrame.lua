@@ -10,7 +10,7 @@ local GetProfessions = GetProfessions
 local GetProfessionInfo = GetProfessionInfo
 local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
 local GetBaseProfessionInfo = C_TradeSkillUI.GetBaseProfessionInfo
-local GetChildProfessionInfo = C_TradeSkillUI.GetChildProfessionInfo
+-- local GetChildProfessionInfo = C_TradeSkillUI.GetChildProfessionInfo
 local GetProfessionInfoByRecipeID = C_TradeSkillUI.GetProfessionInfoByRecipeID
 local GetAllRecipeIDs = C_TradeSkillUI.GetAllRecipeIDs
 local GetRecipeInfo = C_TradeSkillUI.GetRecipeInfo
@@ -29,8 +29,6 @@ local function CacheRecipes(prof)
     local professionInfo = GetBaseProfessionInfo()
     if not professionInfo then return end
 
-    local childInfo = GetChildProfessionInfo()
-
     wipe(prof.recipes)
     local recipeIDs = GetAllRecipeIDs()
     local all, learned = 0, 0
@@ -38,7 +36,7 @@ local function CacheRecipes(prof)
     if recipeIDs then
         for _, recipeID in ipairs(recipeIDs) do
             local professionID = GetProfessionInfoByRecipeID(recipeID).professionID
-            if childInfo.professionID == professionID then
+            if BFC.validChildSkillLines[professionID] then
                 all = all + 1
                 local recipeInfo = GetRecipeInfo(recipeID)
                 if recipeInfo and recipeInfo.learned then
@@ -218,7 +216,7 @@ local function Pane_UpdateButton(button, t)
         button:SetText(GetTradeSkillDisplayName(t.id))
         button:SetTexture(AF.GetProfessionIcon(t.id), {14, 14}, {"LEFT", 5, 0})
         button.checkBox:SetChecked(t.enabled)
-        button:SetEnabled(BFC.validSkillLine[t.id])
+        button:SetEnabled(BFC.validSkillLines[t.id])
     end
 end
 

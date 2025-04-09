@@ -133,7 +133,7 @@ local function Pane_Load(pane, id, t)
     --@debug@
     -- if id == BFC.battleTag then
     --     pane.nameButton:SetText("Abcdefghjkmn")
-    --     pane.professionText:SetText(BFC.GetProfessionString(BFC.validSkillLine, 12))
+    --     pane.professionText:SetText(BFC.GetProfessionString(BFC.validSkillLines, 12))
     -- end
     --@end-debug@
 end

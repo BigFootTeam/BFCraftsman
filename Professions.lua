@@ -5,7 +5,7 @@ local AF = _G.AbstractFramework
 
 local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
 
-BFC.validSkillLine = {
+BFC.validSkillLines = {
     [164] = true, -- Blacksmithing
     [165] = true, -- Leatherworking
     [171] = true, -- Alchemy
@@ -19,9 +19,28 @@ BFC.validSkillLine = {
     -- [393] = true, -- Skinning
 }
 
+BFC.validChildSkillLines = {
+    [2823] = true, -- Alchemy (DF)
+    [2871] = true, -- Alchemy (TWW)
+    [2822] = true, -- Blacksmithing (DF)
+    [2872] = true, -- Blacksmithing (TWW)
+    [2825] = true, -- Enchanting (DF)
+    [2874] = true, -- Enchanting (TWW)
+    [2827] = true, -- Engineering (DF)
+    [2875] = true, -- Engineering (TWW)
+    [2828] = true, -- Inscription (DF)
+    [2878] = true, -- Inscription (TWW)
+    [2829] = true, -- Jewelcrafting (DF)
+    [2879] = true, -- Jewelcrafting (TWW)
+    [2830] = true, -- Leatherworking (DF)
+    [2880] = true, -- Leatherworking (TWW)
+    [2831] = true, -- Tailoring (DF)
+    [2883] = true, -- Tailoring (TWW)
+}
+
 function BFC.GetProfessionList()
     local ret = {}
-    for id in pairs(BFC.validSkillLine) do
+    for id in pairs(BFC.validSkillLines) do
         local name = GetTradeSkillDisplayName(id)
         tinsert(ret, {id, name})
     end
@@ -46,7 +65,7 @@ end
 BFC.learnedProfessions = {}
 
 local function Update(prof, name, class)
-    if prof.enabled and BFC.validSkillLine[prof.id] then
+    if prof.enabled and BFC.validSkillLines[prof.id] then
         if not BFC.learnedProfessions[prof.id] then
             BFC.learnedProfessions[prof.id] = {}
         end
