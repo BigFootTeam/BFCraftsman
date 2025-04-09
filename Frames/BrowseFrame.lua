@@ -260,7 +260,7 @@ local function Comparator(a, b)
     return a.id < b.id
 end
 
-local function CanCraftOnMyServer(t)
+function BFC.CanCraftOnMyServer(t)
     for _, pt in pairs(t.professions) do
         for _, crafter in pairs(pt) do
             if AF.IsConnectedRealm(crafter[1]) then
@@ -288,7 +288,7 @@ local function ShouldShow(id, t)
         and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
         and not AF.IsEmpty(t.professions) -- has professions
         and (selectedProfession == 0 or t.professions[selectedProfession]) -- match selected profession
-        and CanCraftOnMyServer(t) -- can craft on my server
+        and BFC.CanCraftOnMyServer(t) -- can craft on my server
         and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(names, keywords))) -- match keyword
 end
 
