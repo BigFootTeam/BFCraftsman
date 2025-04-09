@@ -234,12 +234,12 @@ BFC:RegisterEvent("PLAYER_LOGIN", function()
 end)
 
 local GetChannelName = GetChannelName
-local JoinPermanentChannel = JoinPermanentChannel
+local JoinTemporaryChannel = JoinTemporaryChannel
 local function PLAYER_ENTERING_WORLD()
     BFC.channelID = GetChannelName(BFC.channelName)
     -- print("BFC channelID: " .. tostring(BFC.channelID))
     if BFC.channelID == 0 then
-        JoinPermanentChannel(BFC.channelName)
+        JoinTemporaryChannel(BFC.channelName)
         C_Timer.After(5, function()
             -- check again
             PLAYER_ENTERING_WORLD()
