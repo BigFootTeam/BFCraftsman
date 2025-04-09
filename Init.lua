@@ -247,7 +247,7 @@ local function PLAYER_ENTERING_WORLD()
     end
     BFC.UpdateInstanceStatus()
 end
-BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(5, PLAYER_ENTERING_WORLD))
+BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(10, PLAYER_ENTERING_WORLD))
 
 ---------------------------------------------------------------------
 -- disable ChatConfigFrame interaction
