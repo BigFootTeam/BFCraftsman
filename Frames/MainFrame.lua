@@ -23,10 +23,9 @@ end)
 ---------------------------------------------------------------------
 -- init widgets
 ---------------------------------------------------------------------
-local slider, switch
 local function InitFrameWidgets()
     -- slider
-    slider = AF.CreateSlider(BFCMainFrame.header, nil, 50, 1, 2, 0.05)
+    local slider = AF.CreateSlider(BFCMainFrame.header, nil, 50, 1, 2, 0.05)
     AF.SetPoint(slider, "LEFT", BFCMainFrame.header, 5, 0)
     slider:SetEditBoxShown(false)
     slider:SetValue(BFC_DB.scale)
@@ -43,7 +42,7 @@ local function InitFrameWidgets()
     aboutButton:SetOnClick(BFC.ToggleAboutFrame)
 
     -- switch
-    switch = AF.CreateSwitch(BFCMainFrame, 330, 20)
+    local switch = AF.CreateSwitch(BFCMainFrame, 330, 20)
     AF.SetPoint(switch, "TOPLEFT", BFCMainFrame, "TOPLEFT", 10, -10)
     switch:SetLabels({
         {
