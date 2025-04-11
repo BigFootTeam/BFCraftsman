@@ -67,6 +67,17 @@ end
 ---------------------------------------------------------------------
 -- crafter list
 ---------------------------------------------------------------------
+local function GetCraftersOnMyServer(t)
+    if not t then return end
+    local craftersOnMyServer = {}
+    for _, crafter in pairs(t) do
+        if AF.IsConnectedRealm(crafter[1]) then
+            tinsert(craftersOnMyServer, crafter)
+        end
+    end
+    return craftersOnMyServer
+end
+
 local crafterPanePool = AF.CreateObjectPool(function()
     local f = AF.CreateFrame(detailFrame, nil, nil, 20)
 
@@ -182,9 +193,7 @@ local function CreateDetailFrame()
             if templateWhisperButton.countdown <= 0 then
                 templateWhisperButton:SetText(L["Template Whisper"])
                 templateWhisperButton.timer = nil
-                if detailFrame.canCraft then
-                    templateWhisperButton:SetEnabled(not AF.IsBlank(BFC_DB.whisperTemplate))
-                end
+                templateWhisperButton:SetEnabled(not (AF.IsEmpty(detailFrame.crafters) or AF.IsBlank(BFC_DB.whisperTemplate)))
             end
         end, 5)
 
@@ -207,11 +216,11 @@ local function CreateDetailFrame()
     AF.SetPoint(checkButton, "TOPLEFT", templateWhisperButton, "BOTTOMLEFT", 0, -5)
     AF.SetPoint(checkButton, "TOPRIGHT", templateWhisperButton, "BOTTOMRIGHT", 0, -5)
     checkButton:SetOnClick(function()
-        if not IsAltKeyDown() and type(detailFrame.canCraft) == "boolean" then
+        if not IsAltKeyDown() and detailFrame.isChecking then
             return
         end
 
-        detailFrame.canCraft = false
+        detailFrame.isChecking = true
         checkButton:SetText(L["Checking..."])
         checkButton:SetColor("yellow")
         if checkTimer then checkTimer:Cancel() end
@@ -219,6 +228,7 @@ local function CreateDetailFrame()
         checkTimer = C_Timer.NewTimer(5, function()
             checkButton:SetText(L["Timeout"])
             checkButton:SetColor("red")
+            detailFrame.isChecking = nil
         end)
         BFC.CheckCanCraft(detailFrame.id, detailFrame.recipeID)
     end)
@@ -233,6 +243,8 @@ local function CreateDetailFrame()
     -- load
     function detailFrame:Load(id)
         if checkTimer then checkTimer:Cancel() end
+        detailFrame.isChecking = nil
+
         if not BFC_DB.list[id] then
             detailFrame:Hide()
             return
@@ -245,13 +257,7 @@ local function CreateDetailFrame()
         detailFrame.id = id
         detailFrame.recipeID = BFC.GetOrderRecipeID()
         detailFrame.professionID = BFC.GetOrderProfessionID()
-        detailFrame.crafters = BFC_DB.list[id].recipes[detailFrame.recipeID]
-        detailFrame.canCraft = detailFrame.crafters and true
-
-        if BFC_DB.list[id].professions[detailFrame.professionID] == true then
-            -- NOTE: learned all recipes
-            detailFrame.canCraft = true
-        end
+        detailFrame.crafters = GetCraftersOnMyServer(BFC_DB.list[id].recipes[detailFrame.recipeID])
 
         nameEditBox:SetText(BFC_DB.list[id].name)
         nameEditBox:SetTextColor(AF.GetClassColor(BFC_DB.list[id].class))
@@ -259,7 +265,7 @@ local function CreateDetailFrame()
 
         taglineEditBox:SetText(BFC_DB.list[id].tagline or "")
 
-        if detailFrame.canCraft == true then
+        if not AF.IsEmpty(detailFrame.crafters) then
             checkButton:SetText(L["Can Craft"])
             checkButton:SetColor("green")
             if not templateWhisperButton.timer then
@@ -284,10 +290,11 @@ end
 function BFC.NotifyCanCraft(id, recipeID, crafters)
     if not (detailFrame and detailFrame.id == id) then return end
     if checkTimer then checkTimer:Cancel() end
+    detailFrame.isChecking = nil
 
-    detailFrame.canCraft = crafters and true or false
+    detailFrame.crafters = GetCraftersOnMyServer(crafters)
 
-    if detailFrame.canCraft then
+    if not AF.IsEmpty(detailFrame.crafters) then
         detailFrame.checkButton:SetText(L["Can Craft"])
         detailFrame.checkButton:SetColor("green")
         if not detailFrame.templateWhisperButton.timer then
@@ -296,7 +303,7 @@ function BFC.NotifyCanCraft(id, recipeID, crafters)
 
         detailFrame.separator:Hide()
         crafterPanePool:ReleaseAll()
-        ShowCrafters(crafters)
+        ShowCrafters(detailFrame.crafters)
     else
         detailFrame.checkButton:SetText(L["Cannot Craft"])
         detailFrame.checkButton:SetColor("red")
