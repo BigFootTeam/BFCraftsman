@@ -174,18 +174,28 @@ local function CreateDetailFrame()
         for k, profs in pairs(chars) do
             local w = charBtnPool:Acquire()
             local name, class = strsplit(":", k)
-            w:SetText(AF.WrapTextInColor(name, class))
             w.prof:SetText(BFC.GetProfessionString(profs, 12))
 
             if name == pane.t.name then
+                w:SetTextColor(1, 1, 1, 1)
+                w:SetText(AF.WrapTextInColor(name, class))
+                w.prof:SetAlpha(1)
                 w.sortKey1 = 0 -- current character first
                 currentCharFound = true
                 currentCharHighlight:SetParent(w)
                 AF.ClearPoints(currentCharHighlight)
                 AF.SetPoint(currentCharHighlight, "TOPLEFT", w, "TOP", 0, -1)
                 AF.SetPoint(currentCharHighlight, "BOTTOMRIGHT", w, -1, 1)
+            elseif AF.IsConnectedRealm(name) then
+                w:SetTextColor(1, 1, 1, 1)
+                w:SetText(AF.WrapTextInColor(name, class))
+                w.prof:SetAlpha(1)
+                w.sortKey1 = 1 -- connected realms
             else
-                w.sortKey1 = 1
+                w:SetTextColor(1, 1, 1, 0.5)
+                w:SetText(AF.WrapTextInColor(name, "gray"))
+                w.prof:SetAlpha(0.5)
+                w.sortKey1 = 2 -- other realms
             end
             w.sortKey2 = w.prof:GetText() -- then sort by profession
         end

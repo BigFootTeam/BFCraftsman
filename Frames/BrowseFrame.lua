@@ -117,7 +117,7 @@ local function Pane_Load(pane, id, t)
     -- elseif t.inInstance then
     --     pane.professionText:SetText(AF.WrapTextInColor(L["In Instance"], "firebrick"))
     else
-        pane.professionText:SetText(BFC.GetProfessionString(t.professions, 12))
+        pane.professionText:SetText(BFC.GetProfessionString(t._services, 12))
     end
 
     -- favorite
@@ -260,35 +260,47 @@ local function Comparator(a, b)
     return a.id < b.id
 end
 
-function BFC.CanCraftOnMyServer(t)
-    for _, pt in pairs(t.professions) do
+-- function BFC.CanCraftOnMyServer(t)
+--     for _, pt in pairs(t.professions) do
+--         for _, crafter in pairs(pt) do
+--             if AF.IsConnectedRealm(crafter[1]) then
+--                 return true
+--             end
+--         end
+--     end
+-- end
+
+function BFC.UpdateCraftingServicesOnMyServer(t)
+    if t._lastServicesUpdate == t.lastUpdate then return end
+
+    t._services = wipe(t._services or {})
+
+    for id, pt in pairs(t.professions) do
         for _, crafter in pairs(pt) do
             if AF.IsConnectedRealm(crafter[1]) then
-                return true
+                if not t._services[id] then t._services[id] = {} end
+                t._services[id][crafter[1]] = true
             end
         end
     end
+
+    t._lastServicesUpdate = t.lastUpdate
 end
 
 local function ShouldShow(id, t)
+    BFC.UpdateCraftingServicesOnMyServer(t)
+
     if BFC.battleTag == id then
         -- always show self
         return true
     end
 
-    local names = {}
-    for _, prof in pairs(t.professions) do
-        for _, char in pairs(prof) do
-            names[char[1]] = true
-        end
-    end
-    names = AF.TableToString(names, " ", true)
+    local names = AF.TableToString(t._services, " ", true)
 
     return (BFC_DB.showStale or not BFC.IsStale(t.lastUpdate) or BFC_DB.favorite[id] or BFC_DB.blacklist[id]) -- stale
         and (BFC_DB.showBlacklisted or not BFC_DB.blacklist[id]) -- blacklisted
-        and not AF.IsEmpty(t.professions) -- has professions
-        and (selectedProfession == 0 or t.professions[selectedProfession]) -- match selected profession
-        and BFC.CanCraftOnMyServer(t) -- can craft on my server
+        and not AF.IsEmpty(t._services) -- has professions, and can craft on my server
+        and (selectedProfession == 0 or t._services[selectedProfession]) -- match selected profession
         and (keywords == "" or (strfind(strlower(t.name), keywords) or strfind(strlower(t.tagline), keywords) or strfind(names, keywords))) -- match keyword
 end
 

@@ -53,10 +53,12 @@ end
 local professionOrder = {164, 165, 171, 197, 202, 333, 773, 755}
 function BFC.GetProfessionString(profs, size)
     local text = ""
-    for _, id in pairs(professionOrder) do
-        if profs[id] ~= nil then
-            local icon = AF.GetProfessionIcon(id)
-            text = text .. AF.EscapeIcon(icon, size)
+    if type(profs) == "table" then
+        for _, id in pairs(professionOrder) do
+            if profs[id] ~= nil then
+                local icon = AF.GetProfessionIcon(id)
+                text = text .. AF.EscapeIcon(icon, size)
+            end
         end
     end
     return text
