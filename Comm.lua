@@ -19,7 +19,7 @@ local BFC_VER = "BFC_VER"
 -- version check
 ---------------------------------------------------------------------
 local function VersionCheckReceived(version)
-    if version > BFC.versionNum and (not BFC_DB.lastVersionCheck or time() - BFC_DB.lastVersionCheck >= 3600) then
+    if type(version) == "number" and version > BFC.versionNum and (not BFC_DB.lastVersionCheck or time() - BFC_DB.lastVersionCheck >= 3600) then
         BFC_DB.lastVersionCheck = time()
         AF.Print(L["New version (%s) available! Please consider updating."]:format("r" .. version))
     end
