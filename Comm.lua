@@ -15,6 +15,8 @@ local BFC_CAN_CRAFT_PREFIX = "BFC_CAN_CRAFT"
 local BFC_INSTANCE_PREFIX = "BFC_INSTANCE"
 local BFC_VER = "BFC_VER"
 
+local IsInInstance = IsInInstance
+
 ---------------------------------------------------------------------
 -- version check
 ---------------------------------------------------------------------
@@ -38,9 +40,16 @@ local timer
 function BFC.ScheduleNextSync(useDelay)
     if useDelay then
         timer = C_Timer.NewTimer(BFC_PUBLISH_DELAY, function()
-            if BFC_DB.publish.enabled then
+            if BFC_DB.publish.mode == "always" then
                 BFC.Publish()
                 BFC.ScheduleNextSync()
+            elseif BFC_DB.publish.mode == "outdoors" then
+                if IsInInstance() then
+                    BFC.Unpublish()
+                else
+                    BFC.Publish()
+                    BFC.ScheduleNextSync()
+                end
             else
                 BFC.Unpublish()
             end
@@ -163,14 +172,16 @@ AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
 ---------------------------------------------------------------------
 -- in instance
 ---------------------------------------------------------------------
-local IsInInstance = IsInInstance
 local wasInInstance = false
 function BFC.UpdateInstanceStatus()
-    if BFC.channelID == 0 or not BFC_DB.publish.enabled then return end
+    if BFC.channelID == 0 or BFC_DB.publish.mode == "disabled" then return end
     local inInstance = IsInInstance()
     if inInstance ~= wasInInstance then
         wasInInstance = inInstance
         AF.SendCommMessage_Channel(BFC_INSTANCE_PREFIX, {BFC.versionNum, BFC.battleTag, inInstance}, BFC.channelName)
+        if BFC_DB.publish.mode == "outdoors" then
+            BFC.ScheduleNextSync(true)
+        end
     end
 end
 

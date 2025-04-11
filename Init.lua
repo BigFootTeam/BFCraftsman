@@ -46,7 +46,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
             BFC_DB = {
                 scale = 1,
                 publish = {
-                    enabled = false,
+                    mode = "disabled",
                     tagline = "",
                     craftingFee = nil,
                     characters = {
@@ -96,6 +96,14 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
         if type(BFC_DB.whisperTemplate) ~= "string" then
             BFC_DB.whisperTemplate = L["WHISPER_TEMPLATE"]
         end
+
+        ---------------------------------------------------------------------
+        -- revise
+        if type(BFC_DB.publish.enabled) == "boolean" then
+            BFC_DB.publish.mode = BFC_DB.publish.enabled and "always" or "disabled"
+            BFC_DB.publish.enabled = nil
+        end
+        ---------------------------------------------------------------------
 
         ---------------------------------------------------------------------
         -- validate list

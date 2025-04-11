@@ -19,7 +19,7 @@ local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
 local publishFrame, progressBar
-local enableCheckBox, taglineEditBox, craftingFeeEditBox, charList, addButton
+local modeDropdown, taglineEditBox, craftingFeeEditBox, charList, addButton
 local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
@@ -88,31 +88,56 @@ end
 local function CreatePublishFrame()
     publishFrame = AF.CreateFrame(BFCMainFrame, "BFCPublishFrame")
     -- AF.ApplyDefaultBackdropWithColors(publishFrame, {0, 1, 0, 0.1}, "none")
-    AF.SetPoint(publishFrame, "TOPLEFT", BFCMainFrame, 10, -45)
+    AF.SetPoint(publishFrame, "TOPLEFT", BFCMainFrame, 10, -40)
     AF.SetPoint(publishFrame, "BOTTOMRIGHT", BFCMainFrame, -10, 10)
     publishFrame:Hide()
 
     -- enable
-    enableCheckBox = AF.CreateCheckButton(publishFrame, L["Enable Publishing"], function(checked)
-        BFC_DB.publish.enabled = checked
-        if BFC_DB.publish.enabled then
-            AF.HideMask(publishFrame)
-        else
-            AF.ShowMask(publishFrame, L["Publishing is disabled"], 0, -20)
-        end
-        BFC.CancelNextSync()
-        BFC.ScheduleNextSync(true)
-    end)
-    AF.SetPoint(enableCheckBox, "TOPLEFT", publishFrame)
-    AF.SetTooltips(enableCheckBox, "TOPLEFT", 0, 1,
-        L["Enable Publishing"],
+    modeDropdown = AF.CreateDropdown(publishFrame)
+    AF.SetFrameLevel(modeDropdown, 70)
+    AF.SetPoint(modeDropdown, "TOPLEFT", publishFrame)
+    AF.SetPoint(modeDropdown, "TOPRIGHT", publishFrame)
+    modeDropdown:SetItems({
+        {
+            text = L["Disable Publishing"],
+            value = "disabled",
+            onClick = function()
+                BFC_DB.publish.mode = "disabled"
+                AF.ShowMask(publishFrame, L["Publishing is disabled"], 0, -30)
+                BFC.CancelNextSync()
+                BFC.ScheduleNextSync(true)
+            end,
+        },
+        {
+            text = L["Enable Publishing"],
+            value = "always",
+            onClick = function()
+                BFC_DB.publish.mode = "always"
+                AF.HideMask(publishFrame)
+                BFC.CancelNextSync()
+                BFC.ScheduleNextSync(true)
+            end,
+        },
+        {
+            text = L["Enable Publishing"] .. " (" .. L["Only when Outdoors"] .. ")",
+            value = "outdoors",
+            onClick = function()
+                BFC_DB.publish.mode = "outdoors"
+                AF.HideMask(publishFrame)
+                BFC.CancelNextSync()
+                BFC.ScheduleNextSync(true)
+            end,
+        },
+    })
+    AF.SetTooltips(modeDropdown, "TOPLEFT", 0, 1,
+        L["Publish"],
         L["Syncs automatically every few minutes instead of in real time"]
     )
 
     -- tagline
     local taglinePane = AF.CreateTitledPane(publishFrame, L["Tagline"], nil, 90)
-    AF.SetPoint(taglinePane, "TOPLEFT", publishFrame, 0, -25)
-    AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame, 0, -25)
+    AF.SetPoint(taglinePane, "TOPLEFT", publishFrame, 0, -30)
+    AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame, 0, -30)
 
     taglineEditBox = AF.CreateScrollEditBox(taglinePane)
     taglineEditBox:SetMaxBytes(TAGLINE_MAX_BYTES + 1)
@@ -163,14 +188,14 @@ local function CreatePublishFrame()
 end
 
 local function LoadConfigs()
-    enableCheckBox:SetChecked(BFC_DB.publish.enabled)
+    modeDropdown:SetSelectedValue(BFC_DB.publish.mode)
     taglineEditBox:SetText(BFC_DB.publish.tagline)
     craftingFeeEditBox:SetText(BFC_DB.publish.craftingFee or "")
 
-    if BFC_DB.publish.enabled then
-        AF.HideMask(publishFrame)
+    if BFC_DB.publish.mode == "disabled" then
+        AF.ShowMask(publishFrame, L["Publishing is disabled"], 0, -30)
     else
-        AF.ShowMask(publishFrame, L["Publishing is disabled"], 0, -20)
+        AF.HideMask(publishFrame)
     end
 end
 

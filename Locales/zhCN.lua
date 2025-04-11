@@ -14,6 +14,8 @@ L["Click this button to show craftsmen list"] = "点击此按钮显示工匠列�
 
 -- publish
 L["Enable Publishing"] = "启用发布"
+L["Disable Publishing"] = "禁用发布"
+L["Only when Outdoors"] = "不在副本时"
 L["Publishing is disabled"] = "发布已禁用"
 L["Tagline"] = "简介"
 L["Crafting Fee"] = "代工费"
