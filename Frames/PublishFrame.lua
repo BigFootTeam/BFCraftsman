@@ -25,28 +25,35 @@ local LoadCharacters, CreateAddButton
 ---------------------------------------------------------------------
 -- recipes
 ---------------------------------------------------------------------
+local specialRecipes = {
+    [414564] = true, -- 咒怨布
+    [414565] = true, -- 凌虐之皮
+    [414566] = true, -- 天灾之鳞
+    [414567] = true, -- 死灵合金
+}
+
 local function CacheRecipes(prof)
     local professionInfo = GetBaseProfessionInfo()
     if not professionInfo then return end
 
     wipe(prof.recipes)
     local recipeIDs = GetAllRecipeIDs()
-    local all, learned = 0, 0
+    -- local all, learned = 0, 0
 
     if recipeIDs then
         for _, recipeID in ipairs(recipeIDs) do
             local professionID = GetProfessionInfoByRecipeID(recipeID).professionID
-            if BFC.validChildSkillLines[professionID] then
-                all = all + 1
+            if BFC.validChildSkillLines[professionID] or specialRecipes[recipeID] then
+                -- all = all + 1
                 local recipeInfo = GetRecipeInfo(recipeID)
                 if recipeInfo and recipeInfo.learned then
-                    learned = learned + 1
+                    -- learned = learned + 1
                     tinsert(prof.recipes, recipeID)
                 end
             end
         end
 
-        prof.allRecipesLearned = all == learned
+        -- prof.allRecipesLearned = all == learned
     end
     BFC.UpdateLearnedProfessions()
     BFC.UpdateSendingData()
@@ -350,14 +357,14 @@ CreateAddButton = function()
                 id = prof1 or 0,
                 lastScanned = 0,
                 recipes = {},
-                allRecipesLearned = false,
+                -- allRecipesLearned = false,
             },
             prof2 = {
                 enabled = true,
                 id = prof2 or 0,
                 lastScanned = 0,
                 recipes = {},
-                allRecipesLearned = false,
+                -- allRecipesLearned = false,
             },
         }
         tinsert(BFC_DB.publish.characters, t)
