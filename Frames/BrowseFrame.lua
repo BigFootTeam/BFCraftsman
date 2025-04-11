@@ -202,8 +202,11 @@ local function CreatePane()
     AF.SetPoint(blockButton, "TOPRIGHT", pane)
     blockButton:SetTexture(AF.GetIcon("Unavailable"), {15, 15})
     blockButton:SetTextureColor("darkgray")
-    blockButton:SetOnClick(function()
-        if IsAltKeyDown() then
+    blockButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    blockButton:SetOnClick(function(_, button)
+        if button == "RightButton" then
+            BFC_DB.list[pane.id] = nil
+        elseif IsAltKeyDown() then
             BFC_DB.blacklist[pane.id] = true
             BFC_DB.list[pane.id] = nil
         else

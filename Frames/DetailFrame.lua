@@ -79,8 +79,12 @@ local function CreateDetailFrame()
     local blockButton = AF.CreateButton(detailFrame, nil, {"static", "sheet_cell_highlight"}, 20, 20)
     AF.SetPoint(blockButton, "TOPLEFT", favoriteButton, "TOPRIGHT", 5, 0)
     blockButton:SetTexture(AF.GetIcon("Unavailable"), {16, 16})
-    blockButton:SetOnClick(function()
-        if IsAltKeyDown() then
+    blockButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    blockButton:SetOnClick(function(_, button)
+        if button == "RightButton" then
+            BFC_DB.list[detailFrame.pane.id] = nil
+            detailFrame:Hide()
+        elseif IsAltKeyDown() then
             BFC_DB.blacklist[detailFrame.pane.id] = true
             BFC_DB.list[detailFrame.pane.id] = nil
             detailFrame:Hide()
@@ -101,7 +105,8 @@ local function CreateDetailFrame()
         L["The blacklist button in the list has the same functionality"],
         " ",
         {AF.L["Left Click"], L["add to blacklist"]},
-        {"Alt + " .. AF.L["Left Click"], L["also remove from list"]}
+        {"Alt + " .. AF.L["Left Click"], L["add to blacklist and remove from list"]},
+        {AF.L["Right Click"], L["remove from list"]}
     )
 
     -- character list
