@@ -260,16 +260,6 @@ local function Comparator(a, b)
     return a.id < b.id
 end
 
--- function BFC.CanCraftOnMyServer(t)
---     for _, pt in pairs(t.professions) do
---         for _, crafter in pairs(pt) do
---             if AF.IsConnectedRealm(crafter[1]) then
---                 return true
---             end
---         end
---     end
--- end
-
 function BFC.UpdateCraftingServicesOnMyServer(t)
     if t._lastServicesUpdate == t.lastUpdate then return end
 
