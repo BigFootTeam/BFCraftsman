@@ -42,7 +42,7 @@ function BFC.ScheduleNextSync(useDelay)
                 BFC.Publish()
                 BFC.ScheduleNextSync()
             else
-                BFC.NotifyUnpublish()
+                BFC.Unpublish()
             end
         end)
     else
@@ -88,15 +88,18 @@ local function PublishReceived(data, _, channel)
     BFC_DB.list[id].craftingFee = craftingFee
     BFC_DB.list[id].professions = professions
     BFC_DB.list[id].lastUpdate = time()
+    BFC_DB.list[id].unpublished = nil
 
     BFC.UpdateList()
 end
 AF.RegisterComm(BFC_PUBLISH_PREFIX, PublishReceived)
 
 local function UnpublishReceived(id, _, channel)
-    if BFC_DB.blacklist[id] then return end
-    BFC_DB.list[id] = nil
-    BFC.UpdateList()
+    if type(id) ~= "string" or BFC_DB.blacklist[id] then return end
+    if BFC_DB.list[id] then
+        BFC_DB.list[id].unpublished = true
+        BFC.UpdateList()
+    end
 end
 AF.RegisterComm(BFC_UNPUBLISH_PREFIX, UnpublishReceived)
 
@@ -122,7 +125,7 @@ function BFC.Publish()
     AF.SendCommMessage_Channel(BFC_PUBLISH_PREFIX, data, BFC.channelName)
 end
 
-function BFC.NotifyUnpublish()
+function BFC.Unpublish()
     if BFC.channelID == 0 then return end
     if AF.IsBlank(BFC.battleTag) then return end
     AF.SendCommMessage_Channel(BFC_UNPUBLISH_PREFIX, BFC.battleTag, BFC.channelName)

@@ -107,26 +107,28 @@ function BFC.ShowListFrame()
 
     if currentRecipeID and currentProfessionID then
         for id, t in pairs(BFC_DB.list) do
-            BFC.UpdateCraftingServicesOnMyServer(t)
+            if not t.unpublished then
+                BFC.UpdateCraftingServicesOnMyServer(t)
 
-            if not BFC_DB.blacklist[id] and not AF.IsEmpty(t._services[currentProfessionID]) then
-                local b = pool:Acquire()
-                b.id = id
-                b.isFavorite = BFC_DB.favorite[id]
-                b.isSelf = id == BFC.battleTag
-                b.isStale = BFC.IsStale(t.lastUpdate)
+                if not BFC_DB.blacklist[id] and not AF.IsEmpty(t._services[currentProfessionID]) then
+                    local b = pool:Acquire()
+                    b.id = id
+                    b.isFavorite = BFC_DB.favorite[id]
+                    b.isSelf = id == BFC.battleTag
+                    b.isStale = BFC.IsStale(t.lastUpdate)
 
-                b:SetText(AF.ToShortName(t.name))
-                b:SetTextColor(b.isStale and "darkgray" or t.class)
-                b.craftingFeeText:SetText(t.craftingFee and BFC.FormatFee(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
+                    b:SetText(AF.ToShortName(t.name))
+                    b:SetTextColor(b.isStale and "darkgray" or t.class)
+                    b.craftingFeeText:SetText(t.craftingFee and BFC.FormatFee(t.craftingFee) or BFC.UNKNOWN_CRAFTING_FEE)
 
-                if b.isFavorite then
-                    b:ShowTexture()
-                else
-                    b:HideTexture()
+                    if b.isFavorite then
+                        b:ShowTexture()
+                    else
+                        b:HideTexture()
+                    end
+
+                    b.busyTexture:SetShown(t.inInstance)
                 end
-
-                b.busyTexture:SetShown(t.inInstance)
             end
         end
     end

@@ -278,6 +278,8 @@ function BFC.UpdateCraftingServicesOnMyServer(t)
 end
 
 local function ShouldShow(id, t)
+    if t.unpublished then return end
+
     BFC.UpdateCraftingServicesOnMyServer(t)
 
     if BFC.battleTag == id then
