@@ -45,6 +45,41 @@ local function CreateConfigFrame()
         .. AF.WrapTextInColor("[f] ", "yellow") .. L["crafting fee"] .. "\n"
         .. AF.WrapTextInColor("[r] ", "yellow") .. L["recipe name"] .. "\n"
         .. AF.WrapTextInColor("[c] ", "yellow") .. L["crafter name"])
+
+
+    -- data
+    local resetPane = AF.CreateTitledPane(configFrame, L["Reset"], nil, 170)
+    AF.SetPoint(resetPane, "TOPLEFT", whisperTemplatePane, "BOTTOMLEFT", 0, -20)
+    AF.SetPoint(resetPane, "RIGHT")
+    resetPane:SetTips(L["Reset"], L["Hold Alt key while clicking buttons"])
+
+    local resetFavoritesButton = AF.CreateButton(resetPane, L["Reset Favorites"], "red_hover", 160, 20)
+    AF.SetPoint(resetFavoritesButton, "TOPLEFT", 0, -25)
+    resetFavoritesButton:SetOnClick(function()
+        wipe(BFC_DB.favorite)
+        BFC.UpdateList()
+    end)
+
+    local resetBlacklistButton = AF.CreateButton(resetPane, L["Reset Blacklist"], "red_hover", 160, 20)
+    AF.SetPoint(resetBlacklistButton, "TOPRIGHT", 0, -25)
+    resetBlacklistButton:SetOnClick(function()
+        wipe(BFC_DB.blacklist)
+        BFC.UpdateList()
+    end)
+
+    local resetListButton = AF.CreateButton(resetPane, L["Reset List"], "red_hover", 160, 20)
+    AF.SetPoint(resetListButton, "TOPLEFT", resetFavoritesButton, "BOTTOMLEFT", 0, -5)
+    resetListButton:SetOnClick(function()
+        wipe(BFC_DB.list)
+        BFC.UpdateList()
+    end)
+
+    local resetAllButton = AF.CreateButton(resetPane, L["Reset BFC"], "red_hover", 160, 20)
+    AF.SetPoint(resetAllButton, "TOPRIGHT", resetBlacklistButton, "BOTTOMRIGHT", 0, -5)
+    resetAllButton:SetOnClick(function()
+        BFC_DB = nil
+        ReloadUI()
+    end)
 end
 
 ---------------------------------------------------------------------
