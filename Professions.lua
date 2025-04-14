@@ -66,19 +66,24 @@ end
 
 BFC.learnedProfessions = {}
 
-local function Update(prof, name, class)
+local function Update(prof, name, class, faction)
     if prof.enabled and BFC.validSkillLines[prof.id] then
         if not BFC.learnedProfessions[prof.id] then
             BFC.learnedProfessions[prof.id] = {}
         end
-        tinsert(BFC.learnedProfessions[prof.id], {name, class})
+        tinsert(BFC.learnedProfessions[prof.id], {name, class, faction})
     end
 end
 
 function BFC.UpdateLearnedProfessions()
     wipe(BFC.learnedProfessions)
     for _, t in pairs(BFC_DB.publish.characters) do
-        Update(t.prof1, t.name, t.class)
-        Update(t.prof2, t.name, t.class)
+        -- fix for old versions, will be removed in the future
+        if not t.faction and AF.player.fullName == t.name then
+            t.faction = AF.player.faction
+        end
+
+        Update(t.prof1, t.name, t.class, t.faction)
+        Update(t.prof2, t.name, t.class, t.faction)
     end
 end

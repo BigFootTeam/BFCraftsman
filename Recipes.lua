@@ -7,25 +7,25 @@ BFC.learnedRecipes = {}
 
 local GetRecipeInfo = C_TradeSkillUI.GetRecipeInfo
 
-local function Process(recipeID, name, class)
+local function Process(recipeID, name, class, faction)
     if not BFC.learnedRecipes[recipeID] then
         BFC.learnedRecipes[recipeID] = {}
     end
-    tinsert(BFC.learnedRecipes[recipeID], {name, class})
+    tinsert(BFC.learnedRecipes[recipeID], {name, class, faction})
 end
 
-local function ProcessRecipes(recipes, name, class)
+local function ProcessRecipes(recipes, name, class, faction)
     if not recipes then return end
     for _, recipeID in pairs(recipes) do
-        Process(recipeID, name, class)
+        Process(recipeID, name, class, faction)
     end
 end
 
 function BFC.UpdateLearnedRecipes()
     wipe(BFC.learnedRecipes)
     for _, t in pairs(BFC_DB.publish.characters) do
-        ProcessRecipes(t.prof1.recipes, t.name, t.class)
-        ProcessRecipes(t.prof2.recipes, t.name, t.class)
+        ProcessRecipes(t.prof1.recipes, t.name, t.class, t.faction)
+        ProcessRecipes(t.prof2.recipes, t.name, t.class, t.faction)
     end
 end
 
@@ -37,7 +37,7 @@ function BFC.UpdateLearnedRecipesWithCallback(callback)
 
     if not executor then
         executor = AF.BuildOnUpdateExecutor(function(_, data, remaining, total)
-            Process(AF.Unpack3(data))
+            Process(AF.Unpack4(data))
             callback(remaining, total)
         end, function()
             collectgarbage("collect")
@@ -46,10 +46,10 @@ function BFC.UpdateLearnedRecipesWithCallback(callback)
 
     for _, t in pairs(BFC_DB.publish.characters) do
         for _, recipeID in pairs(t.prof1.recipes) do
-            executor:AddTask({recipeID, t.name, t.class})
+            executor:AddTask({recipeID, t.name, t.class, t.faction})
         end
         for _, recipeID in pairs(t.prof2.recipes) do
-            executor:AddTask({recipeID, t.name, t.class})
+            executor:AddTask({recipeID, t.name, t.class, t.faction})
         end
     end
 

@@ -270,7 +270,8 @@ function BFC.UpdateCraftingServicesOnMyServer(t)
 
     for id, pt in pairs(t.professions) do
         for _, crafter in pairs(pt) do
-            if AF.IsConnectedRealm(crafter[1]) then
+            if AF.IsConnectedRealm(crafter[1]) and (crafter[3] == AF.player.faction or not crafter[3]) then
+                -- NOTE: same realm, same faction, or no faction (old data)
                 if not t._services[id] then t._services[id] = {} end
                 t._services[id][crafter[1]] = true
             end

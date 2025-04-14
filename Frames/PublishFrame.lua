@@ -257,7 +257,7 @@ local function Pane_Load(pane, i, t, isCurrentCharacter)
     pane.t = t
     pane.isCurrentCharacter = isCurrentCharacter
 
-    pane.nameText:SetText(t.name)
+    pane.nameText:SetText(AF.GetIconString(t.faction and ("Faction_" .. t.faction)) .. t.name)
     pane.nameText:SetTextColor(AF.GetClassColor(t.class))
 
     Pane_UpdateButton(pane.prof1Button, t.prof1)
@@ -377,6 +377,7 @@ CreateAddButton = function()
         local t = {
             name = AF.player.fullName,
             class = AF.player.class,
+            faction = AF.player.faction,
             prof1 = {
                 enabled = true,
                 id = prof1 or 0,

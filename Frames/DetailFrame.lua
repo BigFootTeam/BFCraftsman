@@ -8,6 +8,48 @@ local detailFrame
 local updateRequired
 
 ---------------------------------------------------------------------
+-- cache
+---------------------------------------------------------------------
+local cache = {}
+local function GetCharacters(id, t)
+    if cache[id] and cache[id].lastUpdate == t.lastUpdate then
+        return cache[id].chars
+    end
+
+    cache[id] = {}
+    cache[id].lastUpdate = t.lastUpdate
+    cache[id].chars = {}
+
+    local temp = {}
+    for pid, pt in pairs(t.professions) do
+        for _, ct in pairs(pt) do
+            if not temp[ct[1]] then
+                temp[ct[1]] = {
+                    class = ct[2],
+                    faction = ct[3],
+                    profs = {},
+                }
+            end
+            temp[ct[1]]["profs"][pid] = true
+        end
+    end
+
+    for name, data in pairs(temp) do
+        local char = {
+            name = name,
+            class = data.class,
+            faction = data.faction,
+            profs = BFC.GetProfessionString(data.profs, 12),
+        }
+        tinsert(cache[id].chars, char)
+    end
+
+    -- texplore(cache[id])
+
+    return cache[id].chars
+end
+
+---------------------------------------------------------------------
 -- create
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
@@ -162,28 +204,21 @@ local function CreateDetailFrame()
         -- texplore(pane.t)
         charBtnPool:ReleaseAll()
 
-        -- prepare characters
-        local chars = {}
-        for pid, pt in pairs(pane.t.professions) do
-            for _, ct in pairs(pt) do
-                local name = ct[1] .. ":" .. ct[2]
-                if not chars[name] then
-                    chars[name] = {}
-                end
-                chars[name][pid] = true
-            end
-        end
+        -- update cache
+        local chars = GetCharacters(pane.id, pane.t)
 
         -- prepare widgets
         local currentCharFound = false
-        for k, profs in pairs(chars) do
+        for _, t in pairs(chars) do
             local w = charBtnPool:Acquire()
-            local name, class = strsplit(":", k)
-            w.prof:SetText(BFC.GetProfessionString(profs, 12))
+            w.prof:SetText(t.profs)
 
-            if name == pane.t.name then
+            local faction = AF.GetIconString(t.faction and ("Faction_" .. t.faction))
+
+            if t.name == pane.t.name then
+                -- NOTE: current online character must be the same faction
                 w:SetTextColor(1, 1, 1, 1)
-                w:SetText(AF.WrapTextInColor(name, class))
+                w:SetText(faction .. AF.WrapTextInColor(t.name, t.class))
                 w.prof:SetAlpha(1)
                 w.sortKey1 = 0 -- current character first
                 currentCharFound = true
@@ -191,14 +226,17 @@ local function CreateDetailFrame()
                 AF.ClearPoints(currentCharHighlight)
                 AF.SetPoint(currentCharHighlight, "TOPLEFT", w, "TOP", 0, -1)
                 AF.SetPoint(currentCharHighlight, "BOTTOMRIGHT", w, -1, 1)
-            elseif AF.IsConnectedRealm(name) then
+
+            elseif AF.IsConnectedRealm(t.name) and (t.faction == AF.player.faction or not t.faction) then
+                -- NOTE: old data contains no faction
                 w:SetTextColor(1, 1, 1, 1)
-                w:SetText(AF.WrapTextInColor(name, class))
+                w:SetText(faction .. AF.WrapTextInColor(t.name, t.class))
                 w.prof:SetAlpha(1)
                 w.sortKey1 = 1 -- connected realms
+
             else
                 w:SetTextColor(1, 1, 1, 0.5)
-                w:SetText(AF.WrapTextInColor(name, "gray"))
+                w:SetText(faction .. AF.WrapTextInColor(t.name, "gray"))
                 w.prof:SetAlpha(0.5)
                 w.sortKey1 = 2 -- other realms
             end

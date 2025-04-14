@@ -71,7 +71,8 @@ local function GetCraftersOnMyServer(t)
     if not t then return end
     local craftersOnMyServer = {}
     for _, crafter in pairs(t) do
-        if AF.IsConnectedRealm(crafter[1]) then
+        if AF.IsConnectedRealm(crafter[1]) and (crafter[3] == AF.player.faction or not crafter[3]) then
+            -- NOTE: same realm, same faction, or no faction (old data)
             tinsert(craftersOnMyServer, crafter)
         end
     end
