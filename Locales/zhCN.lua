@@ -64,6 +64,7 @@ L["Can Craft"] = "会制作"
 L["Cannot Craft"] = "不会制作"
 L["Checking..."] = "检查中..."
 L["Timeout"] = "超时"
+L["Click to auto-fill name and fee"] = "点击自动填入工匠名和代工费"
 
 -- config
 L["WHISPER_TEMPLATE"] = "您好，能否用您精湛的 [p] 技术为我制作 [r]？愿付工费 [f]，感谢您的帮助！"

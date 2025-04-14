@@ -9,7 +9,7 @@ local checkTimer
 local FRAME_HEIGHT = 210
 
 ---------------------------------------------------------------------
--- send chat msg -- TODO: cross faction
+-- send chat msg
 ---------------------------------------------------------------------
 local SendChatMessage = SendChatMessage
 local GetTradeSkillDisplayName = C_TradeSkillUI.GetTradeSkillDisplayName
@@ -83,6 +83,7 @@ local crafterPanePool = AF.CreateObjectPool(function()
     local f = AF.CreateFrame(detailFrame, nil, nil, 20)
 
     local b = AF.CreateButton(f, nil, "green", 20, 20)
+    f.b = b
     b:SetTexture(AF.GetIcon("ArrowLeft1"))
     b:SetPoint("TOPLEFT")
     b:SetClickSound("bell")
@@ -118,7 +119,7 @@ end, function(_, f)
 end)
 
 local function ShowCrafters(crafters)
-    if not crafters then return end
+    if AF.IsEmpty(crafters) then return end
 
     for _, t in pairs(crafters) do
         local f = crafterPanePool:Acquire()
@@ -128,6 +129,7 @@ local function ShowCrafters(crafters)
     local widgets = crafterPanePool:GetAllActives()
     AF.AnimatedResize(detailFrame, nil, FRAME_HEIGHT + 5 + #widgets * 25, nil, nil, nil, function()
         detailFrame.separator:Show()
+
         for i, f in pairs(widgets) do
             AF.ClearPoints(f)
             AF.SetPoint(f, "RIGHT", -5, 0)
@@ -137,6 +139,19 @@ local function ShowCrafters(crafters)
                 AF.SetPoint(f, "TOPLEFT", widgets[i - 1], "BOTTOMLEFT", 0, -5)
             end
             f:Show()
+        end
+
+        if not BFC_DB.orderDetailHelpViewed then
+            AF.ShowHelpTip({
+                widget = widgets[#widgets].b,
+                position = "BOTTOM",
+                text = L["Click to auto-fill name and fee"],
+                width = 220,
+                glow = true,
+                callback = function()
+                    BFC_DB.orderDetailHelpViewed = true
+                end,
+            })
         end
     end)
 end
