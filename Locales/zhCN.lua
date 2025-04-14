@@ -49,6 +49,7 @@ L["Craftsmen List"] = "工匠列表"
 
 -- detail
 L["Name"] = "名字"
+L["Characters"] = "角色"
 L["Blacklist"] = "屏蔽"
 L["The blacklist button in the list has the same functionality"] = "列表中的屏蔽按钮也具有相同的功能"
 L["add to blacklist"] = "添加至屏蔽列表"
