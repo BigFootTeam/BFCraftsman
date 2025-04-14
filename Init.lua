@@ -19,7 +19,7 @@ AF.RegisterAddon(BFC.name, L["BFCraftsman"])
 -- functions
 ---------------------------------------------------------------------
 function BFC.IsStale(lastUpdate)
-    return time() - lastUpdate > 1800 -- 30 minutes
+    return time() - lastUpdate > 600 -- 10 minutes
 end
 
 local ChatEdit_ActivateChat = ChatEdit_ActivateChat
