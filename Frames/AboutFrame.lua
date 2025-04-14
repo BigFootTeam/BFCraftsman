@@ -35,7 +35,7 @@ local function CreateAboutFrame()
     AF.SetPoint(feedbackCnEditBox, "TOPLEFT", 10, -35)
     AF.SetPoint(feedbackCnEditBox, "RIGHT", -10, 0)
     feedbackCnEditBox:SetNotUserChangable(true)
-    feedbackCnEditBox:SetText("https://kook.top/P7D1R1")
+    feedbackCnEditBox:SetText("https://kook.vip/zLbWWR")
 
     local feedbackCnText = AF.CreateFontString(aboutFrame, AF.EscapeIcon(AF.GetLogo("kook"), 18) .. " " .. AF.L["Feedback & Suggestions"] .. " (CN)")
     AF.SetPoint(feedbackCnText, "BOTTOMLEFT", feedbackCnEditBox, "TOPLEFT", 2, 2)
