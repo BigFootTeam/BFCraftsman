@@ -26,7 +26,7 @@ local function CreateAboutFrame()
     end)
 
     -- close
-    local closeBtn = AF.CreateCloseButton(aboutFrame)
+    local closeBtn = AF.CreateCloseButton(aboutFrame, nil, 20, 20)
     AF.SetPoint(closeBtn, "TOPRIGHT")
     closeBtn:SetBorderColor("accent")
 
