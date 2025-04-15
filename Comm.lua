@@ -172,12 +172,11 @@ AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
 ---------------------------------------------------------------------
 -- in instance
 ---------------------------------------------------------------------
-local wasInInstance = false
 function BFC.UpdateInstanceStatus()
     if BFC.channelID == 0 or BFC_DB.publish.mode == "disabled" then return end
     local inInstance = IsInInstance()
-    if inInstance ~= wasInInstance then
-        wasInInstance = inInstance
+    if inInstance ~= BFC_DB.wasInInstance then
+        BFC_DB.wasInInstance = inInstance
         AF.SendCommMessage_Channel(BFC_INSTANCE_PREFIX, {BFC.versionNum, BFC.battleTag, inInstance}, BFC.channelName)
         if BFC_DB.publish.mode == "outdoors" then
             BFC.ScheduleNextSync(true)
