@@ -139,7 +139,7 @@ local function Pane_Load(pane, id, t)
 end
 
 local function Pane_OnEnter(pane)
-    pane:SetBackdropColor(AF.GetColorRGB("sheet_row_highlight"))
+    pane:SetBackdropColor(AF.GetColorRGB("sheet_highlight"))
     if not BFC_DB.blacklist[pane.id] then
         AF.ShowTooltips(pane, "BOTTOMLEFT", 0, -1, {
             AF.WrapTextInColor(pane.t.name, pane.t.class),
@@ -152,12 +152,12 @@ local function Pane_OnEnter(pane)
 end
 
 local function Pane_OnLeave(pane)
-    pane:SetBackdropColor(AF.GetColorRGB("sheet_bg2"))
+    pane:SetBackdropColor(AF.GetColorRGB("sheet_normal2"))
     AF.HideTooltips()
 end
 
 local function CreatePane()
-    local pane = AF.CreateBorderedFrame(list.slotFrame, nil, nil, nil, "sheet_bg2")
+    local pane = AF.CreateBorderedFrame(list.slotFrame, nil, nil, nil, "sheet_normal2")
     pane:SetOnEnter(Pane_OnEnter)
     pane:SetOnLeave(Pane_OnLeave)
 
