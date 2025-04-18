@@ -103,15 +103,15 @@ local function CreateDetailFrame()
     -- favorite
     local favoriteButton = AF.CreateButton(detailFrame, nil, {"static", "sheet_cell_highlight"}, 20, 20)
     AF.SetPoint(favoriteButton, "TOPLEFT", idEditBox, "TOPRIGHT", 5, 0)
-    favoriteButton:SetTexture(AF.GetIcon("Star1"), {16, 16})
+    favoriteButton:SetTexture(AF.GetIcon("Star"), {16, 16})
     favoriteButton:SetOnClick(function()
         if BFC_DB.favorite[detailFrame.pane.id] then
             BFC_DB.favorite[detailFrame.pane.id] = nil
-            favoriteButton:SetTexture(AF.GetIcon("Star1"))
+            favoriteButton:SetTexture(AF.GetIcon("Star"))
             favoriteButton:SetTextureColor("darkgray")
         else
             BFC_DB.favorite[detailFrame.pane.id] = true
-            favoriteButton:SetTexture(AF.GetIcon("Star2"))
+            favoriteButton:SetTexture(AF.GetIcon("Star_Filled"))
             favoriteButton:SetTextureColor("gold")
         end
         updateRequired = true
@@ -254,7 +254,7 @@ local function CreateDetailFrame()
         taglineEditBox:SetText(pane.t.tagline)
         lastUpdateText:SetText(AF.FormatTime(pane.t.lastUpdate))
 
-        favoriteButton:SetTexture(BFC_DB.favorite[pane.id] and AF.GetIcon("Star2") or AF.GetIcon("Star1"))
+        favoriteButton:SetTexture(BFC_DB.favorite[pane.id] and AF.GetIcon("Star_Filled") or AF.GetIcon("Star"))
         favoriteButton:SetTextureColor(BFC_DB.favorite[pane.id] and "gold" or "darkgray")
 
         blockButton:SetTextureColor(BFC_DB.blacklist[pane.id] and "red" or "darkgray")

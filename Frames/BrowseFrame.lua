@@ -121,7 +121,7 @@ local function Pane_Load(pane, id, t)
     end
 
     -- favorite
-    pane.favoriteButton:SetTexture(BFC_DB.favorite[pane.id] and AF.GetIcon("Star2") or AF.GetIcon("Star1"))
+    pane.favoriteButton:SetTexture(BFC_DB.favorite[pane.id] and AF.GetIcon("Star_Filled") or AF.GetIcon("Star"))
     pane.favoriteButton:SetTextureColor(BFC_DB.favorite[pane.id] and "gold" or "darkgray")
 
     -- block
@@ -225,7 +225,7 @@ local function CreatePane()
     local favoriteButton = AF.CreateButton(pane, nil, "gray_hover", 20, 20, nil, nil, "")
     pane.favoriteButton = favoriteButton
     AF.SetPoint(favoriteButton, "TOPRIGHT", blockButton, "TOPLEFT", 1, 0)
-    favoriteButton:SetTexture(AF.GetIcon("Star1"), {15, 15})
+    favoriteButton:SetTexture(AF.GetIcon("Star"), {15, 15})
     favoriteButton:SetTextureColor("darkgray")
     favoriteButton:SetOnClick(function()
         if BFC_DB.favorite[pane.id] then
