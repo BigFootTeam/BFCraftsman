@@ -1,7 +1,7 @@
 ---@class BFC
 local BFC = select(2, ...)
 BFC.name = "BFCraftsman"
-BFC.channelName = "BFCraftsman"
+BFC.channelName = "BFChannel"
 BFC.channelID = 0
 BFC.minVersion = 7
 
@@ -238,39 +238,24 @@ BFC:RegisterEvent("PLAYER_LOGIN", function()
     end
 end)
 
-local GetChannelName = GetChannelName
-local JoinTemporaryChannel = JoinTemporaryChannel
-local versionBroadcasted
 local function PLAYER_ENTERING_WORLD()
-    BFC.channelID = GetChannelName(BFC.channelName)
-    -- print("BFC channelID: " .. tostring(BFC.channelID))
-    if BFC.channelID == 0 then
-        JoinTemporaryChannel(BFC.channelName)
-        C_Timer.After(5, PLAYER_ENTERING_WORLD)
-    else
-        if not versionBroadcasted then
-            BFC.BroadcastVersion()
-            versionBroadcasted = true
-        end
+    if BFC.channelID ~= 0 then
         BFC.UpdateInstanceStatus()
     end
 end
-BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(10, PLAYER_ENTERING_WORLD))
+BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(5, PLAYER_ENTERING_WORLD))
 
 ---------------------------------------------------------------------
--- disable ChatConfigFrame interaction
+-- channel
 ---------------------------------------------------------------------
-hooksecurefunc("ChatConfig_CreateCheckboxes", function(frame, checkBoxTable, checkBoxTemplate, title)
-    local name = frame:GetName()
-    if name == "ChatConfigChannelSettingsLeft" then
-        for i = 1, #checkBoxTable do
-            local checkBox = _G[name .. "Checkbox" .. i]
-            if checkBoxTable[i].channelName == BFC.channelName then
-                AF.ShowMask(checkBox, L["Disabled by BFCraftsman"])
-            else
-                AF.HideMask(checkBox)
-            end
-        end
+AF.UnregisterChannel("BFCraftsman") -- leave old channel
+AF.RegisterTemporaryChannel(BFC.channelName)
+AF.BlockChatConfigFrameInteractionForChannel(BFC.channelName)
+AF.RegisterCallback("AF_JOIN_TEMP_CHANNEL", function(channelName, channelID)
+    if channelName == BFC.channelName then
+        BFC.channelID = channelID
+        BFC.BroadcastVersion()
+        BFC.UpdateInstanceStatus()
     end
 end)
 
