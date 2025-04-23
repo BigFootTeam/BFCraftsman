@@ -13,7 +13,7 @@ local BFC_UNPUBLISH_PREFIX = "BFC_UNPUB"
 local BFC_CHK_CRAFT_PREFIX = "BFC_CHK_CRAFT"
 local BFC_CAN_CRAFT_PREFIX = "BFC_CAN_CRAFT"
 local BFC_INSTANCE_PREFIX = "BFC_INSTANCE"
-local BFC_VER = "BFC_VER"
+local BFC_CHK_VER_PREFIX = "BFC_VER"
 
 local IsInInstance = IsInInstance
 
@@ -26,11 +26,11 @@ local function VersionCheckReceived(version)
         AF.Print(L["New version (%s) available! Please consider updating."]:format("r" .. version))
     end
 end
-AF.RegisterComm(BFC_VER, VersionCheckReceived)
+AF.RegisterComm(BFC_CHK_VER_PREFIX, VersionCheckReceived)
 
 function BFC.BroadcastVersion()
     if BFC.channelID == 0 then return end
-    AF.SendCommMessage_Channel(BFC_VER, BFC.versionNum, BFC.channelName)
+    AF.SendCommMessage_Channel(BFC_CHK_VER_PREFIX, BFC.versionNum, BFC.channelName)
 end
 
 ---------------------------------------------------------------------
