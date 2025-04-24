@@ -204,15 +204,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
 end)
 
 local BNGetInfo = BNGetInfo
-local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
 BFC:RegisterEvent("PLAYER_LOGIN", function()
-    -- disable channel message
-    for i = 1, 10 do
-        if _G["ChatFrame" .. i] then
-            ChatFrame_RemoveChannel(_G["ChatFrame" .. i], BFC.channelName)
-        end
-    end
-
     -- prepare
     local bTag = select(2, BNGetInfo())
     if bTag then
