@@ -335,7 +335,7 @@ end
 ---------------------------------------------------------------------
 -- show
 ---------------------------------------------------------------------
-AF.RegisterCallback("BFC_ShowFrame", function(which)
+AF.RegisterCallback("BFC_ShowFrame", function(_, which)
     if which == "Browse" then
         if not browseFrame then
             CreateBrowseFrame()

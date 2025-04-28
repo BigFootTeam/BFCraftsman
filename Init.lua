@@ -243,7 +243,7 @@ BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(5, PLAYER_ENTERI
 AF.UnregisterChannel("BFCraftsman") -- leave old channel
 AF.RegisterTemporaryChannel(BFC.channelName)
 AF.BlockChatConfigFrameInteractionForChannel(BFC.channelName)
-AF.RegisterCallback("AF_JOIN_TEMP_CHANNEL", function(channelName, channelID)
+AF.RegisterCallback("AF_JOIN_TEMP_CHANNEL", function(_, channelName, channelID)
     if channelName == BFC.channelName then
         BFC.channelID = channelID
         BFC.BroadcastVersion()
