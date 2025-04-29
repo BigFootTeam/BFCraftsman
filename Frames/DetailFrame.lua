@@ -227,8 +227,7 @@ local function CreateDetailFrame()
                 AF.SetPoint(currentCharHighlight, "TOPLEFT", w, "TOP", 0, -1)
                 AF.SetPoint(currentCharHighlight, "BOTTOMRIGHT", w, -1, 1)
 
-            elseif AF.IsConnectedRealm(t.name) and (t.faction == AF.player.faction or not t.faction) then
-                -- NOTE: old data contains no faction
+            elseif AF.IsConnectedRealm(t.name) then -- (t.faction == AF.player.faction or not t.faction) then
                 w:SetTextColor(1, 1, 1, 1)
                 w:SetText(faction .. AF.WrapTextInColor(t.name, t.class))
                 w.prof:SetAlpha(1)

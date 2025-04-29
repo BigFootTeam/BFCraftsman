@@ -109,7 +109,8 @@ local crafterPanePool = AF.CreateObjectPool(function()
 
     function f:Load(t)
         f.name = t[1]
-        eb:SetText(AF.WrapTextInColor(t[1], t[2]))
+        local faction = AF.GetIconString(t[3] and ("Faction_" .. t[3]))
+        eb:SetText(faction .. AF.WrapTextInColor(t[1], t[2]))
         eb:SetCursorPosition(0)
     end
 
