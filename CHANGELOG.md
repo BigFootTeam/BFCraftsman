@@ -1,7 +1,6 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r8...e1417ef68b7667e84da3ff60a420d6e8eb0c9d36)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r9...a17e050825f2ac6cad609de3c2e5a9fdcf52751e)
 
-- Add help tip for name auto-filling button
-- Add faction info/filter
-- Decrease outdate time to 10 mins
-- Update kook link
-- Update zhCN
+- Remove faction restrictions (same server)
+- Change channel name to "BFChannel"
+- Make instance status more reliable
+- Increase size of close button
