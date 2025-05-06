@@ -1,6 +1,3 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r9...a17e050825f2ac6cad609de3c2e5a9fdcf52751e)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r10...a0fcb2a07ddccb6faa3fecaff54eb1778c782e52)
 
-- Remove faction restrictions (same server)
-- Change channel name to "BFChannel"
-- Make instance status more reliable
-- Increase size of close button
+- Fix filter for order detail frame
