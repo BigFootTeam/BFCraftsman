@@ -1,6 +1,6 @@
 --Переводчик ZamestoTV
 if not LOCALE_ruRU then return end
-local L = select( 2, ...).L
+local L = select(2, ...).L
 
 L["BFCraftsman"] = "BFCraftsman"
 L["BFC"] = "BFC"
