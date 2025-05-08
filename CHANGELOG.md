@@ -1,3 +1,9 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r10...a0fcb2a07ddccb6faa3fecaff54eb1778c782e52)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r11...a563e18f93549ccd1483e50553fd11440df3a30b)
 
-- Fix filter for order detail frame
+ZamestoTV (1):
+
+- Create ruRU.lua
+
+enderneko (4):
+
+- Update stale check
