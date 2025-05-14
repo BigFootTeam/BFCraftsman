@@ -112,6 +112,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 BFC_DB.list[id] = nil
             else
                 t.inInstance = nil -- reset in instance status
+                t._lastServicesUpdate = nil
             end
         end
         -- validate publish
