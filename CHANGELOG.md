@@ -1,9 +1,3 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r11...a563e18f93549ccd1483e50553fd11440df3a30b)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r12...ecc231e382a9c8a38befa3a0fed14839385b244c)
 
-ZamestoTV (1):
-
-- Create ruRU.lua
-
-enderneko (4):
-
-- Update stale check
+- Reset _lastServicesUpdate at startup
