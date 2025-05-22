@@ -15,8 +15,6 @@ local BFC_CAN_CRAFT_PREFIX = "BFC_CAN_CRAFT"
 local BFC_INSTANCE_PREFIX = "BFC_INSTANCE"
 local BFC_CHK_VER_PREFIX = "BFC_VER"
 
-local IsInInstance = IsInInstance
-
 ---------------------------------------------------------------------
 -- version check
 ---------------------------------------------------------------------
@@ -44,7 +42,7 @@ function BFC.ScheduleNextSync(useDelay)
                 BFC.Publish()
                 BFC.ScheduleNextSync()
             elseif BFC_DB.publish.mode == "outdoors" then
-                if IsInInstance() then
+                if AF.IsInInstance() then
                     BFC.Unpublish()
                 else
                     BFC.Publish()
@@ -174,7 +172,7 @@ AF.RegisterComm(BFC_CAN_CRAFT_PREFIX, CanCraftReceived)
 ---------------------------------------------------------------------
 function BFC.UpdateInstanceStatus()
     if BFC.channelID == 0 or BFC_DB.publish.mode == "disabled" then return end
-    local inInstance = IsInInstance()
+    local inInstance = AF.IsInInstance()
     if inInstance ~= BFC_DB.wasInInstance then
         BFC_DB.wasInInstance = inInstance
         AF.SendCommMessage_Channel(BFC_INSTANCE_PREFIX, {BFC.versionNum, BFC.battleTag, inInstance}, BFC.channelName)
@@ -183,6 +181,7 @@ function BFC.UpdateInstanceStatus()
         end
     end
 end
+AF.RegisterCallback("AF_INSTANCE_STATE_CHANGE", AF.GetDelayedInvoker(5, BFC.UpdateInstanceStatus))
 
 local function InstanceStatusReceived(data)
     local version, id, inInstance = AF.Unpack3(data)

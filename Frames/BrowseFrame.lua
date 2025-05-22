@@ -112,8 +112,10 @@ local function Pane_Load(pane, id, t)
     -- professions
     if BFC_DB.blacklist[pane.id] then
         pane.professionText:SetText(AF.WrapTextInColor(L["Blacklisted"], "red"))
+        t.inInstance = nil
     elseif BFC.IsStale(t.lastUpdate) then
         pane.professionText:SetText(AF.WrapTextInColor(L["Stale"], "darkgray"))
+        t.inInstance = nil
     -- elseif t.inInstance then
     --     pane.professionText:SetText(AF.WrapTextInColor(L["In Instance"], "firebrick"))
     else

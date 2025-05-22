@@ -111,7 +111,7 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
             if type(id) ~= "string" or #id ~= 32 or type(t.professions) ~= "table" or type(t.recipes) ~= "table" then
                 BFC_DB.list[id] = nil
             else
-                t.inInstance = nil -- reset in instance status
+                -- t.inInstance = nil -- reset in instance status
                 t._lastServicesUpdate = nil
             end
         end
@@ -230,13 +230,6 @@ BFC:RegisterEvent("PLAYER_LOGIN", function()
         end)
     end
 end)
-
-local function PLAYER_ENTERING_WORLD()
-    if BFC.channelID ~= 0 then
-        BFC.UpdateInstanceStatus()
-    end
-end
-BFC:RegisterEvent("PLAYER_ENTERING_WORLD", AF.GetDelayedInvoker(5, PLAYER_ENTERING_WORLD))
 
 ---------------------------------------------------------------------
 -- channel
