@@ -1,3 +1,3 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r12...ecc231e382a9c8a38befa3a0fed14839385b244c)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r13...0870aa5dd449e7117e09a2d1da074ebaa46a9d5d)
 
-- Reset _lastServicesUpdate at startup
+- Fix instance state
