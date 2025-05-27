@@ -1,3 +1,3 @@
-[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r13...0870aa5dd449e7117e09a2d1da074ebaa46a9d5d)
+[Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r14...eaed383617d4705c424f9629f7e0ee8bb0f0dcfb)
 
-- Fix instance state
+- Fix instance/outdoor publishing
