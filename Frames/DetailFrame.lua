@@ -142,7 +142,7 @@ local function CreateDetailFrame()
         updateRequired = true
     end)
 
-    AF.SetTooltips(blockButton, "BOTTOMRIGHT", 0, -1,
+    AF.SetTooltip(blockButton, "BOTTOMRIGHT", 0, -1,
         L["Blacklist"],
         L["The blacklist button in the list has the same functionality"],
         " ",

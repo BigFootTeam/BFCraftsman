@@ -129,7 +129,7 @@ local function CreatePublishFrame()
             end,
         },
     })
-    AF.SetTooltips(modeDropdown, "TOPLEFT", 0, 1,
+    AF.SetTooltip(modeDropdown, "TOPLEFT", 0, 1,
         L["Publish"],
         L["Syncs automatically every few minutes instead of in real time"]
     )
@@ -213,7 +213,7 @@ local function Pane_ShowCacheInfo(button)
     end
     lastScanned = AF.WrapTextInColor(lastScanned, "yellow")
 
-    AF.ShowTooltips(button, "BOTTOMLEFT", 0, -1, {
+    AF.ShowTooltip(button, "BOTTOMLEFT", 0, -1, {
         L["Scan Recipes"],
         L["Click to scan recipes"],
         L["Scan only available for current character"],
@@ -223,7 +223,7 @@ local function Pane_ShowCacheInfo(button)
 end
 
 local function Pane_HideCacheInfo(button)
-    AF.HideTooltips()
+    AF.HideTooltip()
 end
 
 local function Pane_Scan(button)
@@ -340,7 +340,7 @@ local function CreateCharacterPane()
     local delButton = AF.CreateButton(pane, nil, "red_hover", 21, 21)
     delButton:SetTexture(AF.GetIcon("Close"), {16, 16}, {"CENTER", 0, 0})
     AF.SetPoint(delButton, "TOPRIGHT", pane)
-    AF.SetTooltips(delButton, "TOPRIGHT", 0, 1, L["Delete Character"], L["Alt-Click to delete"])
+    AF.SetTooltip(delButton, "TOPRIGHT", 0, 1, L["Delete Character"], L["Alt-Click to delete"])
     delButton:SetOnClick(function()
         if IsAltKeyDown() then
             tremove(BFC_DB.publish.characters, pane.index)
