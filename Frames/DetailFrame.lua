@@ -54,7 +54,7 @@ end
 ---------------------------------------------------------------------
 local function CreateDetailFrame()
     detailFrame = AF.CreateBorderedFrame(BFCBrowseFrame, "BFCDetailFrame", nil, nil, nil, "accent")
-    AF.SetFrameLevel(detailFrame, 50)
+    AF.SetFrameLevel(detailFrame, 150)
     detailFrame:Hide()
     AF.SetInside(detailFrame, BFCBrowseFrameList, 5)
 
