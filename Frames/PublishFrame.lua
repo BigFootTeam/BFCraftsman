@@ -170,8 +170,8 @@ local function CreatePublishFrame()
 
     -- crafting fee
     local craftingFeePane = AF.CreateTitledPane(publishFrame, L["Crafting Fee"], nil, 45)
-    AF.SetPoint(craftingFeePane, "TOPLEFT", taglinePane, "BOTTOMLEFT", 0, -12)
-    AF.SetPoint(craftingFeePane, "TOPRIGHT", taglinePane, "BOTTOMRIGHT", 0, -12)
+    AF.SetPoint(craftingFeePane, "TOPLEFT", taglinePane, "BOTTOMLEFT", 0, -15)
+    AF.SetPoint(craftingFeePane, "TOPRIGHT", taglinePane, "BOTTOMRIGHT", 0, -15)
 
     craftingFeeEditBox = AF.CreateEditBox(craftingFeePane, nil, nil, 20, "number")
     AF.SetPoint(craftingFeeEditBox, "TOPLEFT", craftingFeePane, 0, -25)
@@ -190,7 +190,7 @@ local function CreatePublishFrame()
 
     -- characters and professions
     local charProfPane = AF.CreateTitledPane(publishFrame, L["Characters and Professions"])
-    AF.SetPoint(charProfPane, "TOPLEFT", craftingFeePane, "BOTTOMLEFT", 0, -13)
+    AF.SetPoint(charProfPane, "TOPLEFT", craftingFeePane, "BOTTOMLEFT", 0, -15)
     AF.SetPoint(charProfPane, "BOTTOMRIGHT")
 
     charList = AF.CreateScrollList(charProfPane, nil, 10, 10, 5, 40, 10)
