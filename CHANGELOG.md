@@ -1,4 +1,3 @@
-[View Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r16...713f1763eeca6d196249d9e79b91be2314eab551)
+[View Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r17...b834a3329f3e185a0dc1e8f9de7232acc7c422eb)
 
-- Adapt to latest AF
-- Update frame levels
+- Update toc
