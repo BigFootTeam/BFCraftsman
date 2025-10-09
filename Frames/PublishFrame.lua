@@ -19,7 +19,7 @@ local CloseTradeSkill = C_TradeSkillUI.CloseTradeSkill
 local tinsert = tinsert
 
 local publishFrame, progressBar
-local modeDropdown, taglineEditBox, craftingFeeEditBox, charList, addButton
+local modeDropdown, currentServerCheckButton, taglineEditBox, craftingFeeEditBox, charList, addButton
 local LoadCharacters, CreateAddButton
 
 ---------------------------------------------------------------------
@@ -134,10 +134,21 @@ local function CreatePublishFrame()
         L["Syncs automatically every few minutes instead of in real time"]
     )
 
+    -- currentServerOnly
+    currentServerCheckButton = AF.CreateCheckButton(publishFrame, L["Show only characters on current server"])
+    AF.SetPoint(currentServerCheckButton, "TOPLEFT", modeDropdown, "BOTTOMLEFT", 0, -8)
+    currentServerCheckButton:SetOnCheck(function(checked)
+        BFC_DB.publish.currentServerOnly = checked
+        BFC.CancelNextSync()
+        BFC.UpdateLearnedProfessions()
+        BFC.UpdateSendingData()
+        BFC.ScheduleNextSync(true)
+    end)
+
     -- tagline
-    local taglinePane = AF.CreateTitledPane(publishFrame, L["Tagline"], nil, 90)
-    AF.SetPoint(taglinePane, "TOPLEFT", publishFrame, 0, -30)
-    AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame, 0, -30)
+    local taglinePane = AF.CreateTitledPane(publishFrame, L["Tagline"], nil, 110)
+    AF.SetPoint(taglinePane, "TOPLEFT", publishFrame, 0, -55)
+    AF.SetPoint(taglinePane, "TOPRIGHT", publishFrame, 0, -55)
 
     taglineEditBox = AF.CreateScrollEditBox(taglinePane)
     taglineEditBox:SetMaxBytes(TAGLINE_MAX_BYTES + 1)
@@ -182,13 +193,14 @@ local function CreatePublishFrame()
     AF.SetPoint(charProfPane, "TOPLEFT", craftingFeePane, "BOTTOMLEFT", 0, -13)
     AF.SetPoint(charProfPane, "BOTTOMRIGHT")
 
-    charList = AF.CreateScrollList(charProfPane, nil, 10, 10, 6, 40, 10)
+    charList = AF.CreateScrollList(charProfPane, nil, 10, 10, 5, 40, 10)
     AF.SetPoint(charList, "TOPLEFT", charProfPane, 0, -25)
     AF.SetPoint(charList, "TOPRIGHT", charProfPane, 0, -25)
 end
 
 local function LoadConfigs()
     modeDropdown:SetSelectedValue(BFC_DB.publish.mode)
+    currentServerCheckButton:SetChecked(BFC_DB.publish.currentServerOnly)
     taglineEditBox:SetText(BFC_DB.publish.tagline)
     craftingFeeEditBox:SetText(BFC_DB.publish.craftingFee or "")
 
