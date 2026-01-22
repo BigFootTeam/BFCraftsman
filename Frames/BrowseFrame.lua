@@ -188,7 +188,7 @@ local function CreatePane()
     craftingFeeText:SetJustifyH("RIGHT")
 
     -- sep
-    local sep = AF.CreateSeparator(pane, 20, 1, "black", true, true)
+    local sep = AF.CreateSeparator(pane, 20, 1, "black", nil, true, true)
     AF.SetPoint(sep, "TOPLEFT", 165)
 
     -- professions
