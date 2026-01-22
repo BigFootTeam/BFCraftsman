@@ -1,3 +1,4 @@
-[View Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r18...6c7101e820d9ebb1806deeb605289b485c8381d3)
+[View Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r19...c9062647af101141193a5240a8502a78b284eca0)
 
-- Add option to filter characters by current server for publishers
+- Move scripts and update .gitignore
+- Fix separator creation in BrowseFrame

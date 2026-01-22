@@ -1,7 +1,7 @@
-## Interface: 110205,110207
+## Interface: 120000,120001
 ## Title: BFCraftsman
 ## Title-zhCN: 大脚工匠
-## Version: r19
+## Version: r20
 ## Author: enderneko (BigFootTeam)
 ## Dependencies: AbstractFramework
 ## SavedVariables: BFC_DB
