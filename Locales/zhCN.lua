@@ -11,6 +11,7 @@ L["Config"] = "设置"
 L["BFCraftsman is not compatible with %s.\nDisable it?"] = "大脚工匠与%s不兼容。\n是否禁用它？"
 L["Click this button to open BFCraftsman"] = "点击此按钮打开大脚工匠"
 L["Click this button to show craftsmen list"] = "点击此按钮显示工匠列表"
+L["Unlock All Reagents (For Simulation)"] = "解锁全部材料（用于模拟）"
 
 -- publish
 L["Enable Publishing"] = "启用发布"

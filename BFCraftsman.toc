@@ -17,6 +17,7 @@ Init.lua
 Comm.lua
 Professions.lua
 Recipes.lua
+SchematicForm.lua
 
 Frames\MainFrame.lua
 Frames\BrowseFrame.lua

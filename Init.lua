@@ -205,6 +205,9 @@ BFC:RegisterEvent("ADDON_LOADED", function(_, _, addon)
                 end,
             })
         end
+
+        -- setup schematic simulation
+        BFC.SetupSchematicSimulation()
     end
 end)
 
