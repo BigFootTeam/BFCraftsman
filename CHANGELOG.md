@@ -1,4 +1,3 @@
-[View Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r19...c9062647af101141193a5240a8502a78b284eca0)
+[View Full Changelog](https://github.com/BigFootTeam/BFCraftsman/compare/r21...1bd057ed52320605b163e58736b9dc7fbf58a7d7)
 
-- Move scripts and update .gitignore
-- Fix separator creation in BrowseFrame
+- Bump up toc
