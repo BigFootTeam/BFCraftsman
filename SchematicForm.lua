@@ -19,6 +19,7 @@ end
 local unlockButton
 
 local function UpdateUnlockState(trigger)
+    if not unlockButton then return end
     if trigger == unlockButton then
         unlockButton._unlocked = not unlockButton._unlocked
     else
